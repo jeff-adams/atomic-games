@@ -8,6 +8,6 @@
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="Library.csproj" />
+    <ProjectReference Include="Engine.csproj" />
   </ItemGroup>
 </Project>
