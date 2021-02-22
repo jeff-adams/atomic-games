@@ -32,7 +32,7 @@ namespace AtomicGames.Graphics
             Console.WriteLine("----------------------------");
         }
 
-        public void BatchSprites(Texture2D sprite)
+        public void BatchSprites(Sprite[] sprites)
         {
             if (targetIsSet)
             {
@@ -42,21 +42,12 @@ namespace AtomicGames.Graphics
             game.GraphicsDevice.SetRenderTarget(target);
             targetIsSet = true;
 
-            float scale = 2f;
-
-            game.GraphicsDevice.Clear(Color.PapayaWhip);
+            game.GraphicsDevice.Clear(Color.DeepPink);
             spriteBatch.Begin(samplerState: SamplerState.PointClamp);
-            var spriteScale = scale * windowScale;
-            spriteBatch.Draw(sprite, 
-                            new Vector2(target.Bounds.Center.X - sprite.Bounds.Center.X / 2, target.Bounds.Center.Y - sprite.Bounds.Center.Y / 2), 
-                            null, 
-                            Color.White, 
-                            0f, 
-                            Vector2.Zero, 
-                            scale, 
-                            SpriteEffects.None, 
-                            0f);
-            
+            foreach(Sprite s in sprites)
+            {
+                spriteBatch.Draw(s.Texture, s.Position, null, Color.White, 0f, Vector2.Zero, s.Scale, SpriteEffects.None, 0f);
+            }
             spriteBatch.End();
         }
 

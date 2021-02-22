@@ -10,7 +10,7 @@ namespace Sample
         private GraphicsDeviceManager graphics;
         private Display display;
 
-        private Texture2D tree;
+        private Sprite[] sprites;
 
         public Game1()
         {
@@ -34,7 +34,10 @@ namespace Sample
         protected override void LoadContent()
         {
             // TODO: use this.Content to load your game content here
-            tree = Content.Load<Texture2D>("BigTree");
+             sprites = new Sprite[]
+             {
+                new Sprite(Content.Load<Texture2D>("crosshair"), 1f)
+             };
         }
 
         protected override void Update(GameTime gameTime)
@@ -49,7 +52,7 @@ namespace Sample
 
         protected override void Draw(GameTime gameTime)
         {
-            display.BatchSprites(tree);
+            display.BatchSprites(sprites);
             display.Draw();
 
             base.Draw(gameTime);
