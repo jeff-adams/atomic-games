@@ -48,7 +48,7 @@ namespace AtomicGames.Graphics
             spriteBatch.Begin(samplerState: SamplerState.PointClamp);
             var spriteScale = scale * windowScale;
             spriteBatch.Draw(sprite, 
-                            new Vector2(target.Bounds.Center.X - sprite.Bounds.Center.X, target.Bounds.Center.Y - sprite.Bounds.Center.Y), 
+                            new Vector2(target.Bounds.Center.X - sprite.Bounds.Center.X / 2, target.Bounds.Center.Y - sprite.Bounds.Center.Y / 2), 
                             null, 
                             Color.White, 
                             0f, 
