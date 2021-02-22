@@ -49,9 +49,7 @@ namespace Sample
 
         protected override void Draw(GameTime gameTime)
         {
-            display.Set();
             display.BatchSprites(tree);
-            display.UnSet();
             display.Draw();
 
             base.Draw(gameTime);
