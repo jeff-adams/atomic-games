@@ -47,7 +47,7 @@ namespace AtomicGames.Sample
         {
             sprites = new Sprite[]
             {
-                new Sprite(Content.Load<Texture2D>("bomb"), 6f)
+                new Sprite(Content.Load<Texture2D>("bomb"), 3f)
             };
         }
 
@@ -86,6 +86,7 @@ namespace AtomicGames.Sample
             GraphicsDevice.Clear(Color.Black);
 
             display.BatchSprites(sprites);
+            display.BatchShapes();
 
             display.UnSetTarget();
             display.Draw();
