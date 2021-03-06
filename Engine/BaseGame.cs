@@ -1,12 +1,10 @@
-﻿using System.Linq;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-using AtomicGames.Graphics;
 
-namespace AtomicGames.Sample
+namespace AtomicGames.Engine
 {
-    public class SampleGame : Game
+    public class BaseGame : Game
     {
         private GraphicsDeviceManager graphics;
         private SpriteBatch spriteBatch;
@@ -14,13 +12,10 @@ namespace AtomicGames.Sample
 
         private const int gameWidth = 1440;
         private const int gameHeight = 900;
-        private const float speed = 1.25f;
 
-        private Sprite[] sprites;
+        private GameState currentGameState;
 
-        private KeyboardState keyState;
-
-        public SampleGame()
+        public BaseGame(GameState firstGameState, string gameTitle)
         {
             graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
@@ -31,9 +26,10 @@ namespace AtomicGames.Sample
             graphics.ApplyChanges();
 
             Window.AllowUserResizing = true;
-            Window.Title = "AtomicGames";
+            Window.Title = gameTitle;
 
             display = new Display(this, gameWidth, gameHeight);
+            currentGameState = firstGameState;
         }
 
         protected override void Initialize()
@@ -45,37 +41,13 @@ namespace AtomicGames.Sample
 
         protected override void LoadContent()
         {
-            sprites = new Sprite[]
-            {
-                new Sprite(Content.Load<Texture2D>("bomb"), 3f)
-            };
+            spriteBatch = new SpriteBatch(GraphicsDevice);
         }
 
         protected override void Update(GameTime gameTime)
         {
-            keyState = Keyboard.GetState();
-
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
-
-            var dirX = 0;
-            var dirY = 0;
-
-            var pressedKeys = keyState.GetPressedKeys();
-            if (pressedKeys.Length > 0)
-            {
-                dirX += pressedKeys.Contains(Keys.Left) ? -1 : 0;
-                dirX += pressedKeys.Contains(Keys.Right) ? 1 : 0;
-                dirY += pressedKeys.Contains(Keys.Up) ? -1 : 0;
-                dirY += pressedKeys.Contains(Keys.Down) ? 1 : 0;
-            }
-
-            if (dirX != 0 || dirY != 0)
-            {
-                var deltaTime = gameTime.ElapsedGameTime.Milliseconds;
-                sprites[0].Position = new Vector2(sprites[0].Position.X + dirX * deltaTime * speed, 
-                                                  sprites[0].Position.Y + dirY * deltaTime * speed);
-            }
 
             base.Update(gameTime);
         }
@@ -85,8 +57,7 @@ namespace AtomicGames.Sample
             display.SetTarget();
             GraphicsDevice.Clear(Color.Black);
 
-            display.BatchSprites(sprites);
-            display.BatchShapes();
+            currentGameState.Draw(gameTime, spriteBatch);
 
             display.UnSetTarget();
             display.Draw();

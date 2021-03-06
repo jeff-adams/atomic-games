@@ -2,7 +2,7 @@ using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace AtomicGames.Graphics
+namespace AtomicGames.Engine
 {
     public class ShapeBatch : IDisposable
     {
@@ -10,9 +10,9 @@ namespace AtomicGames.Graphics
         private BasicEffect effect;
 
         private VertexPositionColor[] vertices;
-        private int vertexCount;
-        private int[] indices;
-        private int indexCount;
+        private short vertexCount;
+        private short[] indices;
+        private short indexCount;
         private int shapeCount;
 
         private bool isStarted;
@@ -22,17 +22,13 @@ namespace AtomicGames.Graphics
             this.game = game ?? throw new ArgumentNullException("game");
             effect = new BasicEffect(game.GraphicsDevice);
             effect.VertexColorEnabled = true;
-            //Needed?
-            effect.LightingEnabled = false;
-            effect.TextureEnabled = false;
-            effect.FogEnabled = false;
-            effect.Projection = Matrix.Identity;
-            effect.World = Matrix.Identity;
-            effect.View = Matrix.Identity;
+            //effect.Projection = Matrix.CreateOrthographicOffCenter(0f, game.GraphicsDevice.Viewport.Width, game.GraphicsDevice.Viewport.Height, 0f, -1f, 1f);
+            effect.View = Matrix.CreateOrthographic(game.GraphicsDevice.Viewport.Width, game.GraphicsDevice.Viewport.Height, 0f, 1f);
 
-            const int maxVertexCount = 1024;
-            vertices = new VertexPositionColor[maxVertexCount];
-            indices = new int[maxVertexCount * 3];
+            const int maxIndexCount = short.MaxValue;
+            vertices = new VertexPositionColor[maxIndexCount / 3];
+            indices = new short[maxIndexCount];
+            
             Initialize();
         }
 
@@ -44,7 +40,7 @@ namespace AtomicGames.Graphics
             shapeCount = 0;
         }
 
-        public void Begin()
+        public void Begin(Vector2 pos)
         {
             if (isStarted)
             {
@@ -57,15 +53,22 @@ namespace AtomicGames.Graphics
         public void End()
         {
             EnsureBatchingIsStarted();
-            Draw();
+            Flush();
         }
 
-        private void Draw()
+        private void Flush()
         {
             foreach (var pass in effect.CurrentTechnique.Passes)
             {
                 pass.Apply();
-                game.GraphicsDevice.DrawUserIndexedPrimitives<VertexPositionColor>(PrimitiveType.TriangleList, vertices, 0, vertexCount, indices, 0, indexCount / 3);
+                game.GraphicsDevice.DrawUserIndexedPrimitives<VertexPositionColor>(
+                    PrimitiveType.TriangleList,
+                    vertices,
+                    0,
+                    vertexCount,
+                    indices,
+                    0,
+                    indexCount / 3);
             }
             Initialize();
         }
@@ -97,7 +100,7 @@ namespace AtomicGames.Graphics
             }
         }
 
-        public void Rectangle(float x, float y, float width, float height, Color color)
+        public void RectangleFill(float x, float y, float width, float height, Color color)
         {
             EnsureBatchingIsStarted();
 
@@ -109,19 +112,19 @@ namespace AtomicGames.Graphics
             float left = x;
             float right = x + width;
             float top = y;
-            float bottom = y + height;
+            float bottom = y - height;
 
             var a = new Vector3(left, top, 0f);
             var b = new Vector3(right, top, 0f);
             var c = new Vector3(right, bottom, 0f);
             var d = new Vector3(left, bottom, 0f);
 
-            indices[indexCount++] = 0 + vertexCount;
-            indices[indexCount++] = 1 + vertexCount;
-            indices[indexCount++] = 2 + vertexCount;
-            indices[indexCount++] = 0 + vertexCount;
-            indices[indexCount++] = 2 + vertexCount;
-            indices[indexCount++] = 3 + vertexCount;
+            indices[indexCount++] = (short) (0 + vertexCount);
+            indices[indexCount++] = (short) (1 + vertexCount);
+            indices[indexCount++] = (short) (2 + vertexCount);
+            indices[indexCount++] = (short) (0 + vertexCount);
+            indices[indexCount++] = (short) (2 + vertexCount);
+            indices[indexCount++] = (short) (3 + vertexCount);
 
             vertices[vertexCount++] = new VertexPositionColor(a, color);
             vertices[vertexCount++] = new VertexPositionColor(b, color);
@@ -129,6 +132,11 @@ namespace AtomicGames.Graphics
             vertices[vertexCount++] = new VertexPositionColor(d, color);
 
             shapeCount++;
+        }
+
+        public void Line(Vector2 a, Vector2 b, Color color)
+        {
+
         }
 
         public void Dispose()

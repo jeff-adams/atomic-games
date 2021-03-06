@@ -2,7 +2,7 @@ using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace AtomicGames.Graphics
+namespace AtomicGames.Engine
 {
     public class Display : IDisposable
     {
@@ -30,8 +30,6 @@ namespace AtomicGames.Graphics
         public void UpdateScreenSize(object sender, EventArgs e)
         {
             renderRect = GetRenderTargetPositionAsRectangle();
-            Console.WriteLine($"RenderTarget Bounds: {target.Bounds.Width}, {target.Bounds.Height}\nClient Bounds: {game.Window.ClientBounds.Width}, {game.Window.ClientBounds.Height}\nRenderRect Size: {renderRect.Size.X}, {renderRect.Size.Y}\nRenderRect Center: {renderRect.Center.X}, {renderRect.Center.Y}.");
-            Console.WriteLine("----------------------------");
         }
 
         public void SetTarget()
@@ -79,23 +77,20 @@ namespace AtomicGames.Graphics
             spriteBatch.End();
         }
 
-        public void BatchShapes()
+        public void BatchShapes(Vector2 pos)
         {
             if (!targetIsSet)
             {
                 throw new Exception("RenderTarget is not set.");
             }            
 
-            shapeBatch.Begin();
-            shapeBatch.Rectangle(0, 0, 200, 200, Color.Violet);
+            shapeBatch.Begin(pos);
+            shapeBatch.RectangleFill(pos.X, pos.Y, 800f, 300f, Color.LightSeaGreen);
             shapeBatch.End();
         }
 
         public void Draw()
         {
-            game.GraphicsDevice.SetRenderTarget(null);
-            targetIsSet = false;
-
             game.GraphicsDevice.Clear(Color.DarkMagenta);
             spriteBatch.Begin();
             spriteBatch.Draw(target, renderRect, Color.White);

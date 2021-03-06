@@ -1,4 +1,5 @@
 ﻿using System;
+using AtomicGames.Engine;
 
 namespace AtomicGames.Sample
 {
@@ -7,7 +8,8 @@ namespace AtomicGames.Sample
         [STAThread]
         static void Main()
         {
-            using (var game = new SampleGame())
+            var gs = new PlayState();
+            using (var game = new BaseGame(gs, "AtomicGames"))
                 game.Run();
         }
     }
