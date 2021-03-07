@@ -7,8 +7,6 @@ namespace AtomicGames.Engine
     public class Display : IDisposable
     {
         private Game game;
-        private SpriteBatch spriteBatch;
-        private ShapeBatch shapeBatch;
         private RenderTarget2D target;
         private bool targetIsSet;
         
@@ -22,8 +20,7 @@ namespace AtomicGames.Engine
             target = new RenderTarget2D(game.GraphicsDevice, width, height);
             game.Window.ClientSizeChanged += new EventHandler<EventArgs>(UpdateScreenSize);
             UpdateScreenSize(null, null);
-            spriteBatch = new SpriteBatch(game.GraphicsDevice);
-            shapeBatch = new ShapeBatch(game);
+
             targetIsSet = false;
         }
 
@@ -54,42 +51,7 @@ namespace AtomicGames.Engine
             targetIsSet = false;
         }
 
-        public void BatchSprites(Sprite[] sprites)
-        {
-            if (!targetIsSet)
-            {
-                throw new Exception("RenderTarget is not set.");
-            }            
-
-            spriteBatch.Begin(samplerState: SamplerState.PointClamp);
-            foreach(Sprite s in sprites)
-            {
-                spriteBatch.Draw(s.Texture,
-                                 s.Position,
-                                 null,
-                                 Color.White,
-                                 0f,
-                                 new Vector2(s.Texture.Width / 2, s.Texture.Height / 2),
-                                 s.Scale,
-                                 SpriteEffects.None,
-                                 0f);
-            }
-            spriteBatch.End();
-        }
-
-        public void BatchShapes(Vector2 pos)
-        {
-            if (!targetIsSet)
-            {
-                throw new Exception("RenderTarget is not set.");
-            }            
-
-            shapeBatch.Begin(pos);
-            shapeBatch.RectangleFill(pos.X, pos.Y, 800f, 300f, Color.LightSeaGreen);
-            shapeBatch.End();
-        }
-
-        public void Draw()
+        public void Draw(SpriteBatch spriteBatch)
         {
             game.GraphicsDevice.Clear(Color.DarkMagenta);
             spriteBatch.Begin();
@@ -126,8 +88,6 @@ namespace AtomicGames.Engine
         {
             game.Window.ClientSizeChanged -= UpdateScreenSize;
             target?.Dispose();
-            spriteBatch?.Dispose();
-            shapeBatch?.Dispose();
         }
     }
 }

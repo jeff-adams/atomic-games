@@ -20,7 +20,6 @@ namespace AtomicGames.Engine
             IsActive = true;
         }
 
-
         public void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
             spriteBatch.Draw(texture, transform.Position, null, Color.White, transform.Rotation, origin, transform.Scale, flip, 0f);

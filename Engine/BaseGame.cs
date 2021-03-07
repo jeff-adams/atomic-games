@@ -34,20 +34,19 @@ namespace AtomicGames.Engine
 
         protected override void Initialize()
         {
-            // TODO: Add your initialization logic here
-
+            currentGameState.Initialize(Content);
             base.Initialize();
         }
 
         protected override void LoadContent()
         {
             spriteBatch = new SpriteBatch(GraphicsDevice);
+            currentGameState.LoadContent();
         }
 
         protected override void Update(GameTime gameTime)
         {
-            if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
-                Exit();
+            currentGameState.Update(gameTime);
 
             base.Update(gameTime);
         }
@@ -57,12 +56,39 @@ namespace AtomicGames.Engine
             display.SetTarget();
             GraphicsDevice.Clear(Color.Black);
 
+            spriteBatch.Begin(samplerState: SamplerState.PointClamp);
             currentGameState.Draw(gameTime, spriteBatch);
+            spriteBatch.End();
 
             display.UnSetTarget();
-            display.Draw();
+            display.Draw(spriteBatch);
 
             base.Draw(gameTime);
+        }
+
+        private void OnGameSwitched(object sender, GameState state)
+        {
+            SwitchGameState(state);
+        }
+
+        private void SwitchGameState(GameState nextGameState)
+        {
+            if (currentGameState != null)
+            {
+                currentGameState.OnGameStateSwitch -= OnGameSwitched;
+                currentGameState.UnloadContent();
+            }
+
+            currentGameState = nextGameState;
+            currentGameState.Initialize(Content);
+            currentGameState.LoadContent();
+            currentGameState.OnGameStateSwitch += OnGameSwitched;
+        }
+
+        protected override void UnloadContent()
+        {
+            currentGameState?.UnloadContent();
+            base.UnloadContent();
         }
     }
 }
