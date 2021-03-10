@@ -20,7 +20,7 @@ namespace AtomicGames.Sample
         public Vector2 DirectionAnalog { get; private set; }
 
         public Vector2 MousePosition { get; private set; }
-        public bool MouseLeftClick { get; private set; }
+        public InputState MouseLeftClick { get; private set; }
 
         public PlayInputMap(PlayState playState)
         {
@@ -52,6 +52,8 @@ namespace AtomicGames.Sample
                 {Buttons.LeftThumbstickUp, DirectionUp},
                 {Buttons.LeftThumbstickDown, DirectionDown},
             };
+
+            MouseLeftClick = new InputState();
         }
 
         private void DirectionLeft() => playState.Direction(new Vector2(-1, 0));
@@ -62,7 +64,7 @@ namespace AtomicGames.Sample
         private void GetMouseInput(MouseState mouseState)
         {
             MousePosition = new Vector2(mouseState.X, mouseState.Y);
-            MouseLeftClick = mouseState.LeftButton == ButtonState.Pressed;
+            MouseLeftClick.UpdateState(mouseState.LeftButton);
         }
     }
 }

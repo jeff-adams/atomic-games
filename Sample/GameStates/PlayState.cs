@@ -29,7 +29,7 @@ namespace AtomicGames.Sample
         {
             deltaTime = gameTime.ElapsedGameTime.Milliseconds;
 
-            if (input.MouseLeftClick)
+            if (input.MouseLeftClick.Pressed || input.MouseLeftClick.Held)
             {
                 var mouseDirection = Vector2.Normalize(input.MousePosition - bomb.Transform.Position);
                 Direction(mouseDirection);
