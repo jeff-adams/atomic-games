@@ -1,3 +1,5 @@
+using System;
+using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
@@ -13,6 +15,17 @@ namespace AtomicGames.Engine
             texture.GetData(0, spliceRect, data, 0, count);
             splicedTexture.SetData(data);
             return splicedTexture;
+        }
+
+        public static void InputMappingToAction<T>(this Dictionary<T, Action> mappings, Predicate<T> isInputPressed)
+        {
+            foreach (var mapping in mappings)
+            {
+                if (isInputPressed(mapping.Key))
+                {
+                    mapping.Value();
+                }
+            }
         }
     }
 }

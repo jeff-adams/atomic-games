@@ -9,6 +9,7 @@ namespace AtomicGames.Engine
         private GraphicsDeviceManager graphics;
         private SpriteBatch spriteBatch;
         private Display display;
+        private InputManager inputManager;
 
         private const int gameWidth = 1440;
         private const int gameHeight = 900;
@@ -29,6 +30,7 @@ namespace AtomicGames.Engine
             Window.Title = gameTitle;
 
             display = new Display(this, gameWidth, gameHeight);
+            inputManager = new InputManager();
             currentGameState = firstGameState;
         }
 
@@ -46,6 +48,7 @@ namespace AtomicGames.Engine
 
         protected override void Update(GameTime gameTime)
         {
+            inputManager.GetInput(currentGameState.InputMapper);
             currentGameState.Update(gameTime);
 
             base.Update(gameTime);

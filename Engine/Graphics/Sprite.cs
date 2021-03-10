@@ -5,8 +5,9 @@ namespace AtomicGames.Engine
 {   
     public class Sprite : IGameObject
     {
+        public Transform Transform { get; }
+
         private Texture2D texture;
-        private Transform transform;
         private Vector2 origin;
         private SpriteEffects flip;
         
@@ -16,13 +17,23 @@ namespace AtomicGames.Engine
         {
             this.texture = texture;
             flip = SpriteEffects.None;
-            transform = new Transform(scale);
+            Transform = new Transform(scale);
+            origin = new Vector2(texture.Width / 2, texture.Height / 2);
+            IsActive = true;
+        }
+
+        public Sprite(Texture2D texture, Vector2 origin, float scale = 1f)
+        {
+            this.texture = texture;
+            flip = SpriteEffects.None;
+            Transform = new Transform(scale);
+            this.origin = origin;
             IsActive = true;
         }
 
         public void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
-            spriteBatch.Draw(texture, transform.Position, null, Color.White, transform.Rotation, origin, transform.Scale, flip, 0f);
+            spriteBatch.Draw(texture, Transform.Position, null, Color.White, Transform.Rotation, origin, Transform.Scale, flip, 0f);
         }
     }
 }

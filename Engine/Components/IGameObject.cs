@@ -6,6 +6,7 @@ namespace AtomicGames.Engine
     public interface IGameObject
     {
         bool IsActive { get; }
+        Transform Transform { get; }
 
         void Draw(GameTime gameTime, SpriteBatch spriteBatch);
     }

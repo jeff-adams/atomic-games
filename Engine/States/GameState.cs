@@ -8,6 +8,8 @@ namespace AtomicGames.Engine
 {
     public abstract class GameState
     {
+        public abstract IInputMapper InputMapper { get; }
+        
         private List<IGameObject> gameObjects;
         private ContentManager contentManager;
         private Texture2D defaultTexture;
@@ -51,6 +53,5 @@ namespace AtomicGames.Engine
 
         public abstract void LoadContent();
         public abstract void Update(GameTime gameTime);
-        public abstract void HandleInput();
     }
 }
