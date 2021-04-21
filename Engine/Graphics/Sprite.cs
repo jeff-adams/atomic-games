@@ -1,7 +1,7 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace AtomicGames.Engine
+namespace AtomicGames.Engine.Graphics
 {   
     public class Sprite : IGameObject
     {
@@ -13,11 +13,11 @@ namespace AtomicGames.Engine
         
         public bool IsActive { get; private set;}
 
-        public Sprite(Texture2D texture, float scale = 1f)
+        public Sprite(Texture2D texture, float scale = 1f, float rotationOffset = 0f)
         {
             this.texture = texture;
             flip = SpriteEffects.None;
-            Transform = new Transform(scale);
+            Transform = new Transform(scale, rotationOffset);
             origin = new Vector2(texture.Width / 2, texture.Height / 2);
             IsActive = true;
         }

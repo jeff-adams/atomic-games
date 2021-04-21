@@ -1,19 +1,9 @@
-
-#----------------------------- Global Properties ----------------------------#
-
-/outputDir:bin/$(Platform)
-/intermediateDir:obj/$(Platform)
+/outputDir:bin/$(Platform)/Content
+/intermediateDir:obj/$(Platform)/Content
 /platform:DesktopGL
-/config:
 /profile:Reach
 /compress:False
 
-#-------------------------------- References --------------------------------#
-
-
-#---------------------------------- Content ---------------------------------#
-
-#begin default.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -23,5 +13,4 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:default.png
 /build:player/player.png

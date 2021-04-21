@@ -9,7 +9,7 @@ namespace AtomicGames.Sample
         static void Main()
         {
             var gs = new PlayState();
-            using (var game = new BaseGame(gs, "AtomicGames"))
+            using (var game = new AtomicGame(gs, "AtomicGames"))
                 game.Run();
         }
     }

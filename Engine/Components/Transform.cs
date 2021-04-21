@@ -1,33 +1,53 @@
+using System;
 using Microsoft.Xna.Framework;
 
 namespace AtomicGames
 {
     public class Transform
     {
-        public Vector2 Position { get; private set; }
-        public float Rotation { get; private set; }
-        public float Scale { get; private set; }
-
-        public Transform(float scale)
-        {
-            Scale = scale;
-            Position = Vector2.Zero;
-            Rotation = 0f;
+        private Matrix parentObjectMatrix;
+        private Vector2 position;
+        private float rotation;
+        
+        public Vector2 Position 
+        { 
+            get => 
+                parentObjectMatrix == null ? 
+                position : 
+                Vector2.Transform(position, parentObjectMatrix);
+            set
+            {
+                position = value;
+                ObjectMatrix = UpdateObjectMatrix();
+            } 
+        }
+        public float Rotation 
+        { 
+            get => rotation;
+            private set
+            {
+                rotation = value;
+                ObjectMatrix = UpdateObjectMatrix();
+            }
         }
 
-        public void Move(Vector2 direction, float deltaTime, float speed)
+        public Vector2 Direction { get; private set; }
+        public Matrix ObjectMatrix { get; private set; }
+
+
+        public Transform(Matrix parentObjectMatrix)
         {
-            Position += direction * deltaTime * speed;
+            this.parentObjectMatrix = parentObjectMatrix;
         }
 
-        public void Rotate(float radians)
+        public void RotateToDirection(Vector2 direction)
         {
-            Rotation += radians;
+            Rotation = (float)(Math.Atan2(direction.Y, direction.X));
+            Direction = direction;
         }
 
-        public void ChangeScale(float amount)
-        {
-            Scale += amount;
-        }
+        private Matrix UpdateObjectMatrix() =>
+            Matrix.CreateRotationZ(rotation) *
+            Matrix.CreateTranslation(new Vector3(position, 0f));
     }
 }

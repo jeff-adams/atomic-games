@@ -1,22 +1,27 @@
-﻿using Microsoft.Xna.Framework;
+﻿using AtomicGames.Engine.Input;
+using AtomicGames.Engine.Graphics;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
 
 namespace AtomicGames.Engine
 {
-    public class BaseGame : Game
+    public class AtomicGame : Game
     {
-        private GraphicsDeviceManager graphics;
+
+        private readonly GraphicsDeviceManager graphics;
         private SpriteBatch spriteBatch;
-        private Display display;
+        private readonly Display display;
+        public Display Display => display;
         private InputManager inputManager;
+        private readonly Camera camera;
+        public Camera Camera => camera;
 
         private const int gameWidth = 1440;
         private const int gameHeight = 900;
 
         private GameState currentGameState;
 
-        public BaseGame(GameState firstGameState, string gameTitle)
+        public AtomicGame(GameState firstGameState, string gameTitle)
         {
             graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
@@ -29,14 +34,29 @@ namespace AtomicGames.Engine
             Window.AllowUserResizing = true;
             Window.Title = gameTitle;
 
+            camera = new Camera(Window);
             display = new Display(this, gameWidth, gameHeight);
-            inputManager = new InputManager();
+
             currentGameState = firstGameState;
         }
 
         protected override void Initialize()
         {
-            currentGameState.Initialize(Content);
+            currentGameState.Initialize(this);
+
+            var broadcasters = new IBroadcaster[]
+            {
+                new KeyboardBroadcaster(),
+                new MouseBroadcaster(),
+                new GamePadBroadcaster(),
+            };
+            
+            Components.Add(new BroadcastComponent(this, broadcasters));
+
+            inputManager = new InputManager(broadcasters);
+            inputManager.SetActionMap(currentGameState.ActionMap);
+
+
             base.Initialize();
         }
 
@@ -48,7 +68,6 @@ namespace AtomicGames.Engine
 
         protected override void Update(GameTime gameTime)
         {
-            inputManager.GetInput(currentGameState.InputMapper);
             currentGameState.Update(gameTime);
 
             base.Update(gameTime);
@@ -59,7 +78,8 @@ namespace AtomicGames.Engine
             display.SetTarget();
             GraphicsDevice.Clear(Color.Black);
 
-            spriteBatch.Begin(samplerState: SamplerState.PointClamp);
+            //spriteBatch.Begin(samplerState: SamplerState.PointClamp);
+            spriteBatch.Begin(transformMatrix: camera.ViewMatrix);
             currentGameState.Draw(gameTime, spriteBatch);
             spriteBatch.End();
 
@@ -83,9 +103,10 @@ namespace AtomicGames.Engine
             }
 
             currentGameState = nextGameState;
-            currentGameState.Initialize(Content);
+            currentGameState.Initialize(this);
             currentGameState.LoadContent();
             currentGameState.OnGameStateSwitch += OnGameSwitched;
+            inputManager.SetActionMap(currentGameState.ActionMap);
         }
 
         protected override void UnloadContent()

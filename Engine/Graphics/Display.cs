@@ -2,32 +2,38 @@ using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace AtomicGames.Engine
+namespace AtomicGames.Engine.Graphics
 {
     public class Display : IDisposable
     {
-        private Game game;
+        private AtomicGame game;
+        private Camera camera;
         private RenderTarget2D target;
         private bool targetIsSet;
         
         private float prefferedAspectRatio;
+        
         private Rectangle renderRect;
+        public Rectangle RenderRectangle => renderRect;
 
-        public Display(Game game, int width, int height)
+        public int Width { get; }
+        public int Height { get; }
+
+        public Display(AtomicGame game, int width, int height)
         {
             this.game = game ?? throw new ArgumentNullException("game");
+            camera = game.Camera;
             prefferedAspectRatio = (float)width / height;
             target = new RenderTarget2D(game.GraphicsDevice, width, height);
             game.Window.ClientSizeChanged += new EventHandler<EventArgs>(UpdateScreenSize);
             UpdateScreenSize(null, null);
 
+            Width = width;
+            Height = height;
+
             targetIsSet = false;
         }
 
-        public void UpdateScreenSize(object sender, EventArgs e)
-        {
-            renderRect = GetRenderTargetPositionAsRectangle();
-        }
 
         public void SetTarget()
         {
@@ -54,10 +60,13 @@ namespace AtomicGames.Engine
         public void Draw(SpriteBatch spriteBatch)
         {
             game.GraphicsDevice.Clear(Color.DarkMagenta);
-            spriteBatch.Begin();
+            spriteBatch.Begin(transformMatrix: camera.ViewMatrix);
             spriteBatch.Draw(target, renderRect, Color.White);
             spriteBatch.End();
         }
+        
+        private void UpdateScreenSize(object sender, EventArgs e) =>
+            renderRect = GetRenderTargetPositionAsRectangle();
 
         private Rectangle GetRenderTargetPositionAsRectangle()
         {

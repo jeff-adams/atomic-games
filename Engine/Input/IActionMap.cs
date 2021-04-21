@@ -3,14 +3,15 @@ using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 
-namespace AtomicGames.Engine
+namespace AtomicGames.Engine.Input
 {
-    public interface IInputMapper
+    public interface IActionMap
     {
         Dictionary<Keys, Action> KeyboardInputs { get; }
-        Dictionary<Buttons, Action> GamepadButtonInputs { get; }
+        Dictionary<Buttons, Action<InputState>> GamepadButtonInputs { get; }
         Action<Vector2> GamepadThumbstickLeftInput { get; }
         Action<Vector2> GamepadThumbstickRightInput { get; }
-        Action<MouseState> MouseInput { get; }
+        Dictionary<MouseButtons, Action> MouseButtonInputs { get; }
+        Action<Vector2> MousePosition { get; }
     }
 }
