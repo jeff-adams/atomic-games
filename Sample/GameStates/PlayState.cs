@@ -31,7 +31,7 @@ namespace AtomicGames.Sample
             fontSystem = FontSystemFactory.Create(GraphicsDevice, 1024, 1024);
             fontSystem.AddFont(File.ReadAllBytes("Sample/Content/fonts/MajorMonoDisplay-Regular.ttf"));
 
-            ship = new Sprite(LoadTexture("player/player"), 1f, (float)(Math.PI / 2));
+            ship = new Sprite(LoadTexture("player/player")); // Need rotation to be (float)(Math.PI / 2)?
             ship.Transform.Position = new Vector2(400, 400);
             debug = new Debug(fontSystem.GetFont(30));
             

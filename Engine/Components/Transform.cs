@@ -5,7 +5,7 @@ namespace AtomicGames
 {
     public class Transform
     {
-        private Matrix parentObjectMatrix;
+        private Matrix? parentObjectMatrix;
         private Vector2 position;
         private float rotation;
         
@@ -14,13 +14,14 @@ namespace AtomicGames
             get => 
                 parentObjectMatrix == null ? 
                 position : 
-                Vector2.Transform(position, parentObjectMatrix);
+                Vector2.Transform(position, (Matrix)parentObjectMatrix);
             set
             {
                 position = value;
                 ObjectMatrix = UpdateObjectMatrix();
             } 
         }
+
         public float Rotation 
         { 
             get => rotation;
@@ -34,10 +35,10 @@ namespace AtomicGames
         public Vector2 Direction { get; private set; }
         public Matrix ObjectMatrix { get; private set; }
 
-
-        public Transform(Matrix parentObjectMatrix)
+        public Transform(Matrix? parentObjectMatrix = null)
         {
-            this.parentObjectMatrix = parentObjectMatrix;
+            if (parentObjectMatrix != null)
+                this.parentObjectMatrix = parentObjectMatrix;
         }
 
         public void RotateToDirection(Vector2 direction)

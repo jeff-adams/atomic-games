@@ -89,7 +89,7 @@ namespace AtomicGames.Engine
             base.Draw(gameTime);
         }
 
-        private void OnGameSwitched(object sender, GameState state)
+        private void OnGameSwitched(GameState state)
         {
             SwitchGameState(state);
         }

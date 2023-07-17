@@ -45,7 +45,7 @@ namespace AtomicGames.Engine
         {
             foreach (var gameObject in gameObjects)
             {
-                if (gameObject.IsActive)
+                if (gameObject.IsVisible)
                 {
                     gameObject.Draw(gameTime, spriteBatch);
                 }
@@ -57,11 +57,11 @@ namespace AtomicGames.Engine
             UnloadContent();
         }
 
-        public event EventHandler<GameState> OnGameStateSwitch;
+        public event Action<GameState> OnGameStateSwitch;
 
         protected void SwitchGameState(GameState newGameState)
         {
-            OnGameStateSwitch?.Invoke(this, newGameState);
+            OnGameStateSwitch?.Invoke(newGameState);
         }
 
         public abstract void LoadContent();
