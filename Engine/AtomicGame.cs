@@ -41,6 +41,8 @@ namespace AtomicGames.Engine
 
         protected override void Initialize()
         {
+            canvas.UpdateRenderRectangle();
+            
             currentGameState.Initialize(this);
 
             var broadcasters = new IBroadcaster[]
@@ -54,7 +56,6 @@ namespace AtomicGames.Engine
 
             inputManager = new InputManager(broadcasters);
             inputManager.SetActionMap(currentGameState.ActionMap);
-
 
             base.Initialize();
         }
@@ -92,8 +93,6 @@ namespace AtomicGames.Engine
             graphics.PreferredBackBufferWidth = width;
             graphics.PreferredBackBufferHeight = height;
             graphics.ApplyChanges();
-
-            canvas.UpdateRenderRectangle();
         }
 
         private void UpdateCanvasRenderSize(object sender, EventArgs e) =>

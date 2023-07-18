@@ -101,6 +101,11 @@ namespace AtomicGames.Sample
         private void Quit() =>
             System.Environment.Exit(0);
 
+        private void ChangeScreenResolution()
+        {
+            
+        }
+
         private void SubscribeToActions()
         {
             input.GamePadLeftStickPositionAction += Direction;
@@ -109,6 +114,7 @@ namespace AtomicGames.Sample
             input.DirectionAction += MoveDirection;
             //input.MousePositionAction += MouseDirection;
             input.DebugInputPressed += DebugInputPresses;
+            input.ChangeScreenResolution += ChangeScreenResolution;
         }
 
         public override void Dispose()
@@ -118,6 +124,7 @@ namespace AtomicGames.Sample
             input.Quit -= Quit;
             input.DirectionAction -= MoveDirection;
             input.MousePositionAction -= MouseDirection;
+            input.ChangeScreenResolution -= ChangeScreenResolution;
 
             base.Dispose();
         }

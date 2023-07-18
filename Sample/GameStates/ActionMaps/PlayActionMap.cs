@@ -26,6 +26,7 @@ namespace AtomicGames.Sample
                 {Keys.Left, DirectionInputLeft},
                 {Keys.Up, DirectionInputUp},
                 {Keys.Down, DirectionInputDown},
+                {Keys.F1, SetScreenResolution}
 
             };
 
@@ -67,6 +68,10 @@ namespace AtomicGames.Sample
         private void DirectionInputDown(InputState state) => DirectionAction?.Invoke(Vector2.UnitY);
 
         private void ThrustInput(InputState state) => ThrustAction?.Invoke();
+        private void SetScreenResolution(InputState state)
+        {
+            if (state.Pressed && !state.Held) ChangeScreenResolution?.Invoke();
+        }
 
         private void QuitInput(InputState state) => Quit?.Invoke();
 
@@ -88,5 +93,6 @@ namespace AtomicGames.Sample
         public event Action<Vector2> GamePadLeftStickPositionAction;
         public event Action<Vector2> GamePadRightStickPositionAction;
         public event Action Quit;
+        public event Action ChangeScreenResolution;
     }
 }
