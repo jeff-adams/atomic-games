@@ -14,6 +14,7 @@ namespace AtomicGames.Engine
         public Camera Camera { get; private set; }
         public GraphicsDevice GraphicsDevice { get; private set; }
         public Display Display { get; private set; }
+        public Color BackgroundColor { get; protected set; } = Color.Black;
         
         private List<IGameObject> gameObjects;
         private ContentManager contentManager;

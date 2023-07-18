@@ -7,7 +7,7 @@ namespace AtomicGames.Engine.Input
     public interface IGamePadBroadcaster : IBroadcaster
     {
         //event EventHandler<Buttons> ButtonPressed;
-        event Action<Buttons, InputState> ButtonPressed;
+        event Action<Buttons, InputState> OnButtonPressed;
         event Action<Vector2> LeftAnalogStickMovement;
         event Action<Vector2> RightAnalogStickMovement;
     }

@@ -20,18 +20,18 @@ namespace AtomicGames.Engine
                 if(broadcaster is IKeyboardBroadcaster kb) 
                 {
                     this.keyboardBroadcaster = kb;
-                    keyboardBroadcaster.KeyPressed += KeyboardPressedReciever;
+                    keyboardBroadcaster.OnKeyPressed += KeyboardPressedReciever;
                 }
                 if(broadcaster is IMouseBroadcaster mb) 
                 {
                     this.mouseBroadcaster = mb;
                     mouseBroadcaster.MousePosition += MousePositionReciever;
-                    mouseBroadcaster.MouseButtonPressed += MouseButtonReceiver;
+                    mouseBroadcaster.OnMouseButtonPressed += MouseButtonReceiver;
                 }
                 if(broadcaster is IGamePadBroadcaster gpb) 
                 {
                     this.gamePadBroadcaster = gpb;
-                    gamePadBroadcaster.ButtonPressed += GamePadButtonReceiver;
+                    gamePadBroadcaster.OnButtonPressed += GamePadButtonReceiver;
                     gamePadBroadcaster.LeftAnalogStickMovement += GamePadLeftStickReceiver;
                     gamePadBroadcaster.RightAnalogStickMovement += GamePadRightStickReceiver;
                 }
@@ -42,18 +42,18 @@ namespace AtomicGames.Engine
         public void SetActionMap(IActionMap actionMap) =>
             this.actionMap = actionMap;
 
-        private void KeyboardPressedReciever(object sender, Keys key)
+        private void KeyboardPressedReciever(Keys key, InputState state)
         {
             if (actionMap.KeyboardInputs.ContainsKey(key))
             {
-                actionMap.KeyboardInputs[key]();
+                actionMap.KeyboardInputs[key](state);
             }
         }
 
-        private void MousePositionReciever(object sender, Vector2 mousePosition) =>
+        private void MousePositionReciever(Vector2 mousePosition) =>
             actionMap.MousePosition(mousePosition);
 
-        private void MouseButtonReceiver(object sender, MouseButtons mouseButton)
+        private void MouseButtonReceiver(MouseButtons mouseButton)
         {
             if (actionMap.MouseButtonInputs.ContainsKey(mouseButton))
             {
@@ -77,10 +77,10 @@ namespace AtomicGames.Engine
 
         public void Dispose()
         {
-            keyboardBroadcaster.KeyPressed -= KeyboardPressedReciever;
+            keyboardBroadcaster.OnKeyPressed -= KeyboardPressedReciever;
             mouseBroadcaster.MousePosition -= MousePositionReciever;
-            mouseBroadcaster.MouseButtonPressed -= MouseButtonReceiver;
-            gamePadBroadcaster.ButtonPressed -= GamePadButtonReceiver;
+            mouseBroadcaster.OnMouseButtonPressed -= MouseButtonReceiver;
+            gamePadBroadcaster.OnButtonPressed -= GamePadButtonReceiver;
             gamePadBroadcaster.LeftAnalogStickMovement -= GamePadLeftStickReceiver;
             gamePadBroadcaster.RightAnalogStickMovement -= GamePadRightStickReceiver;
         }

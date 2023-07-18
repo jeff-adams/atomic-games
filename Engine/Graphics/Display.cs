@@ -14,7 +14,7 @@ namespace AtomicGames.Engine.Graphics
 
         private bool targetIsSet;
         private Rectangle renderRect;
-        
+
         public Rectangle RenderRectangle => renderRect;
 
         public int Width { get; }
@@ -26,9 +26,9 @@ namespace AtomicGames.Engine.Graphics
             this.graphics = game.GraphicsDevice;
             this.window = game.Window;
             prefferedAspectRatio = (float)width / height;
-            target = new RenderTarget2D(game.GraphicsDevice, width, height);
+            target = new RenderTarget2D(this.graphics, width, height);
             this.window.ClientSizeChanged += UpdateScreenSize;
-            UpdateScreenSize(this, null);
+            UpdateScreenSize(null, null);
 
             Width = width;
             Height = height;
@@ -61,7 +61,7 @@ namespace AtomicGames.Engine.Graphics
 
         public void Draw(SpriteBatch spriteBatch)
         {
-            graphics.Clear(Color.DarkMagenta);
+            graphics.Clear(Color.Black);
             spriteBatch.Begin(transformMatrix: camera.ViewMatrix);
             spriteBatch.Draw(target, renderRect, Color.White);
             spriteBatch.End();

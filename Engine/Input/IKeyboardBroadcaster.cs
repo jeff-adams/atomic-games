@@ -5,6 +5,6 @@ namespace AtomicGames.Engine.Input
 {
     public interface IKeyboardBroadcaster : IBroadcaster
     {
-        event EventHandler<Keys> KeyPressed;
+        event Action<Keys, InputState> OnKeyPressed;
     }
 }

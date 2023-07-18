@@ -7,7 +7,7 @@ namespace AtomicGames.Engine.Input
 {
     public interface IActionMap
     {
-        Dictionary<Keys, Action> KeyboardInputs { get; }
+        Dictionary<Keys, Action<InputState>> KeyboardInputs { get; }
         Dictionary<Buttons, Action<InputState>> GamepadButtonInputs { get; }
         Action<Vector2> GamepadThumbstickLeftInput { get; }
         Action<Vector2> GamepadThumbstickRightInput { get; }

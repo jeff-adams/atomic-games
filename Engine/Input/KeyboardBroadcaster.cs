@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 
@@ -10,7 +11,9 @@ namespace AtomicGames.Engine.Input
         public void Enable() => IsEnabled = true;
         public void Disable() => IsEnabled = false;
 
-        public event EventHandler<Keys> KeyPressed;
+        public event Action<Keys, InputState> OnKeyPressed;
+
+        private KeyboardState previousState;
 
         public KeyboardBroadcaster()
         {
@@ -19,12 +22,24 @@ namespace AtomicGames.Engine.Input
 
         public void Update(GameTime gameTime)
         {
-            var keys = Keyboard.GetState().GetPressedKeys();
-
-            foreach (var key in keys)
+            if (previousState == null)
             {
-                KeyPressed?.Invoke(this, key);
+                foreach(Keys key in Keyboard.GetState().GetPressedKeys())
+                {
+                    OnKeyPressed?.Invoke(key, new InputState(key.ToString(), pressed: true, held: false));
+                }
             }
+             
+            KeyboardState currentState = Keyboard.GetState();
+            Keys[] previousKeys = previousState.GetPressedKeys();
+
+            foreach(Keys key in currentState.GetPressedKeys())
+            {
+                bool isKeyHeld = previousKeys.Contains(key);
+                OnKeyPressed?.Invoke(key, new InputState(key.ToString(), pressed: true, held: isKeyHeld));
+            }
+
+            previousState = currentState;
         }
     }
 }

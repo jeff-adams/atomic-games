@@ -1,5 +1,3 @@
-using Microsoft.Xna.Framework.Input;
-
 namespace AtomicGames.Engine.Input
 {
     public struct InputState

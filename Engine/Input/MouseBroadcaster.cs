@@ -10,8 +10,8 @@ namespace AtomicGames.Engine.Input
         public void Enable() => IsEnabled = true;
         public void Disable() => IsEnabled = false;
 
-        public event EventHandler<Vector2> MousePosition;
-        public event EventHandler<MouseButtons> MouseButtonPressed;
+        public event Action<Vector2> MousePosition;
+        public event Action<MouseButtons> OnMouseButtonPressed;
 
         public MouseBroadcaster()
         {
@@ -22,21 +22,21 @@ namespace AtomicGames.Engine.Input
         {
             var mouseState = Mouse.GetState();
             
-            MousePosition?.Invoke(this, new Vector2(mouseState.X, mouseState.Y));
+            MousePosition?.Invoke(new Vector2(mouseState.X, mouseState.Y));
             
             if (mouseState.RightButton == ButtonState.Pressed)
             {
-                MouseButtonPressed?.Invoke(this, MouseButtons.RightButton);
+                OnMouseButtonPressed?.Invoke(MouseButtons.RightButton);
             }
 
             if (mouseState.LeftButton == ButtonState.Pressed)
             {
-                MouseButtonPressed?.Invoke(this, MouseButtons.LeftButton);
+                OnMouseButtonPressed?.Invoke(MouseButtons.LeftButton);
             }
 
             if (mouseState.MiddleButton == ButtonState.Pressed)
             {
-                MouseButtonPressed?.Invoke(this, MouseButtons.RightButton);
+                OnMouseButtonPressed?.Invoke(MouseButtons.RightButton);
             }
         }
     }

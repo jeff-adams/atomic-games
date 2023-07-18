@@ -42,7 +42,6 @@ namespace AtomicGames.Engine
 
         protected override void Initialize()
         {
-            Debug.WriteLine("Engine Intialized");
             currentGameState.Initialize(this);
 
             var broadcasters = new IBroadcaster[]
@@ -77,7 +76,7 @@ namespace AtomicGames.Engine
         protected override void Draw(GameTime gameTime)
         {
             display.SetTarget();
-            GraphicsDevice.Clear(Color.Black);
+            GraphicsDevice.Clear(currentGameState.BackgroundColor);
 
             // spriteBatch.Begin(samplerState: SamplerState.PointClamp);
             spriteBatch.Begin(transformMatrix: camera.ViewMatrix);

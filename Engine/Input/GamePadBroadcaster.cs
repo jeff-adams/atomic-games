@@ -11,7 +11,7 @@ namespace AtomicGames.Engine.Input
         public void Enable() => IsEnabled = true;
         public void Disable() => IsEnabled = false;
 
-        public event Action<Buttons, InputState> ButtonPressed;
+        public event Action<Buttons, InputState> OnButtonPressed;
         public event Action<Vector2> LeftAnalogStickMovement;
         public event Action<Vector2> RightAnalogStickMovement;
 
@@ -40,7 +40,7 @@ namespace AtomicGames.Engine.Input
                 
                 if (inputState.Pressed || inputState.Held)
                 {
-                    ButtonPressed?.Invoke(button.Key, inputState);
+                    OnButtonPressed?.Invoke(button.Key, inputState);
                 }
             }
 

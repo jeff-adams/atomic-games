@@ -17,10 +17,10 @@ namespace AtomicGames.Engine.Graphics
         public Camera(GameWindow gameWindow)
         {
             window = gameWindow;
-            WindowSizeHasChanged(null, null);
             Zoom = 1.0f;
             ViewMatrix = GetViewMatrix(Vector2.One);
             gameWindow.ClientSizeChanged += WindowSizeHasChanged;
+            WindowSizeHasChanged(null, null);
         }
 
         private void WindowSizeHasChanged(object sender, EventArgs e)
