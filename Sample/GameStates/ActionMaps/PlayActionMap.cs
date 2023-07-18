@@ -83,7 +83,7 @@ namespace AtomicGames.Sample
         public event Action ToggleDebugAction;
         public event Action ThrustAction;
         public event Action<Vector2> DirectionAction;
-        public event Action<float> ScaleAction;
+        //public event Action<float> ScaleAction;
         public event Action<Vector2> MousePositionAction;
         public event Action<Vector2> GamePadLeftStickPositionAction;
         public event Action<Vector2> GamePadRightStickPositionAction;

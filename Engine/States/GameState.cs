@@ -17,14 +17,12 @@ namespace AtomicGames.Engine
         
         private List<IGameObject> gameObjects;
         private ContentManager contentManager;
-        private Texture2D defaultTexture;
 
         public void Initialize(AtomicGame game)
         {
             gameObjects = new List<IGameObject>();
 
             this.contentManager = game.Content;
-            defaultTexture = contentManager.Load<Texture2D>("default");
             Camera = game.Camera;
             GraphicsDevice = game.GraphicsDevice;
             Display = game.Display;
@@ -34,7 +32,10 @@ namespace AtomicGames.Engine
             gameObjects.Add(gameObject);
 
         protected Texture2D LoadTexture(string textureName) =>
-            contentManager.Load<Texture2D>(textureName) ?? defaultTexture;
+            contentManager.Load<Texture2D>(textureName);
+
+        protected SpriteFont LoadFont(string fontName) =>
+            contentManager.Load<SpriteFont>(fontName);
 
         public void UnloadContent()
         {

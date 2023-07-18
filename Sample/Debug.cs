@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using AtomicGames.Engine;
-using FontStashSharp;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
@@ -8,14 +7,14 @@ namespace AtomicGames.Sample
 {
     public class Debug : IGameObject
     {
-        private readonly SpriteFontBase font;
+        private readonly SpriteFont font;
         private Dictionary<string, string> messages;
 
         public bool IsActive { get; private set; }
         public bool IsVisible { get; private set; }
         public Transform Transform { get; private set; }
 
-        public Debug(SpriteFontBase font)
+        public Debug(SpriteFont font)
         {
             this.font = font;
             IsActive = true;

@@ -6,14 +6,15 @@ namespace AtomicGames.Engine.Graphics
 {
     public class Display : IDisposable
     {
-        private AtomicGame game;
-        private Camera camera;
-        private RenderTarget2D target;
+        private readonly GraphicsDevice graphics;
+        private readonly GameWindow window;
+        private readonly Camera camera;
+        private readonly RenderTarget2D target;
+        private readonly float prefferedAspectRatio;
+
         private bool targetIsSet;
-        
-        private float prefferedAspectRatio;
-        
         private Rectangle renderRect;
+        
         public Rectangle RenderRectangle => renderRect;
 
         public int Width { get; }
@@ -21,12 +22,13 @@ namespace AtomicGames.Engine.Graphics
 
         public Display(AtomicGame game, int width, int height)
         {
-            this.game = game ?? throw new ArgumentNullException("game");
-            camera = game.Camera;
+            this.camera = game.Camera;
+            this.graphics = game.GraphicsDevice;
+            this.window = game.Window;
             prefferedAspectRatio = (float)width / height;
             target = new RenderTarget2D(game.GraphicsDevice, width, height);
-            game.Window.ClientSizeChanged += new EventHandler<EventArgs>(UpdateScreenSize);
-            UpdateScreenSize(null, null);
+            this.window.ClientSizeChanged += UpdateScreenSize;
+            UpdateScreenSize(this, null);
 
             Width = width;
             Height = height;
@@ -42,7 +44,7 @@ namespace AtomicGames.Engine.Graphics
                 throw new Exception("RenderTarget is already set.");
             }
             
-            game.GraphicsDevice.SetRenderTarget(target);
+            graphics.SetRenderTarget(target);
             targetIsSet = true;
         }
 
@@ -53,13 +55,13 @@ namespace AtomicGames.Engine.Graphics
                 throw new Exception("RenderTarget is not set.");
             }
 
-            game.GraphicsDevice.SetRenderTarget(null);
+            graphics.SetRenderTarget(null);
             targetIsSet = false;
         }
 
         public void Draw(SpriteBatch spriteBatch)
         {
-            game.GraphicsDevice.Clear(Color.DarkMagenta);
+            graphics.Clear(Color.DarkMagenta);
             spriteBatch.Begin(transformMatrix: camera.ViewMatrix);
             spriteBatch.Draw(target, renderRect, Color.White);
             spriteBatch.End();
@@ -70,7 +72,7 @@ namespace AtomicGames.Engine.Graphics
 
         private Rectangle GetRenderTargetPositionAsRectangle()
         {
-            Rectangle clientBounds = game.Window.ClientBounds;
+            Rectangle clientBounds = window.ClientBounds;
             float currentAspectRatio = (float) clientBounds.Width / clientBounds.Height;
             int x = 0;
             int y = 0;
@@ -95,7 +97,7 @@ namespace AtomicGames.Engine.Graphics
 
         public void Dispose()
         {
-            game.Window.ClientSizeChanged -= UpdateScreenSize;
+            window.ClientSizeChanged -= UpdateScreenSize;
             target?.Dispose();
         }
     }

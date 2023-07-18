@@ -2,10 +2,8 @@ using AtomicGames.Engine;
 using AtomicGames.Engine.Input;
 using AtomicGames.Engine.Graphics;
 using Microsoft.Xna.Framework;
-using System;
-using FontStashSharp;
-using System.IO;
 using Microsoft.Xna.Framework.Input;
+using Microsoft.Xna.Framework.Graphics;
 
 namespace AtomicGames.Sample
 {
@@ -13,7 +11,7 @@ namespace AtomicGames.Sample
     {
         private Sprite ship;
         private Debug debug;
-        private FontSystem fontSystem;
+        SpriteFont font;
 
         private float deltaTime;
         private float speed = 1.25f;
@@ -28,12 +26,11 @@ namespace AtomicGames.Sample
 
         public override void LoadContent()
         {
-            fontSystem = FontSystemFactory.Create(GraphicsDevice, 1024, 1024);
-            fontSystem.AddFont(File.ReadAllBytes("Sample/Content/fonts/MajorMonoDisplay-Regular.ttf"));
+            font = LoadFont("fonts/MajorMonoDisplay");
 
             ship = new Sprite(LoadTexture("player/player")); // Need rotation to be (float)(Math.PI / 2)?
             ship.Transform.Position = new Vector2(400, 400);
-            debug = new Debug(fontSystem.GetFont(30));
+            debug = new Debug(font);
             
             AddGameObject(ship);
             AddGameObject(debug);
@@ -66,7 +63,7 @@ namespace AtomicGames.Sample
             //debug.AddDebugMessage("mouse render pos", $"x {mouseRenderPosition.X}, y {mouseRenderPosition.Y}");
             //debug.AddDebugMessage("mouse world pos", $"x {mouseWorldPosition.X}, y {mouseWorldPosition.Y}");
             //debug.AddDebugMessage("ship position", $"x {ship.Transform.Position.X}, y {ship.Transform.Position.Y}");
-            debug.AddDebugMessage("mouse direction", $"x {mouseDirection.X}, y {mouseDirection.Y}");
+            //debug.AddDebugMessage("mouse direction", $"x {mouseDirection.X}, y {mouseDirection.Y}");
         }
 
         private void Direction(Vector2 dir)
