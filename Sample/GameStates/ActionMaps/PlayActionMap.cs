@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using AtomicGames.Engine;
 using AtomicGames.Engine.Input;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
@@ -9,16 +8,17 @@ namespace AtomicGames.Sample
 {
     public class PlayActionMap : IActionMap
     {
-        public Dictionary<Keys, Action> KeyboardInputs { get; private set;}
+        public Dictionary<Keys, Action<InputState>> KeyboardInputs { get; private set;}
         public Dictionary<Buttons, Action<InputState>> GamepadButtonInputs { get; private set;}
         public Action<Vector2> GamepadThumbstickLeftInput => GetGamePadLeftThumbstickPosition;
         public Action<Vector2> GamepadThumbstickRightInput => GetGamePadRightThumbstickPosition;
         public Dictionary<MouseButtons, Action> MouseButtonInputs { get; private set; }
         public Action<Vector2> MousePosition => GetMousePosition;
 
+
         public PlayActionMap()
         {
-            KeyboardInputs = new Dictionary<Keys, Action> {
+            KeyboardInputs = new Dictionary<Keys, Action<InputState>> {
                 {Keys.Escape, QuitInput},
                 //{Keys.OemTilde, ToggleDebugInput},
                 //{Keys.Space, ThrustInput},
@@ -61,19 +61,19 @@ namespace AtomicGames.Sample
         private void GetGamePadRightThumbstickPosition(Vector2 rightStickPosition) =>
             GamePadRightStickPositionAction?.Invoke(rightStickPosition);
 
-        private void DirectionInputRight() => DirectionAction?.Invoke(Vector2.UnitX);
-        private void DirectionInputLeft() => DirectionAction?.Invoke(-Vector2.UnitX);
-        private void DirectionInputUp() => DirectionAction?.Invoke(-Vector2.UnitY);
-        private void DirectionInputDown() => DirectionAction?.Invoke(Vector2.UnitY);
+        private void DirectionInputRight(InputState state) => DirectionAction?.Invoke(Vector2.UnitX);
+        private void DirectionInputLeft(InputState state) => DirectionAction?.Invoke(-Vector2.UnitX);
+        private void DirectionInputUp(InputState state) => DirectionAction?.Invoke(-Vector2.UnitY);
+        private void DirectionInputDown(InputState state) => DirectionAction?.Invoke(Vector2.UnitY);
 
         private void ThrustInput(InputState state) => ThrustAction?.Invoke();
 
-        private void QuitInput() => Quit?.Invoke();
+        private void QuitInput(InputState state) => Quit?.Invoke();
 
         //Debug
         private void ToggleDebugInput(InputState state)
         {
-            if (state.Pressed) ToggleDebugAction?.Invoke();
+            if (state.Pressed && !state.Held) ToggleDebugAction?.Invoke();
         }
         private void DebugInputPress(InputState state) =>
             DebugInputPressed?.Invoke(state);

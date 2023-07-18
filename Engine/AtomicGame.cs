@@ -1,41 +1,40 @@
-﻿using AtomicGames.Engine.Input;
+﻿using System;
+using AtomicGames.Engine.Input;
 using AtomicGames.Engine.Graphics;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using System.Diagnostics;
 
 namespace AtomicGames.Engine
 {
     public class AtomicGame : Game
     {
         private readonly GraphicsDeviceManager graphics;
-        private readonly Display display;
+        private readonly Canvas canvas;
         private readonly Camera camera;
-        private readonly Point gameResolution;
 
         private SpriteBatch spriteBatch;
         private InputManager inputManager;
         private GameState currentGameState;
 
-        public Display Display => display;
+        public Canvas Canvas => canvas;
         public Camera Camera => camera;
 
-        public AtomicGame(GameState firstGameState, string gameTitle, Point gameResolution)
+        public AtomicGame(GameState firstGameState, string gameTitle, int width, int height)
         {
             graphics = new GraphicsDeviceManager(this);
+
+            SetResolution(width, height);
+            
+            camera = new Camera(Window);
+            canvas = new Canvas(GraphicsDevice, camera, width, height);
+
             Content.RootDirectory = "Content";
             IsMouseVisible = true;
 
-            this.gameResolution = gameResolution;
-            graphics.PreferredBackBufferWidth = gameResolution.X;
-            graphics.PreferredBackBufferHeight = gameResolution.Y;
-            graphics.ApplyChanges();
-
             Window.AllowUserResizing = true;
+            Window.IsBorderless = false;
             Window.Title = gameTitle;
-
-            camera = new Camera(Window);
-            display = new Display(this, gameResolution.X, gameResolution.Y);
+            Window.ClientSizeChanged += UpdateCanvasRenderSize;
 
             currentGameState = firstGameState;
         }
@@ -75,7 +74,7 @@ namespace AtomicGames.Engine
 
         protected override void Draw(GameTime gameTime)
         {
-            display.SetTarget();
+            canvas.Activate();
             GraphicsDevice.Clear(currentGameState.BackgroundColor);
 
             // spriteBatch.Begin(samplerState: SamplerState.PointClamp);
@@ -83,29 +82,35 @@ namespace AtomicGames.Engine
             currentGameState.Draw(gameTime, spriteBatch);
             spriteBatch.End();
 
-            display.UnSetTarget();
-            display.Draw(spriteBatch);
+            canvas.Draw(spriteBatch);
 
             base.Draw(gameTime);
         }
 
-        private void OnGameSwitched(GameState state)
+        private void SetResolution(int width, int height)
         {
-            SwitchGameState(state);
+            graphics.PreferredBackBufferWidth = width;
+            graphics.PreferredBackBufferHeight = height;
+            graphics.ApplyChanges();
+
+            canvas.UpdateRenderRectangle();
         }
+
+        private void UpdateCanvasRenderSize(object sender, EventArgs e) =>
+            canvas.UpdateRenderRectangle();
 
         private void SwitchGameState(GameState nextGameState)
         {
             if (currentGameState != null)
             {
-                currentGameState.OnGameStateSwitch -= OnGameSwitched;
+                currentGameState.OnGameStateSwitch -= SwitchGameState;
                 currentGameState.UnloadContent();
             }
 
             currentGameState = nextGameState;
             currentGameState.Initialize(this);
             currentGameState.LoadContent();
-            currentGameState.OnGameStateSwitch += OnGameSwitched;
+            currentGameState.OnGameStateSwitch += SwitchGameState;
             inputManager.SetActionMap(currentGameState.ActionMap);
         }
 

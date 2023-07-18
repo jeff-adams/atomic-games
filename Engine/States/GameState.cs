@@ -13,7 +13,7 @@ namespace AtomicGames.Engine
         public abstract IActionMap ActionMap { get; }
         public Camera Camera { get; private set; }
         public GraphicsDevice GraphicsDevice { get; private set; }
-        public Display Display { get; private set; }
+        public Canvas Canvas { get; private set; }
         public Color BackgroundColor { get; protected set; } = Color.Black;
         
         private List<IGameObject> gameObjects;
@@ -26,7 +26,7 @@ namespace AtomicGames.Engine
             this.contentManager = game.Content;
             Camera = game.Camera;
             GraphicsDevice = game.GraphicsDevice;
-            Display = game.Display;
+            Canvas = game.Canvas;
         }
 
         public void AddGameObject(IGameObject gameObject) => 

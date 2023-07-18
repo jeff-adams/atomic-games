@@ -37,6 +37,7 @@ namespace AtomicGames.Sample
             SubscribeToActions();
         }
 
+
         public override void Update(GameTime gameTime)
         {
             deltaTime = gameTime.ElapsedGameTime.Milliseconds;
@@ -49,10 +50,10 @@ namespace AtomicGames.Sample
         private void MouseDirection(Vector2 mouseScreenPosition)
         {
             //TODO: Refactor and figure out how to use matrix translations to do this
-            var renderLocation = new Vector2(Display.RenderRectangle.Location.X, Display.RenderRectangle.Location.Y);
+            var renderLocation = new Vector2(Canvas.RenderRectangle.Location.X, Canvas.RenderRectangle.Location.Y);
             var mouseRenderPosition = mouseScreenPosition - renderLocation;
-            mouseRenderPosition.X = mouseRenderPosition.X / Display.RenderRectangle.Width * Display.Width;
-            mouseRenderPosition.Y = mouseRenderPosition.Y / Display.RenderRectangle.Height * Display.Height;
+            mouseRenderPosition.X = mouseRenderPosition.X / Canvas.RenderRectangle.Width * Canvas.Width;
+            mouseRenderPosition.Y = mouseRenderPosition.Y / Canvas.RenderRectangle.Height * Canvas.Height;
 
             var mouseWorldPosition = Vector2.Transform(mouseRenderPosition, Matrix.Invert(Camera.ViewMatrix));
             var mouseDirection = Vector2.Normalize(ship.Transform.Position - mouseWorldPosition);
