@@ -5,18 +5,20 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace AtomicGames.Sample
 {
-    public class Debug : IGameObject
+    public class Debugger : IGameObject
     {
         private readonly SpriteFont font;
+        private readonly int verticalSpacing;
         private Dictionary<string, string> messages;
 
         public bool IsActive { get; private set; }
         public bool IsVisible { get; private set; }
         public Transform Transform { get; private set; }
 
-        public Debug(SpriteFont font)
+        public Debugger(SpriteFont font)
         {
             this.font = font;
+            verticalSpacing = (int)System.Math.Ceiling((font.MeasureString("A")).Y * 1.2);
             IsActive = true;
             IsVisible = true;
             Transform = new Transform();
@@ -40,7 +42,7 @@ namespace AtomicGames.Sample
             int i = 0;
             foreach (var message in messages)
             {
-                spriteBatch.DrawString(font, $"{message.Key}: {message.Value}", Transform.Position + new Vector2(0, i * 30), Color.LimeGreen);
+                spriteBatch.DrawString(font, $"{message.Key}: {message.Value}", Transform.Position + new Vector2(0, i * verticalSpacing), Color.LimeGreen);
                 i++;
             }
         }

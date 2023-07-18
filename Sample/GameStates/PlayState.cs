@@ -10,7 +10,7 @@ namespace AtomicGames.Sample
     public class PlayState : GameState
     {
         private Sprite ship;
-        private Debug debug;
+        private Debugger debug;
         SpriteFont font;
 
         private float deltaTime;
@@ -30,7 +30,7 @@ namespace AtomicGames.Sample
 
             ship = new Sprite(LoadTexture("player/player")); // Need rotation to be (float)(Math.PI / 2)?
             ship.Transform.Position = new Vector2(400, 400);
-            debug = new Debug(font);
+            debug = new Debugger(font);
             
             AddGameObject(ship);
             AddGameObject(debug);
