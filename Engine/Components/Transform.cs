@@ -12,9 +12,9 @@ namespace AtomicGames
         public Vector2 Position 
         { 
             get => 
-                parentObjectMatrix == null ? 
-                position : 
-                Vector2.Transform(position, (Matrix)parentObjectMatrix);
+                parentObjectMatrix is null 
+                ? position 
+                : Vector2.Transform(position, (Matrix)parentObjectMatrix);
             set
             {
                 position = value;
@@ -41,10 +41,17 @@ namespace AtomicGames
                 this.parentObjectMatrix = parentObjectMatrix;
         }
 
-        public void RotateToDirection(Vector2 direction)
+        public Transform AddParent(Matrix parentMatrix)
+        {
+            this.parentObjectMatrix = parentMatrix;
+            return this;
+        }
+
+        public Transform RotateToDirection(Vector2 direction)
         {
             Rotation = (float)(Math.Atan2(direction.Y, direction.X));
             Direction = direction;
+            return this;
         }
 
         private Matrix UpdateObjectMatrix() =>
