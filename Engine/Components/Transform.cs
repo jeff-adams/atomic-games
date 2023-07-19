@@ -1,7 +1,7 @@
 using System;
 using Microsoft.Xna.Framework;
 
-namespace AtomicGames
+namespace AtomicGames.Engine
 {
     public class Transform
     {
@@ -43,7 +43,7 @@ namespace AtomicGames
             position = new Vector2(0, 0);
         }
 
-        public Transform AddParent(Matrix parentMatrix)
+        public Transform AddParentMatrix(Matrix parentMatrix)
         {
             this.parentObjectMatrix = parentMatrix;
             return this;

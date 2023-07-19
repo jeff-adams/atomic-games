@@ -78,8 +78,7 @@ namespace AtomicGames.Engine
             canvas.Activate();
             GraphicsDevice.Clear(currentGameState.BackgroundColor);
 
-            // spriteBatch.Begin(samplerState: SamplerState.PointClamp);
-            spriteBatch.Begin(transformMatrix: camera.ViewMatrix);
+            spriteBatch.Begin(transformMatrix: camera.ViewMatrix, samplerState: SamplerState.PointClamp);
             currentGameState.Draw(gameTime, spriteBatch);
             spriteBatch.End();
 
