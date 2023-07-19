@@ -9,9 +9,11 @@ namespace AtomicGames.Engine
 
         public GameObject Parent { get; private set; }
         public HashSet<GameObject> Children { get; private set; }
+        public Rectangle Bounds { get; protected set; }
+        public Transform Transform { get; }
+
         public bool IsActive { get; set; } = true;
         public bool IsVisible { get; set; } = true;
-        public Transform Transform { get; }
 
         public GameObject() : this(new Transform()) 
         { }
@@ -20,14 +22,10 @@ namespace AtomicGames.Engine
         {
             Transform = transform;
             Children = new HashSet<GameObject>();
+            Bounds = new Rectangle((int)Transform.Position.X, (int)Transform.Position.Y, 0, 0);
         }
 
-        public GameObject(GameObject parent)
-        {
-            Parent = parent;
-            Transform = new Transform(parent.Transform.ObjectMatrix);
-            Children = new HashSet<GameObject>();
-        }
+        protected virtual void SetBounds() { }
 
         public void AddParentObject(GameObject parentGameObject)
         {
@@ -56,5 +54,6 @@ namespace AtomicGames.Engine
             IsActive = false;
             IsVisible = false;
         }
+
     }
 }

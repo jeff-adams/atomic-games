@@ -25,5 +25,11 @@ namespace AtomicGames.Engine.Graphics
 
         public override void Draw(GameTime gameTime, SpriteBatch spriteBatch) =>
             spriteBatch.Draw(texture, Transform.Position, null, Color.White, Transform.Rotation, origin, scale, flip, 0f);
+        
+        protected override void SetBounds()
+        {
+            Vector2 position = Parent is null ? Transform.Position : Parent.Transform.Position;
+            Bounds = new Rectangle((int)position.X, (int)position.Y, texture.Width, texture.Height);
+        }
     }
 }
