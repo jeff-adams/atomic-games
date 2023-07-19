@@ -1,6 +1,5 @@
 using System;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 
 namespace AtomicGames.Engine.Graphics
 {
@@ -29,13 +28,17 @@ namespace AtomicGames.Engine.Graphics
             ViewMatrix = GetViewMatrix(Vector2.One);
         }
 
-
         private Matrix GetViewMatrix(Vector2 parallax) => 
             Matrix.CreateTranslation(new Vector3(-Position * parallax, 0.0f)) *
             Matrix.CreateTranslation(new Vector3(-Origin, 0.0f)) *
             Matrix.CreateRotationZ(Rotation) *
             Matrix.CreateScale(Zoom, Zoom, 1) *
             Matrix.CreateTranslation(new Vector3(Origin, 0.0f));
+
+        public void Reset()
+        {
+            Position = Vector2.Zero;
+        }
 
         public void Dispose()
         {
