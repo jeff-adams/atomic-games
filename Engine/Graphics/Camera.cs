@@ -12,6 +12,9 @@ namespace AtomicGames.Engine.Graphics
         public Matrix ViewMatrix { get; private set; }
 
         private readonly GameWindow window;
+
+        private GameObject target;
+        private float cameraSmoothing = 0.15f;
         
         public Camera(GameWindow gameWindow)
         {
@@ -20,6 +23,41 @@ namespace AtomicGames.Engine.Graphics
             ViewMatrix = GetViewMatrix(Vector2.One);
             gameWindow.ClientSizeChanged += WindowSizeHasChanged;
             WindowSizeHasChanged(null, null);
+        }
+
+        public void Update(GameTime gameTime)
+        {
+            if (target != null)
+            {
+                Position = Vector2.Lerp(Position, target.Transform.Position - Origin, cameraSmoothing);
+                ViewMatrix = GetViewMatrix(Vector2.One);
+            }
+        }
+
+        public void Follow(GameObject target) =>
+            this.target = target;
+
+        public void Unfollow() =>
+            this.target = null;
+
+        public void Reset()
+        {
+            Position = Vector2.Zero;
+            Zoom = 1.0f;
+            ViewMatrix = GetViewMatrix(Vector2.One);
+        }
+
+        public void Move(Vector2 direction)
+        {
+            target = null;
+            Position += direction;
+            ViewMatrix = GetViewMatrix(Vector2.One);
+        }
+
+        public void AdjustZoom(float zoom)
+        {
+            Zoom += zoom;
+            ViewMatrix = GetViewMatrix(Vector2.One);
         }
 
         private void WindowSizeHasChanged(object sender, EventArgs e)
@@ -34,11 +72,6 @@ namespace AtomicGames.Engine.Graphics
             Matrix.CreateRotationZ(Rotation) *
             Matrix.CreateScale(Zoom, Zoom, 1) *
             Matrix.CreateTranslation(new Vector3(Origin, 0.0f));
-
-        public void Reset()
-        {
-            Position = Vector2.Zero;
-        }
 
         public void Dispose()
         {

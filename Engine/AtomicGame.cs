@@ -69,6 +69,7 @@ namespace AtomicGames.Engine
         protected override void Update(GameTime gameTime)
         {
             currentGameState.Update(gameTime);
+            camera.Update(gameTime);
 
             base.Update(gameTime);
         }
