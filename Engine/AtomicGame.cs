@@ -22,9 +22,10 @@ namespace AtomicGames.Engine
         public AtomicGame(GameState firstGameState, string gameTitle, int width, int height)
         {
             graphics = new GraphicsDeviceManager(this);
+            // graphics.IsFullScreen = true;
 
             SetResolution(width, height);
-            
+
             camera = new Camera(Window);
             canvas = new Canvas(GraphicsDevice, camera, width, height);
 
@@ -32,7 +33,7 @@ namespace AtomicGames.Engine
             IsMouseVisible = true;
 
             Window.AllowUserResizing = true;
-            Window.IsBorderless = true;
+            Window.IsBorderless = false;
             Window.Title = gameTitle;
             Window.ClientSizeChanged += UpdateCanvasRenderSize;
 
