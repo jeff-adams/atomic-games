@@ -39,6 +39,8 @@ namespace AtomicGames
         {
             if (parentObjectMatrix != null)
                 this.parentObjectMatrix = parentObjectMatrix;
+            
+            position = new Vector2(0, 0);
         }
 
         public void RotateToDirection(Vector2 direction)

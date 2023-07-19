@@ -1,17 +1,25 @@
-using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
 namespace AtomicGames.Engine
 {
-    public abstract class GameObject
+    public abstract class GameObject : IGameObject
     {
 
-        public virtual GameObject Parent { get; }
-        public virtual bool IsActive { get; private set; }
-        public virtual Transform Transform { get; }
+        public GameObject Parent { get; }
+        public bool IsActive { get; set; }
+        public bool IsVisible { get; set; }
+        public Transform Transform { get; }
         
-        private GameObject[] children;
+        protected GameObject[] children;
+
+        public GameObject() : this(new Transform()) 
+        { }
+
+        public GameObject(Transform transform)
+        {
+            Transform = transform;
+        }
 
         public GameObject(GameObject parent)
         {
@@ -19,12 +27,26 @@ namespace AtomicGames.Engine
             Transform = new Transform(parent.Transform.ObjectMatrix);
         }
 
-        public void AttachChildGameObjects(params GameObject[] childrenGameObjects)
+        public virtual void Update(GameTime gameTime) { }
+
+        public virtual void Draw(GameTime gameTime, SpriteBatch spriteBatch) { }
+
+        protected void AddChildGameObjects(params GameObject[] childrenGameObjects)
         {
+            
             children = childrenGameObjects;
         }
 
-        public void Enable() => IsActive = true;
-        public void Disable() => IsActive = false;
+        public virtual void Enable()
+        {
+            IsActive = true;
+            IsVisible = true;
+        }
+
+        public virtual void Disable()
+        {
+            IsActive = false;
+            IsVisible = false;
+        }
     }
 }

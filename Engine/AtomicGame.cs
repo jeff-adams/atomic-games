@@ -32,7 +32,7 @@ namespace AtomicGames.Engine
             IsMouseVisible = true;
 
             Window.AllowUserResizing = true;
-            Window.IsBorderless = false;
+            Window.IsBorderless = true;
             Window.Title = gameTitle;
             Window.ClientSizeChanged += UpdateCanvasRenderSize;
 
@@ -42,7 +42,7 @@ namespace AtomicGames.Engine
         protected override void Initialize()
         {
             canvas.UpdateRenderRectangle();
-            
+
             currentGameState.Initialize(this);
 
             var broadcasters = new IBroadcaster[]

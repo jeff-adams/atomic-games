@@ -16,12 +16,12 @@ namespace AtomicGames.Engine
         public Canvas Canvas { get; private set; }
         public Color BackgroundColor { get; protected set; } = Color.Black;
         
-        private List<IGameObject> gameObjects;
+        private List<GameObject> gameObjects;
         private ContentManager contentManager;
 
         public void Initialize(AtomicGame game)
         {
-            gameObjects = new List<IGameObject>();
+            gameObjects = new List<GameObject>();
 
             this.contentManager = game.Content;
             Camera = game.Camera;
@@ -29,7 +29,7 @@ namespace AtomicGames.Engine
             Canvas = game.Canvas;
         }
 
-        public void AddGameObject(IGameObject gameObject) => 
+        public void AddGameObject(GameObject gameObject) => 
             gameObjects.Add(gameObject);
 
         protected Texture2D LoadTexture(string textureName) =>
