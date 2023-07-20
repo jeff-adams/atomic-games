@@ -75,20 +75,11 @@ namespace AtomicGames.Engine.Graphics
             Matrix.CreateScale(Zoom, Zoom, 1) *
             Matrix.CreateTranslation(new Vector3(Origin, 0.0f));
 
-        // Matrix.CreateTranslation(new Vector3(pos.X, pos.Y, 0f)) *
-        // Matrix.CreateRotationZ(rot) *
-        // Matrix.CreateScale(scale.x, scale.y, 1) *
-        // Matrix.CreateTranslation(offset.x, offset.y, 0f);
-
-         // Not working, needs to be scaled somehow
         public Vector2 ConvertToWorldPosition(Vector2 screenPosition) =>
             Vector2.Transform(screenPosition, Matrix.Invert(ViewMatrix));
 
         public Vector2 ConvertToScreenPosition(Vector2 worldPosition) =>
             Vector2.Transform(worldPosition, ViewMatrix);
-
-        private Matrix CalculateTranslationMatrix() => 
-            Matrix.CreateTranslation(new Vector3(-Position, 0.0f));
 
         public void Dispose()
         {

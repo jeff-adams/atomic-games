@@ -32,12 +32,12 @@ namespace AtomicGames.Engine
             Parent = parentGameObject;
             Parent.AddChildObject(this);
             Transform.AddParentMatrix(parentGameObject.Transform.ObjectMatrix);
-            SetBounds();
         }
 
         public void AddChildObject(GameObject childGameObject)
         {
             Children.Add(childGameObject);
+            SetBounds();
         }
 
         public virtual void Update(GameTime gameTime) { }

@@ -39,7 +39,7 @@ namespace AtomicGames.Engine.Graphics
         {
             graphics.SetRenderTarget(null);
             graphics.Clear(Color.Black);
-            spriteBatch.Begin(transformMatrix: camera.ViewMatrix);
+            spriteBatch.Begin();
             spriteBatch.Draw(target, renderRect, Color.White);
             spriteBatch.End();
         }

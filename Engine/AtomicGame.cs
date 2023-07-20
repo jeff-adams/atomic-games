@@ -11,6 +11,7 @@ namespace AtomicGames.Engine
         private readonly GraphicsDeviceManager graphics;
         private readonly Canvas canvas;
         private readonly Camera camera;
+        private readonly UI ui;
 
         private SpriteBatch spriteBatch;
         private InputManager inputManager;
@@ -18,16 +19,18 @@ namespace AtomicGames.Engine
 
         public Canvas Canvas => canvas;
         public Camera Camera => camera;
+        public UI UI => ui;
 
         public AtomicGame(GameState firstGameState, string gameTitle, int width, int height)
         {
             graphics = new GraphicsDeviceManager(this);
-            // graphics.IsFullScreen = true;
+            graphics.IsFullScreen = true;
 
             SetResolution(width, height);
 
             camera = new Camera(Window);
             canvas = new Canvas(GraphicsDevice, camera, width, height);
+            ui = new UI(width, height);
 
             Content.RootDirectory = "Content";
             IsMouseVisible = true;
@@ -71,6 +74,7 @@ namespace AtomicGames.Engine
         {
             currentGameState.Update(gameTime);
             camera.Update(gameTime);
+            ui.Update(gameTime);
 
             base.Update(gameTime);
         }
@@ -82,6 +86,10 @@ namespace AtomicGames.Engine
 
             spriteBatch.Begin(transformMatrix: camera.ViewMatrix, samplerState: SamplerState.PointClamp);
             currentGameState.Draw(gameTime, spriteBatch);
+            spriteBatch.End();
+
+            spriteBatch.Begin();
+            ui.Draw(gameTime, spriteBatch);
             spriteBatch.End();
 
             canvas.Draw(spriteBatch);
