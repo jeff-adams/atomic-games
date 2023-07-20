@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using AtomicGames.Engine;
+using AtomicGames.Engine.Graphics;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
@@ -32,7 +33,7 @@ namespace AtomicGames.Sample
             messages?.Clear();
         }
 
-        public override void Draw(GameTime gameTime, SpriteBatch spriteBatch)
+        public override void Draw(GameTime gameTime, SpriteBatch spriteBatch, ShapeBatch shapeBatch)
         {
             int i = 0;
             foreach (var message in messages)

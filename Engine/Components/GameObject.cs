@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using AtomicGames.Engine.Graphics;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
@@ -14,6 +15,7 @@ namespace AtomicGames.Engine
 
         public bool IsActive { get; set; } = true;
         public bool IsVisible { get; set; } = true;
+        public bool IsBoundsVisible { get; set; } = false;
 
         public GameObject() : this(new Transform()) 
         { }
@@ -40,9 +42,18 @@ namespace AtomicGames.Engine
             SetBounds();
         }
 
-        public virtual void Update(GameTime gameTime) { }
+        public virtual void UpdateContent(GameTime gameTime) { }
 
-        public virtual void Draw(GameTime gameTime, SpriteBatch spriteBatch) { }
+        public virtual void DrawContent(GameTime gameTime, SpriteBatch spriteBatch, ShapeBatch shapeBatch) 
+        { 
+            if (IsBoundsVisible)
+            {
+                float thickness = 2f;
+                Color color = Color.White;
+
+                shapeBatch.Rectangle(Bounds, thickness, color);
+            }
+        }
 
         public virtual void Enable()
         {

@@ -14,6 +14,7 @@ namespace AtomicGames.Engine
         private readonly UI ui;
 
         private SpriteBatch spriteBatch;
+        private ShapeBatch shapeBatch;
         private InputManager inputManager;
         private GameState currentGameState;
 
@@ -31,6 +32,7 @@ namespace AtomicGames.Engine
             camera = new Camera(Window);
             canvas = new Canvas(GraphicsDevice, camera, width, height);
             ui = new UI(width, height);
+            shapeBatch = new ShapeBatch(GraphicsDevice);
 
             Content.RootDirectory = "Content";
             IsMouseVisible = true;
@@ -74,7 +76,7 @@ namespace AtomicGames.Engine
         {
             currentGameState.Update(gameTime);
             camera.Update(gameTime);
-            ui.Update(gameTime);
+            ui.UpdateContent(gameTime);
 
             base.Update(gameTime);
         }
@@ -85,12 +87,16 @@ namespace AtomicGames.Engine
             GraphicsDevice.Clear(currentGameState.BackgroundColor);
 
             spriteBatch.Begin(transformMatrix: camera.ViewMatrix, samplerState: SamplerState.PointClamp);
-            currentGameState.Draw(gameTime, spriteBatch);
+            shapeBatch.Begin(Vector2.Zero);
+            currentGameState.Draw(gameTime, spriteBatch, shapeBatch);
             spriteBatch.End();
+            shapeBatch.End();
 
             spriteBatch.Begin();
-            ui.Draw(gameTime, spriteBatch);
+            shapeBatch.Begin(Vector2.Zero);
+            ui.DrawContent(gameTime, spriteBatch, shapeBatch);
             spriteBatch.End();
+            shapeBatch.End();
 
             canvas.Draw(spriteBatch);
 

@@ -1,3 +1,4 @@
+using AtomicGames.Engine.Graphics;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
@@ -9,7 +10,7 @@ namespace AtomicGames.Engine
         bool IsActive { get; }
         Transform Transform { get; }
 
-        void Update(GameTime gameTime);
-        void Draw(GameTime gameTime, SpriteBatch spriteBatch);
+        void UpdateContent(GameTime gameTime);
+        void DrawContent(GameTime gameTime, SpriteBatch spriteBatch, ShapeBatch shapeBatch);
     }
 }

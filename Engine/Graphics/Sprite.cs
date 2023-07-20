@@ -23,7 +23,7 @@ namespace AtomicGames.Engine.Graphics
             IsVisible = true;
         }
 
-        public override void Draw(GameTime gameTime, SpriteBatch spriteBatch) =>
+        public override void DrawContent(GameTime gameTime, SpriteBatch spriteBatch, ShapeBatch shapeBatch) =>
             spriteBatch.Draw(texture, Transform.Position, null, Color.White, Transform.Rotation, origin, scale, flip, 0f);
         
         protected override void SetBounds()

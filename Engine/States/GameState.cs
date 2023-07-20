@@ -45,13 +45,13 @@ namespace AtomicGames.Engine
             contentManager.Unload();
         }
 
-        public void Draw(GameTime gameTime, SpriteBatch spriteBatch)
+        public void Draw(GameTime gameTime, SpriteBatch spriteBatch, ShapeBatch shapeBatch)
         {
             foreach (var gameObject in gameObjects)
             {
                 if (gameObject.IsVisible)
                 {
-                    gameObject.Draw(gameTime, spriteBatch);
+                    gameObject.DrawContent(gameTime, spriteBatch, shapeBatch);
                 }
             }
         }
