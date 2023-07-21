@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Diagnostics;
 using AtomicGames.Engine;
 using AtomicGames.Engine.Graphics;
 using Microsoft.Xna.Framework;
@@ -16,8 +17,8 @@ namespace AtomicGames.Sample
         {
             this.font = font;
             verticalSpacing = (int)System.Math.Ceiling((font.MeasureString("A")).Y * 1.2);
-            IsActive = true;
-            IsVisible = true;
+            IsActive = false;
+            IsVisible = false;
             Transform.Position = new Vector2(20f, 20f);
             messages = new Dictionary<string, string>();
         }
@@ -33,12 +34,28 @@ namespace AtomicGames.Sample
             messages?.Clear();
         }
 
+        public string ConvertPositionToDebugMessage(Vector2 pos) =>
+            $"x: {pos.X}, y: {pos.Y}";
+
+        public void PrintDebugMessagesToConsole()
+        {
+            Debug.WriteLine("Debugging Messages");
+            Debug.WriteLine("-----------------------------");
+
+            foreach (var message in messages)
+            {
+                string textString = $"{message.Key}: {message.Value}";
+                Debug.WriteLine(textString);
+            }
+        }
+
         public override void DrawContent(GameTime gameTime, SpriteBatch spriteBatch, ShapeBatch shapeBatch)
         {
             int i = 0;
             foreach (var message in messages)
             {
-                spriteBatch.DrawString(font, $"{message.Key}: {message.Value}", Transform.Position + new Vector2(0, i * verticalSpacing), Color.LimeGreen);
+                string textString = $"{message.Key}: {message.Value}";
+                spriteBatch.DrawString(font, textString, Transform.Position + new Vector2(0, i * verticalSpacing), Color.LimeGreen);
                 i++;
             }
         }

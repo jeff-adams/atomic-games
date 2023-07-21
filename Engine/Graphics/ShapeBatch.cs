@@ -7,6 +7,7 @@ namespace AtomicGames.Engine.Graphics
     public class ShapeBatch : IDisposable
     {
         private GraphicsDevice graphics;
+        private Camera camera;
         private BasicEffect effect;
 
         private VertexPositionColor[] vertices;
@@ -17,20 +18,15 @@ namespace AtomicGames.Engine.Graphics
 
         private bool isStarted;
 
-        public ShapeBatch(GraphicsDevice graphics)
+        public ShapeBatch(GraphicsDevice graphics, Camera camera)
         {
             this.graphics = graphics ?? throw new ArgumentNullException(nameof(graphics));
+            this.camera = camera ?? throw new ArgumentException(nameof(camera));
             effect = new BasicEffect(graphics);
             effect.VertexColorEnabled = true;
-            effect.TextureEnabled = false;
-            effect.LightingEnabled = false;
-            effect.FogEnabled = false;
-            effect.World = Matrix.Identity;
-            effect.View = Matrix.Identity;
-            effect.Projection = Matrix.Identity;
-
-            //effect.Projection = Matrix.CreateOrthographicOffCenter(0f, graphics.Viewport.Width, graphics.Viewport.Height, 0f, -1f, 1f);
-            //effect.View = Matrix.CreateOrthographic(graphics.Viewport.Width, graphics.Viewport.Height, 0f, 1f);
+            //effect.View = camera.TransformMatrix;
+            //effect.Projection = camera.ProjectionMatrix;
+            effect.World = camera.TransformMatrix;
 
             const int maxIndexCount = short.MaxValue;
             vertices = new VertexPositionColor[maxIndexCount / 3];
@@ -103,6 +99,12 @@ namespace AtomicGames.Engine.Graphics
                 Initialize();
             }
         }
+
+        public void RectangleFill(Rectangle rect, Color color) =>
+            RectangleFill(
+                rect.X, rect.Y, 
+                rect.Width, rect.Height,
+                color);
 
         public void RectangleFill(float x, float y, float width, float height, Color color)
         {

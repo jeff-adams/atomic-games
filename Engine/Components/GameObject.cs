@@ -42,9 +42,9 @@ namespace AtomicGames.Engine
             SetBounds();
         }
 
-        public void Move(Vector2 direction)
+        public void Move(Vector2 velocity)
         {
-            Transform.Position += direction;
+            Transform.Position += velocity;
             SetBounds();
         }
 
