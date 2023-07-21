@@ -32,8 +32,12 @@ namespace AtomicGames.Engine.Graphics
         
         protected override void SetBounds()
         {
-            Vector2 position = Parent is null ? Transform.Position : Parent.Transform.Position;
-            Bounds = new Rectangle((int)position.X, (int)position.Y, texture.Width, texture.Height);
+            Bounds = texture.Bounds;
+            // Vector2 position = Parent is null ? Transform.Position : Parent.Transform.Position;
+            // Bounds = new Rectangle((int)position.X, (int)position.Y, texture.Width, texture.Height);
         }
+
+        public override string ToString() =>
+            $"{base.ToString()}, Texture: {texture.Name}";
     }
 }

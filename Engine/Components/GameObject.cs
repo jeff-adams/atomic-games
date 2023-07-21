@@ -38,7 +38,8 @@ namespace AtomicGames.Engine
 
         public void AddChildObject(GameObject childGameObject)
         {
-            Children.Add(childGameObject);
+            if (Children.Add(childGameObject))
+                childGameObject.AddParentObject(this);
             SetBounds();
         }
 
@@ -85,5 +86,7 @@ namespace AtomicGames.Engine
             IsVisible = false;
         }
 
+        public override string ToString() =>
+            $"Position: {Transform.Position}, Bounds: {Bounds}, HasParent: {Parent != null}";
     }
 }

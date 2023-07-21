@@ -105,7 +105,7 @@ namespace AtomicGames.Engine
         private Matrix UpdateLocalMatrix() =>
             Matrix.CreateScale(scale) *
             Matrix.CreateRotationZ(rotation) *
-            Matrix.CreateTranslation(new Vector3(position, 0f));
+            Matrix.CreateTranslation(new Vector3(position, 0));
 
         public override string ToString() =>
             $"Position: {Position}, Rotation: {Rotation}, Scale: {Scale}, HasParent: {parentTransform != null}";

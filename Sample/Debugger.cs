@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using AtomicGames.Engine;
@@ -12,6 +13,7 @@ namespace AtomicGames.Sample
         private readonly SpriteFont font;
         private readonly int verticalSpacing;
         private Dictionary<string, string> messages;
+        private Dictionary<string, string> consoleMessages;
 
         public Debugger(SpriteFont font) : base()
         {
@@ -21,17 +23,26 @@ namespace AtomicGames.Sample
             IsVisible = false;
             Transform.Position = new Vector2(20f, 20f);
             messages = new Dictionary<string, string>();
+            consoleMessages = new Dictionary<string, string>();
         }
 
         public void AddDebugMessage(string title, string message)
         {
+            message = message.ToLower();
             if (!messages.TryAdd(title, message))
                 messages[title] = message;
+        }
+
+        public void AddDebugConsoleMessage(string title, string message)
+        {
+            if (!consoleMessages.TryAdd(title, message))
+                consoleMessages[title] = message;
         }
 
         public void ClearDebugMessages()
         {
             messages?.Clear();
+            consoleMessages?.Clear();
         }
 
         public string ConvertPositionToDebugMessage(Vector2 pos) =>
@@ -39,10 +50,11 @@ namespace AtomicGames.Sample
 
         public void PrintDebugMessagesToConsole()
         {
-            Debug.WriteLine("Debugging Messages");
-            Debug.WriteLine("-----------------------------");
+            Debug.WriteLine("=========================================================");
+            Debug.WriteLine(DateTime.Now);
+            Debug.WriteLine("- - - - - - - - - - - - - - - - - - - - - - - - - - - - -");
 
-            foreach (var message in messages)
+            foreach (var message in consoleMessages)
             {
                 string textString = $"{message.Key}: {message.Value}";
                 Debug.WriteLine(textString);

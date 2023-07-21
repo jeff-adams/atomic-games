@@ -32,14 +32,8 @@ namespace AtomicGames.Sample
         {
             font = LoadFont("fonts/MajorMonoDisplay");
 
-            ship = new Sprite(LoadTexture("player/player")); // Need rotation to be (float)(Math.PI / 2)?
-            ship.Transform.Position = new Vector2(0, 0);
-            AddGameObject(ship);
-            Camera.Follow(ship, 0.15f);
-
-            alert = new Sprite(LoadTexture("player/alert"));
-            alert.Transform.Position = new Vector2(0, 0);
-            ship.AddChildObject(alert);
+            // square = new ShapeRectangle(new Rectangle(0, 0, 1, 1), Color.CadetBlue);
+            // AddGameObject(square);
 
             var meteorTypes = new Texture2D[]{
                 LoadTexture("objects/meteor_a"),
@@ -57,8 +51,14 @@ namespace AtomicGames.Sample
                 AddGameObject(meteor);
             }
 
-            // square = new ShapeRectangle(new Rectangle(0, 0, 1, 1), Color.CadetBlue);
-            // AddGameObject(square);
+            ship = new Sprite(LoadTexture("player/player")); // Need rotation to be (float)(Math.PI / 2)?
+            ship.Transform.Position = new Vector2(0, 0);
+            AddGameObject(ship);
+            Camera.Follow(ship, 0.15f);
+
+            alert = new Sprite(LoadTexture("player/alert"), 0.4f);
+            alert.Transform.Position = new Vector2(20f, 20f);
+            ship.AddChildObject(alert);
             
             debug = new Debugger(font);
             UI.AddChildObject(debug);
@@ -69,7 +69,8 @@ namespace AtomicGames.Sample
         public override void Update(GameTime gameTime)
         {
             deltaTime = gameTime.ElapsedGameTime.Milliseconds;
-            debug.AddDebugMessage("alert transform", alert.ToString());
+            debug.AddDebugConsoleMessage("ship", ship.ToString());
+            debug.AddDebugConsoleMessage("alert", alert.ToString());
         }
 
         private void MousePosition(Vector2 position)
