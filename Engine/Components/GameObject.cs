@@ -42,14 +42,20 @@ namespace AtomicGames.Engine
             SetBounds();
         }
 
+        public void Move(Vector2 direction)
+        {
+            Transform.Position += direction;
+            SetBounds();
+        }
+
         public virtual void UpdateContent(GameTime gameTime) { }
 
         public virtual void DrawContent(GameTime gameTime, SpriteBatch spriteBatch, ShapeBatch shapeBatch) 
         { 
             if (IsBoundsVisible)
             {
-                float thickness = 2f;
-                Color color = Color.White;
+                float thickness = 1f;
+                Color color = Color.Fuchsia;
 
                 shapeBatch.Rectangle(Bounds, thickness, color);
             }
