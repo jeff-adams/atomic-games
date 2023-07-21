@@ -29,8 +29,8 @@ namespace AtomicGames.Engine
 
             SetResolution(width, height);
 
-            camera = new Camera(Window);
-            canvas = new Canvas(GraphicsDevice, camera, width, height);
+            canvas = new Canvas(GraphicsDevice, width, height);
+            camera = new Camera(Window, canvas);
             ui = new UI(width, height);
             shapeBatch = new ShapeBatch(GraphicsDevice, camera);
 

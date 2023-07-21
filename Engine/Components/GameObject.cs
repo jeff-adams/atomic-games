@@ -33,13 +33,25 @@ namespace AtomicGames.Engine
         {
             Parent = parentGameObject;
             Parent.AddChildObject(this);
-            Transform.AddParentMatrix(parentGameObject.Transform.ObjectMatrix);
+            Transform.AddParentTransform(parentGameObject.Transform);
         }
 
         public void AddChildObject(GameObject childGameObject)
         {
             Children.Add(childGameObject);
             SetBounds();
+        }
+
+        public void DrawChildren(GameTime gameTime, SpriteBatch spriteBatch, ShapeBatch shapeBatch)
+        {
+            foreach (GameObject child in Children)
+            {
+                if (child.IsVisible)
+                {
+                    child.DrawContent(gameTime, spriteBatch, shapeBatch);
+                    child.DrawChildren(gameTime, spriteBatch, shapeBatch);
+                }
+            }
         }
 
         public void Move(Vector2 velocity)

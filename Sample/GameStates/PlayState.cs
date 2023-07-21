@@ -11,6 +11,7 @@ namespace AtomicGames.Sample
     public class PlayState : GameState
     {
         private Sprite ship;
+        private Sprite alert;
         private ShapeRectangle square;
         private Debugger debug;
         SpriteFont font;
@@ -35,7 +36,11 @@ namespace AtomicGames.Sample
             ship.Transform.Position = new Vector2(0, 0);
             AddGameObject(ship);
             Camera.Follow(ship, 0.15f);
-            
+
+            alert = new Sprite(LoadTexture("player/alert"));
+            alert.Transform.Position = new Vector2(0, 0);
+            ship.AddChildObject(alert);
+
             var meteorTypes = new Texture2D[]{
                 LoadTexture("objects/meteor_a"),
                 LoadTexture("objects/meteor_b"),
@@ -52,8 +57,8 @@ namespace AtomicGames.Sample
                 AddGameObject(meteor);
             }
 
-            square = new ShapeRectangle(new Rectangle(0, 0, 1, 1), Color.CadetBlue);
-            AddGameObject(square);
+            // square = new ShapeRectangle(new Rectangle(0, 0, 1, 1), Color.CadetBlue);
+            // AddGameObject(square);
             
             debug = new Debugger(font);
             UI.AddChildObject(debug);
@@ -64,6 +69,7 @@ namespace AtomicGames.Sample
         public override void Update(GameTime gameTime)
         {
             deltaTime = gameTime.ElapsedGameTime.Milliseconds;
+            debug.AddDebugMessage("alert transform", alert.ToString());
         }
 
         private void MousePosition(Vector2 position)
@@ -122,7 +128,12 @@ namespace AtomicGames.Sample
         private void ResetCamera()
         {
             Camera.Reset();
-    }
+        }
+
+        private void CameraFollowShip()
+        {
+            Camera.Follow(ship);
+        }
 
         private void ToggleDebug()
         {
@@ -136,7 +147,8 @@ namespace AtomicGames.Sample
             }
         }
 
-        private void PrintDebug() => debug.PrintDebugMessagesToConsole();
+        private void PrintDebug() => 
+            debug.PrintDebugMessagesToConsole();
 
         private void DebugInputPresses(InputState state)
         {
@@ -160,6 +172,7 @@ namespace AtomicGames.Sample
             input.OnCameraZoom += ZoomCamera;
             input.OnMousePositionInput += MousePosition;
             input.OnResetCameraPressed += ResetCamera;
+            input.OnCameraTarget += CameraFollowShip;
             //Debug
             input.OnToggleDebugPressed += ToggleDebug;
             input.OnPrintDebugPressed += PrintDebug;

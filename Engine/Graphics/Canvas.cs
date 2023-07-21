@@ -11,19 +11,17 @@ namespace AtomicGames.Engine.Graphics
         public Rectangle RenderRectangle => renderRect;
 
         private readonly GraphicsDevice graphics;
-        private readonly Camera camera;
         private readonly RenderTarget2D target;
 
         private Rectangle renderRect;
         private float prefferedAspectRatio;
         
-        public Canvas(GraphicsDevice graphics, Camera camera, int width, int height)
+        public Canvas(GraphicsDevice graphics, int width, int height)
         {
             Width = width;
             Height = height;
             prefferedAspectRatio = (float)width / height;
 
-            this.camera = camera;
             this.graphics = graphics;
 
             target = new RenderTarget2D(this.graphics, width, height);

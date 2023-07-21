@@ -14,20 +14,22 @@ namespace AtomicGames.Engine.Graphics
         public Matrix ProjectionMatrix { get; private set; }
 
         private readonly GameWindow window;
+        private readonly Canvas canvas;
 
         private GameObject target;
         private float cameraSmoothing = 0.05f; // smaller means a longer delay
         
-        public Camera(GameWindow gameWindow)
+        public Camera(GameWindow gameWindow, Canvas canvas)
         {
             Position = Vector2.Zero;
             Zoom = 1.0f;
             Rotation = 0f;
 
-            window = gameWindow;
+            this.window = gameWindow;
+            this.canvas = canvas;
             gameWindow.ClientSizeChanged += WindowSizeHasChanged;
-            WindowSizeHasChanged(null, null);
             
+            Origin = new Vector2(window.ClientBounds.Width * 0.5f, window.ClientBounds.Height * 0.5f);
             UpdateMatrices();
         }
 
@@ -41,7 +43,10 @@ namespace AtomicGames.Engine.Graphics
             UpdateMatrices();
         }
 
-        public void Follow(GameObject target, float smoothing = 0.05f)
+        public void Follow(GameObject target) => 
+            Follow(target, this.cameraSmoothing);
+
+        public void Follow(GameObject target, float smoothing)
         {
             this.target = target;
             cameraSmoothing = smoothing;
@@ -68,10 +73,10 @@ namespace AtomicGames.Engine.Graphics
         }
 
         public Vector2 GetWorldPosition(Vector2 screenPosition) =>
-            Vector2.Transform(screenPosition, Matrix.Invert(ViewMatrix));
+            Vector2.Transform(screenPosition + new Vector2(canvas.RenderRectangle.X, canvas.RenderRectangle.Y), Matrix.Invert(TransformMatrix));
 
         public Vector2 GetScreenPosition(Vector2 worldPosition) =>
-            Vector2.Transform(worldPosition, TransformMatrix);
+            Vector2.Transform(worldPosition, ProjectionMatrix);
 
         private void WindowSizeHasChanged(object sender, EventArgs e)
         {
@@ -105,7 +110,8 @@ namespace AtomicGames.Engine.Graphics
         }
 
         private Matrix GetProjectionMatrix() =>
-            Matrix.CreateOrthographic((float)window.ClientBounds.Width, (float)window.ClientBounds.Height, 0.1f, 2048f);
+            Matrix.CreateOrthographicOffCenter(canvas.RenderRectangle, 0.1f, 2048f) *
+            ViewMatrix;
 
         public void Dispose()
         {

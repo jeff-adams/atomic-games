@@ -1,24 +1,27 @@
 using System;
+using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 
 namespace AtomicGames.Engine
 {
     public class Transform
     {
-        private Matrix? parentObjectMatrix;
+        private Transform parentTransform;
+        private HashSet<Transform> childrenTransforms;
         private Vector2 position;
         private float rotation;
+        private float scale;
         
         public Vector2 Position 
         { 
             get => 
-                parentObjectMatrix is null 
+                parentTransform is null 
                 ? position 
-                : Vector2.Transform(position, (Matrix)parentObjectMatrix);
+                : Vector2.Transform(position, parentTransform.WorldMatrix);
             set
             {
                 position = value;
-                ObjectMatrix = UpdateObjectMatrix();
+                UpdateMatrices();
             } 
         }
 
@@ -28,24 +31,47 @@ namespace AtomicGames.Engine
             private set
             {
                 rotation = value;
-                ObjectMatrix = UpdateObjectMatrix();
+                UpdateMatrices();
+            }
+        }
+
+        public float Scale
+        {
+            get => scale;
+            private set
+            {
+                scale = value;
+                UpdateMatrices();
             }
         }
 
         public Vector2 Direction { get; private set; }
-        public Matrix ObjectMatrix { get; private set; }
+        public Matrix LocalMatrix { get; private set; }
+        public Matrix WorldMatrix { get; private set; }
 
-        public Transform(Matrix? parentObjectMatrix = null)
+        public Transform() : this(null) { }
+
+        public Transform(Transform parentTransform)
         {
-            if (parentObjectMatrix != null)
-                this.parentObjectMatrix = parentObjectMatrix;
+            if (parentTransform != null)
+                this.parentTransform = parentTransform;
             
-            position = new Vector2(0, 0);
+            Position = new Vector2(0, 0);
         }
 
-        public Transform AddParentMatrix(Matrix parentMatrix)
+        public Transform AddParentTransform(Transform parentTransform)
         {
-            this.parentObjectMatrix = parentMatrix;
+            this.parentTransform = parentTransform
+                .AddChildTransform(this);
+            return this;
+        }
+
+        public Transform AddChildTransform(Transform childTransform)
+        {
+            if (childrenTransforms is null) 
+                childrenTransforms = new HashSet<Transform>();
+
+            childrenTransforms.Add(childTransform);
             return this;
         }
 
@@ -56,8 +82,32 @@ namespace AtomicGames.Engine
             return this;
         }
 
-        private Matrix UpdateObjectMatrix() =>
+        public void UpdateMatrices()
+        {
+            LocalMatrix = UpdateLocalMatrix();
+            WorldMatrix = UpdateWorldMatrix();
+
+            if (childrenTransforms is null) return;
+            
+            foreach(Transform child in childrenTransforms)
+            {
+                child.UpdateMatrices();
+            }
+        }
+
+        private Matrix UpdateWorldMatrix()
+        {
+            if (parentTransform is null) return LocalMatrix;
+
+            return parentTransform.WorldMatrix * LocalMatrix;
+        }
+
+        private Matrix UpdateLocalMatrix() =>
+            Matrix.CreateScale(scale) *
             Matrix.CreateRotationZ(rotation) *
             Matrix.CreateTranslation(new Vector3(position, 0f));
+
+        public override string ToString() =>
+            $"Position: {Position}, Rotation: {Rotation}, Scale: {Scale}, HasParent: {parentTransform != null}";
     }
 }

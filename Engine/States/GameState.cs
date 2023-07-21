@@ -47,11 +47,12 @@ namespace AtomicGames.Engine
 
         public void Draw(GameTime gameTime, SpriteBatch spriteBatch, ShapeBatch shapeBatch)
         {
-            foreach (var gameObject in gameObjects)
+            foreach (GameObject gameObject in gameObjects)
             {
                 if (gameObject.IsVisible)
                 {
                     gameObject.DrawContent(gameTime, spriteBatch, shapeBatch);
+                    gameObject.DrawChildren(gameTime, spriteBatch, shapeBatch);
                 }
             }
         }

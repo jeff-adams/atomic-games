@@ -28,6 +28,7 @@ public class ActionMapPlay : IActionMap
             {Keys.Up, CameraPanUp},
             {Keys.Down, CameraPanDown},
             {Keys.R, CameraReset},
+            {Keys.T, CameraTarget},
             {Keys.W, DirectionInputUp},
             {Keys.D, DirectionInputRight},
             {Keys.S, DirectionInputDown},
@@ -59,6 +60,7 @@ public class ActionMapPlay : IActionMap
 
     // Action Events --------------------------------------------------------------------------------
     public event Action OnResetCameraPressed;
+    public event Action OnCameraTarget;
     public event Action<Vector2> OnCameraPan;
     public event Action<float> OnCameraZoom;
     public event Action<Vector2> OnDirectionInput;
@@ -98,6 +100,7 @@ public class ActionMapPlay : IActionMap
     private void QuitInput(InputState state) => OnQuitPressed?.Invoke();
 
     private void CameraReset(InputState state) => OnResetCameraPressed?.Invoke();
+    private void CameraTarget(InputState state) => OnCameraTarget?.Invoke();
 
 
         //Debug
