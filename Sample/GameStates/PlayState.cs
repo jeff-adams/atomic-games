@@ -89,7 +89,7 @@ namespace AtomicGames.Sample
             mouseRenderPosition.X = mouseRenderPosition.X / Canvas.RenderRectangle.Width * Canvas.Width;
             mouseRenderPosition.Y = mouseRenderPosition.Y / Canvas.RenderRectangle.Height * Canvas.Height;
 
-            var mouseWorldPosition = Vector2.Transform(mouseRenderPosition, Matrix.Invert(Camera.ViewMatrix));
+            var mouseWorldPosition = Vector2.Transform(mouseRenderPosition, Matrix.Invert(Camera.TransformMatrix));
             var mouseDirection = Vector2.Normalize(ship.Transform.Position - mouseWorldPosition);
             RotateShip(mouseDirection);
             

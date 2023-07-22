@@ -10,8 +10,6 @@ namespace AtomicGames.Engine.Graphics
         public float Zoom { get; private set; }
         public float Rotation { get; private set; }
         public Matrix TransformMatrix { get; private set; }
-        public Matrix ViewMatrix { get; private set; }
-        public Matrix ProjectionMatrix { get; private set; }
 
         private readonly GameWindow window;
         private readonly Canvas canvas;
@@ -76,7 +74,7 @@ namespace AtomicGames.Engine.Graphics
             Vector2.Transform(screenPosition + new Vector2(canvas.RenderRectangle.X, canvas.RenderRectangle.Y), Matrix.Invert(TransformMatrix));
 
         public Vector2 GetScreenPosition(Vector2 worldPosition) =>
-            Vector2.Transform(worldPosition, ProjectionMatrix);
+            Vector2.Transform(worldPosition, TransformMatrix);
 
         private void WindowSizeHasChanged(object sender, EventArgs e)
         {
@@ -87,8 +85,6 @@ namespace AtomicGames.Engine.Graphics
         public void UpdateMatrices()
         {
             TransformMatrix = GetTransformMatrix();
-            ViewMatrix = GetViewMatrix();
-            ProjectionMatrix = GetProjectionMatrix();
         }
 
         private Matrix GetTransformMatrix() => 
@@ -101,14 +97,6 @@ namespace AtomicGames.Engine.Graphics
             Matrix.CreateScale(Zoom, Zoom, 1) *
             Matrix.CreateTranslation(new Vector3(Origin, 0.0f));
         
-        private Matrix GetViewMatrix() =>
-            target is null 
-            ? Matrix.CreateLookAt(new Vector3(Position, 0f), new Vector3(Origin, 0), Vector3.Up)
-            : Matrix.CreateLookAt(new Vector3(Position, 0f), new Vector3(target.Transform.Position, 0f), Vector3.Up);
-
-        private Matrix GetProjectionMatrix() =>
-            Matrix.CreateOrthographicOffCenter(canvas.RenderRectangle, 0.01f, 2048f);
-
         public override string ToString() =>
             $"Position: {Position}, Origin: {Origin}, Target: {target?.Transform.Position}";
 
