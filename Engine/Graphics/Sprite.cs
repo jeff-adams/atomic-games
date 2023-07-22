@@ -32,9 +32,9 @@ namespace AtomicGames.Engine.Graphics
         
         protected override void SetBounds()
         {
-            Bounds = texture.Bounds;
-            // Vector2 position = Parent is null ? Transform.Position : Parent.Transform.Position;
-            // Bounds = new Rectangle((int)position.X, (int)position.Y, texture.Width, texture.Height);
+            int x = (int)(Transform.Position.X - origin.X);
+            int y = (int)(Transform.Position.Y - origin.Y);
+            Bounds = new Rectangle(x, y, texture.Width, texture.Height);
         }
 
         public override string ToString() =>

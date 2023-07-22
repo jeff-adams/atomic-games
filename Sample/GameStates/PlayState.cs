@@ -14,7 +14,8 @@ namespace AtomicGames.Sample
         private Sprite alert;
         private ShapeRectangle square;
         private Debugger debug;
-        SpriteFont font;
+        SpriteFont smallFont;
+        SpriteFont largeFont;
 
         private float deltaTime;
         private float speed = 1.25f;
@@ -30,7 +31,8 @@ namespace AtomicGames.Sample
 
         public override void LoadContent()
         {
-            font = Load<SpriteFont>("fonts/MajorMonoDisplay");
+            smallFont = Load<SpriteFont>("fonts/MajorMonoDisplay_small");
+            largeFont = Load<SpriteFont>("fonts/MajorMonoDisplay_large");
 
             // square = new ShapeRectangle(new Rectangle(0, 0, 1, 1), Color.CadetBlue);
             // AddGameObject(square);
@@ -52,15 +54,15 @@ namespace AtomicGames.Sample
             }
 
             ship = new Sprite(Load<Texture2D>("player/player")); // Need rotation to be (float)(Math.PI / 2)?
-            ship.Transform.Position = new Vector2(0, 0);
+            ship.Transform.Position = new Vector2(50f, 100f);
             AddGameObject(ship);
             Camera.Follow(ship, 0.15f);
 
             alert = new Sprite(Load<Texture2D>("player/alert"), 0.4f);
+            ship.AddChildObject(alert); 
             alert.Transform.Position = new Vector2(20f, 20f);
-            ship.AddChildObject(alert);
             
-            debug = new Debugger(font);
+            debug = new Debugger(smallFont);
             UI.AddChildObject(debug);
 
             SubscribeToActions();
@@ -72,6 +74,7 @@ namespace AtomicGames.Sample
             debug.AddDebugConsoleMessage("ship", ship.ToString());
             debug.AddDebugConsoleMessage("alert", alert.ToString());
             debug.AddDebugConsoleMessage("camera", Camera.ToString());
+            debug.AddDebugConsoleMessage("canvas", Canvas.ToString());
         }
 
         private void MousePosition(Vector2 position)
@@ -86,8 +89,8 @@ namespace AtomicGames.Sample
             //TODO: Refactor and figure out how to use matrix translations to do this
             var renderLocation = new Vector2(Canvas.RenderRectangle.Location.X, Canvas.RenderRectangle.Location.Y);
             var mouseRenderPosition = mouseScreenPosition - renderLocation;
-            mouseRenderPosition.X = mouseRenderPosition.X / Canvas.RenderRectangle.Width * Canvas.Width;
-            mouseRenderPosition.Y = mouseRenderPosition.Y / Canvas.RenderRectangle.Height * Canvas.Height;
+            // mouseRenderPosition.X = mouseRenderPosition.X / Canvas.RenderRectangle.Width * Canvas.Width;
+            // mouseRenderPosition.Y = mouseRenderPosition.Y / Canvas.RenderRectangle.Height * Canvas.Height;
 
             var mouseWorldPosition = Vector2.Transform(mouseRenderPosition, Matrix.Invert(Camera.TransformMatrix));
             var mouseDirection = Vector2.Normalize(ship.Transform.Position - mouseWorldPosition);

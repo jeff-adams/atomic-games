@@ -6,39 +6,36 @@ namespace AtomicGames.Engine.Graphics
 {
     public class Canvas : IDisposable
     {
-        public int Width { get; }
-        public int Height { get; }
+        public int VirtualWidth { get; }
+        public int VirtualHeight { get; }
         public Rectangle RenderRectangle => renderRect;
 
         private readonly GraphicsDevice graphics;
-        private readonly RenderTarget2D target;
-
+        private readonly RenderTarget2D renderTarget;
         private Rectangle renderRect;
-        private float prefferedAspectRatio;
         
         public Canvas(GraphicsDevice graphics, int width, int height)
         {
-            Width = width;
-            Height = height;
-            prefferedAspectRatio = (float)width / height;
+            VirtualWidth = width;
+            VirtualHeight = height;
 
             this.graphics = graphics;
 
-            target = new RenderTarget2D(this.graphics, width, height);
+            renderTarget = new RenderTarget2D(this.graphics, width, height);
         }
 
 
         internal void Activate()
         {          
-            graphics.SetRenderTarget(target);
+            graphics.SetRenderTarget(renderTarget);
         }
 
         internal void Draw(SpriteBatch spriteBatch)
         {
             graphics.SetRenderTarget(null);
             graphics.Clear(Color.Black);
-            spriteBatch.Begin();
-            spriteBatch.Draw(target, renderRect, Color.White);
+            spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp);
+            spriteBatch.Draw(renderTarget, renderRect, Color.White);
             spriteBatch.End();
         }
 
@@ -46,12 +43,12 @@ namespace AtomicGames.Engine.Graphics
         {
             Rectangle screenSize = graphics.PresentationParameters.Bounds;
             
-            float scaleX = (float)screenSize.Width / target.Width;
-            float scaleY = (float)screenSize.Height / target.Height;
+            float scaleX = (float)screenSize.Width / renderTarget.Width;
+            float scaleY = (float)screenSize.Height / renderTarget.Height;
             float scale = Math.Min(scaleX, scaleY);
 
-            int width = (int)(target.Width * scale);
-            int height = (int)(target.Height * scale);
+            int width = (int)(renderTarget.Width * scale);
+            int height = (int)(renderTarget.Height * scale);
 
             int x = (screenSize.Width - width) / 2;
             int y = (screenSize.Height - height) / 2;
@@ -60,9 +57,12 @@ namespace AtomicGames.Engine.Graphics
             return renderRect;
         }
 
+        public override string ToString() =>
+            $"RenderRect: {renderRect}, RenderTarget: {renderTarget.Bounds}";
+
         public void Dispose()
         {
-            target?.Dispose();
+            renderTarget?.Dispose();
         }
     }
 }

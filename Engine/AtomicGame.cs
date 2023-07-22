@@ -22,23 +22,27 @@ namespace AtomicGames.Engine
         public Camera Camera => camera;
         public UI UI => ui;
 
-        public AtomicGame(GameState firstGameState, string gameTitle, int width, int height)
+        public AtomicGame(
+            GameState firstGameState, 
+            string gameTitle, 
+            int resolutionWidth, int resolutionHeight,
+            int virtualWidth, int virtualHeight)
         {
             graphics = new GraphicsDeviceManager(this);
-            graphics.IsFullScreen = false;
+            graphics.IsFullScreen = true;
 
-            SetResolution(width, height);
+            SetResolution(resolutionWidth, resolutionHeight);
 
-            canvas = new Canvas(GraphicsDevice, width, height);
+            canvas = new Canvas(GraphicsDevice, virtualWidth, virtualHeight);
             camera = new Camera(Window, canvas);
-            ui = new UI(width, height);
+            ui = new UI(virtualWidth, virtualHeight);
             shapeBatch = new ShapeBatch(GraphicsDevice, camera);
 
             Content.RootDirectory = "Content";
             IsMouseVisible = true;
 
             Window.AllowUserResizing = true;
-            Window.IsBorderless = false;
+            Window.IsBorderless = true;
             Window.Title = gameTitle;
             Window.ClientSizeChanged += UpdateCanvasRenderSize;
 
@@ -86,7 +90,6 @@ namespace AtomicGames.Engine
             canvas.Activate();
             GraphicsDevice.Clear(currentGameState.BackgroundColor);
 
-            camera.UpdateMatrices();
             // var effect = new BasicEffect(GraphicsDevice);
             // effect.View = camera.ViewMatrix;
             // effect.Projection = camera.ProjectionMatrix;
@@ -98,7 +101,7 @@ namespace AtomicGames.Engine
             spriteBatch.End();
             shapeBatch.End();
 
-            spriteBatch.Begin();
+            spriteBatch.Begin(samplerState: SamplerState.PointClamp);
             shapeBatch.Begin(Vector2.Zero);
             ui.DrawContent(gameTime, spriteBatch, shapeBatch);
             spriteBatch.End();

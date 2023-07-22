@@ -36,10 +36,11 @@ namespace AtomicGames.Engine.Graphics
         {
             if (target != null)
             {
-                Position = Vector2.Lerp(Position, target.Transform.Position - Origin, cameraSmoothing);
+                // Need to get the GameObject's center, not top left which *should* be Position
+                var targetCenter = new Vector2(target.Bounds.Center.X, target.Bounds.Center.Y);
+                Position = Vector2.Lerp(Position, targetCenter - Origin, cameraSmoothing);
+                UpdateMatrices();
             }
-
-            UpdateMatrices();
         }
 
         public void Follow(GameObject target) => 
@@ -72,17 +73,20 @@ namespace AtomicGames.Engine.Graphics
         {
             Position = Vector2.Zero;
             Zoom = 1.0f;
+            UpdateMatrices();
         }
 
         public void Pan(Vector2 direction, float speed = 1f)
         {
             target = null;
             Position += direction * speed;
+            UpdateMatrices();
         }
 
         public void AdjustZoom(float zoom)
         {
             Zoom += zoom;
+            UpdateMatrices();
         }
 
         public Vector2 GetWorldPosition(Vector2 screenPosition) =>
@@ -97,7 +101,7 @@ namespace AtomicGames.Engine.Graphics
             UpdateMatrices();
         }
 
-        public void UpdateMatrices()
+        private void UpdateMatrices()
         {
             TransformMatrix = GetTransformMatrix();
         }
