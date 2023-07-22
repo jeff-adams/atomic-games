@@ -16,7 +16,7 @@ namespace AtomicGames.Engine
         { 
             get => 
                 parentTransform is null 
-                ? position 
+                ? Vector2.Transform(position, WorldMatrix)
                 : Vector2.Transform(position, parentTransform.WorldMatrix);
             set
             {

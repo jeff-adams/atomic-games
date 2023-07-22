@@ -29,7 +29,7 @@ namespace AtomicGames.Engine.Graphics
             this.canvas = canvas;
             gameWindow.ClientSizeChanged += WindowSizeHasChanged;
             
-            Origin = new Vector2(window.ClientBounds.Width * 0.5f, window.ClientBounds.Height * 0.5f);
+            Origin = new Vector2(window.ClientBounds.Center.X, window.ClientBounds.Center.Y);
             UpdateMatrices();
         }
 
@@ -80,15 +80,15 @@ namespace AtomicGames.Engine.Graphics
 
         private void WindowSizeHasChanged(object sender, EventArgs e)
         {
-            Origin = new Vector2(window.ClientBounds.Width * 0.5f, window.ClientBounds.Height * 0.5f);
+            Origin = new Vector2(window.ClientBounds.Center.X, window.ClientBounds.Center.Y);
             UpdateMatrices();
         }
 
-        private void UpdateMatrices()
+        public void UpdateMatrices()
         {
             TransformMatrix = GetTransformMatrix();
-            ProjectionMatrix = GetProjectionMatrix();
             ViewMatrix = GetViewMatrix();
+            ProjectionMatrix = GetProjectionMatrix();
         }
 
         private Matrix GetTransformMatrix() => 
@@ -101,17 +101,16 @@ namespace AtomicGames.Engine.Graphics
             Matrix.CreateScale(Zoom, Zoom, 1) *
             Matrix.CreateTranslation(new Vector3(Origin, 0.0f));
         
-        private Matrix GetViewMatrix()
-        {
-            if (target is null) 
-                return Matrix.CreateLookAt(new Vector3(Position, 0f), new Vector3(Origin, 0), Vector3.Up);
-            
-            return Matrix.CreateLookAt(new Vector3(Position, 0f), new Vector3(target.Transform.Position, 0f), Vector3.Up);
-        }
+        private Matrix GetViewMatrix() =>
+            target is null 
+            ? Matrix.CreateLookAt(new Vector3(Position, 0f), new Vector3(Origin, 0), Vector3.Up)
+            : Matrix.CreateLookAt(new Vector3(Position, 0f), new Vector3(target.Transform.Position, 0f), Vector3.Up);
 
         private Matrix GetProjectionMatrix() =>
-            Matrix.CreateOrthographicOffCenter(canvas.RenderRectangle, 0.1f, 2048f) *
-            ViewMatrix;
+            Matrix.CreateOrthographicOffCenter(canvas.RenderRectangle, 0.01f, 2048f);
+
+        public override string ToString() =>
+            $"Position: {Position}, Origin: {Origin}, Target: {target?.Transform.Position}";
 
         public void Dispose()
         {

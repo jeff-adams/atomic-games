@@ -71,6 +71,7 @@ namespace AtomicGames.Sample
             deltaTime = gameTime.ElapsedGameTime.Milliseconds;
             debug.AddDebugConsoleMessage("ship", ship.ToString());
             debug.AddDebugConsoleMessage("alert", alert.ToString());
+            debug.AddDebugConsoleMessage("camera", Camera.ToString());
         }
 
         private void MousePosition(Vector2 position)

@@ -86,6 +86,12 @@ namespace AtomicGames.Engine
             canvas.Activate();
             GraphicsDevice.Clear(currentGameState.BackgroundColor);
 
+            camera.UpdateMatrices();
+            // var effect = new BasicEffect(GraphicsDevice);
+            // effect.View = camera.ViewMatrix;
+            // effect.Projection = camera.ProjectionMatrix;
+            // spriteBatch.Begin(samplerState: SamplerState.PointClamp, effect: effect);
+
             spriteBatch.Begin(transformMatrix: camera.TransformMatrix, samplerState: SamplerState.PointClamp);
             shapeBatch.Begin(Vector2.Zero);
             currentGameState.Draw(gameTime, spriteBatch, shapeBatch);
