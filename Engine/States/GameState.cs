@@ -34,11 +34,8 @@ namespace AtomicGames.Engine
         public void AddGameObject(GameObject gameObject) => 
             gameObjects.Add(gameObject);
 
-        protected Texture2D LoadTexture(string textureName) =>
-            contentManager.Load<Texture2D>(textureName);
-
-        protected SpriteFont LoadFont(string fontName) =>
-            contentManager.Load<SpriteFont>(fontName);
+        protected T Load<T>(string name) =>
+            contentManager.Load<T>(name);
 
         public void UnloadContent()
         {

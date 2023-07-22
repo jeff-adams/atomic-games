@@ -15,6 +15,7 @@ namespace AtomicGames.Engine.Graphics
         private readonly Canvas canvas;
 
         private GameObject target;
+        private GameObject previousTarget;
         private float cameraSmoothing = 0.05f; // smaller means a longer delay
         
         public Camera(GameWindow gameWindow, Canvas canvas)
@@ -46,12 +47,26 @@ namespace AtomicGames.Engine.Graphics
 
         public void Follow(GameObject target, float smoothing)
         {
+            if (this.target != target) previousTarget = this.target;
             this.target = target;
             cameraSmoothing = smoothing;
         } 
 
-        public void Unfollow() =>
+        public void Unfollow()
+        {
+            this.previousTarget = target;
             this.target = null;
+        }
+
+        public void ReFollow()
+        {
+            if (this.previousTarget != null) 
+            {
+                GameObject temp = this.target;
+                this.target = this.previousTarget;
+                this.previousTarget = temp;
+            }
+        }
 
         public void Reset()
         {
