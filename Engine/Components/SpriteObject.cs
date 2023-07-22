@@ -1,19 +1,20 @@
+using AtomicGames.Engine.Graphics;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace AtomicGames.Engine.Graphics;
+namespace AtomicGames.Engine.Components;
 
-public class Sprite : GameObject
+public class SpriteObject : GameObject
 {
     private Texture2D texture;
     private Vector2 origin;
     private SpriteEffects flip;
     private float scale;
 
-    public Sprite(Texture2D texture, float scale = 1f) 
+    public SpriteObject(Texture2D texture, float scale = 1f) 
         : this(texture, new Vector2(texture.Width / 2, texture.Height / 2), scale) { }
 
-    public Sprite(Texture2D texture, Vector2 origin, float scale = 1f) : base()
+    public SpriteObject(Texture2D texture, Vector2 origin, float scale = 1f) : base()
     {
         this.texture = texture;
         this.scale = scale;

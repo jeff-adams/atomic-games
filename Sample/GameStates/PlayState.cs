@@ -1,16 +1,17 @@
 using System;
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using AtomicGames.Engine;
 using AtomicGames.Engine.Input;
 using AtomicGames.Engine.Graphics;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
+using AtomicGames.Engine.Components;
 
 namespace AtomicGames.Sample;
 
 public class PlayState : GameState
 {
-    private Sprite ship;
-    private Sprite alert;
+    private SpriteObject ship;
+    private SpriteObject alert;
     private ShapeRectangle square;
     private Debugger debug;
     SpriteFont smallFont;
@@ -47,17 +48,17 @@ public class PlayState : GameState
         {
             int meteorType = rng.Next(0, 3);
             var meteorPos = new Vector2(rng.Next(-2000, 2000), rng.Next(-2000, 2000));
-            Sprite meteor = new (meteorTypes[meteorType]);
+            SpriteObject meteor = new (meteorTypes[meteorType]);
             meteor.Transform.Position = meteorPos;
             AddGameObject(meteor);
         }
 
-        ship = new Sprite(Load<Texture2D>("player/player")); // Need rotation to be (float)(Math.PI / 2)?
+        ship = new SpriteObject(Load<Texture2D>("player/player")); // Need rotation to be (float)(Math.PI / 2)?
         ship.Transform.Position = new Vector2(50f, 100f);
         AddGameObject(ship);
         Camera.Follow(ship, 0.15f);
 
-        alert = new Sprite(Load<Texture2D>("player/alert"), 0.4f);
+        alert = new SpriteObject(Load<Texture2D>("player/alert"), 0.4f);
         ship.AddChildObject(alert); 
         alert.Transform.Position = new Vector2(20f, 20f);
         

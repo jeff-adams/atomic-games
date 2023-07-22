@@ -3,7 +3,7 @@ using AtomicGames.Engine.Graphics;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace AtomicGames.Engine;
+namespace AtomicGames.Engine.Components;
 
 public abstract class GameObject : IGameObject
 {

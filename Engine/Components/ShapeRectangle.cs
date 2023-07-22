@@ -1,7 +1,8 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using AtomicGames.Engine.Graphics;
 
-namespace AtomicGames.Engine.Graphics;
+namespace AtomicGames.Engine.Components;
 
 public class ShapeRectangle : GameObject
 {

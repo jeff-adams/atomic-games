@@ -5,6 +5,7 @@ using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using AtomicGames.Engine.Input;
 using AtomicGames.Engine.Graphics;
+using AtomicGames.Engine.Components;
 
 namespace AtomicGames.Engine;
 

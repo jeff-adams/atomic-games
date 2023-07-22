@@ -2,29 +2,28 @@ using AtomicGames.Engine.Graphics;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace AtomicGames.Engine
+namespace AtomicGames.Engine.Components;
+
+public class UI : GameObject
 {
-    public class UI : GameObject
+    public UI(int width, int height)
     {
-        public UI(int width, int height)
-        {
-            Bounds = new Rectangle(0, 0, width, height);
-        }
+        Bounds = new Rectangle(0, 0, width, height);
+    }
 
-        public override void UpdateContent(GameTime gameTime)
+    public override void UpdateContent(GameTime gameTime)
+    {
+        foreach (GameObject element in Children)
         {
-            foreach (GameObject element in Children)
-            {
-                if (element.IsActive) element.UpdateContent(gameTime);
-            }
+            if (element.IsActive) element.UpdateContent(gameTime);
         }
+    }
 
-        public override void DrawContent(GameTime gameTime, SpriteBatch spriteBatch, ShapeBatch shapeBatch)
+    public override void DrawContent(GameTime gameTime, SpriteBatch spriteBatch, ShapeBatch shapeBatch)
+    {
+        foreach (GameObject element in Children)
         {
-            foreach (GameObject element in Children)
-            {
-                if (element.IsVisible) element.DrawContent(gameTime, spriteBatch, shapeBatch);
-            }
+            if (element.IsVisible) element.DrawContent(gameTime, spriteBatch, shapeBatch);
         }
     }
 }

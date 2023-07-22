@@ -1,4 +1,5 @@
 using System;
+using AtomicGames.Engine.Components;
 using Microsoft.Xna.Framework;
 
 namespace AtomicGames.Engine.Graphics;

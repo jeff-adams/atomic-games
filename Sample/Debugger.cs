@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using AtomicGames.Engine;
 using AtomicGames.Engine.Graphics;
+using AtomicGames.Engine.Components;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
