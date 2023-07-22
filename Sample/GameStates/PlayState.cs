@@ -30,15 +30,15 @@ namespace AtomicGames.Sample
 
         public override void LoadContent()
         {
-            font = LoadFont("fonts/MajorMonoDisplay");
+            font = Load<SpriteFont>("fonts/MajorMonoDisplay");
 
             // square = new ShapeRectangle(new Rectangle(0, 0, 1, 1), Color.CadetBlue);
             // AddGameObject(square);
 
             var meteorTypes = new Texture2D[]{
-                LoadTexture("objects/meteor_a"),
-                LoadTexture("objects/meteor_b"),
-                LoadTexture("objects/meteor_c"),
+                Load<Texture2D>("objects/meteor_a"),
+                Load<Texture2D>("objects/meteor_b"),
+                Load<Texture2D>("objects/meteor_c"),
             };
             Random rng = new ();
             int numOfMeteors = 20;
@@ -51,12 +51,12 @@ namespace AtomicGames.Sample
                 AddGameObject(meteor);
             }
 
-            ship = new Sprite(LoadTexture("player/player")); // Need rotation to be (float)(Math.PI / 2)?
+            ship = new Sprite(Load<Texture2D>("player/player")); // Need rotation to be (float)(Math.PI / 2)?
             ship.Transform.Position = new Vector2(0, 0);
             AddGameObject(ship);
             Camera.Follow(ship, 0.15f);
 
-            alert = new Sprite(LoadTexture("player/alert"), 0.4f);
+            alert = new Sprite(Load<Texture2D>("player/alert"), 0.4f);
             alert.Transform.Position = new Vector2(20f, 20f);
             ship.AddChildObject(alert);
             
