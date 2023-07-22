@@ -1,193 +1,191 @@
+using System;
 using AtomicGames.Engine;
 using AtomicGames.Engine.Input;
 using AtomicGames.Engine.Graphics;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Graphics;
-using System;
 
-namespace AtomicGames.Sample
+namespace AtomicGames.Sample;
+
+public class PlayState : GameState
 {
-    public class PlayState : GameState
+    private Sprite ship;
+    private Sprite alert;
+    private ShapeRectangle square;
+    private Debugger debug;
+    SpriteFont smallFont;
+    SpriteFont largeFont;
+
+    private float deltaTime;
+    private float speed = 1.25f;
+
+    public override IActionMap ActionMap => input;
+    private ActionMapPlay input;
+
+    public PlayState()
     {
-        private Sprite ship;
-        private Sprite alert;
-        private ShapeRectangle square;
-        private Debugger debug;
-        SpriteFont smallFont;
-        SpriteFont largeFont;
+        input = new ActionMapPlay();
+        BackgroundColor = Color.DimGray;
+    }
 
-        private float deltaTime;
-        private float speed = 1.25f;
+    public override void LoadContent()
+    {
+        smallFont = Load<SpriteFont>("fonts/MajorMonoDisplay_small");
+        largeFont = Load<SpriteFont>("fonts/MajorMonoDisplay_large");
 
-        public override IActionMap ActionMap => input;
-        private ActionMapPlay input;
+        // square = new ShapeRectangle(new Rectangle(0, 0, 1, 1), Color.CadetBlue);
+        // AddGameObject(square);
 
-        public PlayState()
+        var meteorTypes = new Texture2D[]{
+            Load<Texture2D>("objects/meteor_a"),
+            Load<Texture2D>("objects/meteor_b"),
+            Load<Texture2D>("objects/meteor_c"),
+        };
+        Random rng = new ();
+        int numOfMeteors = 20;
+        for (int i = 0; i < numOfMeteors; i++)
         {
-            input = new ActionMapPlay();
-            BackgroundColor = Color.DimGray;
+            int meteorType = rng.Next(0, 3);
+            var meteorPos = new Vector2(rng.Next(-2000, 2000), rng.Next(-2000, 2000));
+            Sprite meteor = new (meteorTypes[meteorType]);
+            meteor.Transform.Position = meteorPos;
+            AddGameObject(meteor);
         }
 
-        public override void LoadContent()
+        ship = new Sprite(Load<Texture2D>("player/player")); // Need rotation to be (float)(Math.PI / 2)?
+        ship.Transform.Position = new Vector2(50f, 100f);
+        AddGameObject(ship);
+        Camera.Follow(ship, 0.15f);
+
+        alert = new Sprite(Load<Texture2D>("player/alert"), 0.4f);
+        ship.AddChildObject(alert); 
+        alert.Transform.Position = new Vector2(20f, 20f);
+        
+        debug = new Debugger(smallFont);
+        UI.AddChildObject(debug);
+
+        SubscribeToActions();
+    }
+
+    public override void Update(GameTime gameTime)
+    {
+        deltaTime = gameTime.ElapsedGameTime.Milliseconds;
+        debug.AddDebugConsoleMessage("ship", ship.ToString());
+        debug.AddDebugConsoleMessage("alert", alert.ToString());
+        debug.AddDebugConsoleMessage("camera", Camera.ToString());
+        debug.AddDebugConsoleMessage("canvas", Canvas.ToString());
+    }
+
+    private void MousePosition(Vector2 position)
+    {
+        debug.AddDebugMessage("mouse pos", debug.ConvertPositionToDebugMessage(position));
+        Vector2 worldPosition = Camera.GetWorldPosition(position);
+        debug.AddDebugMessage("mouse world pos", debug.ConvertPositionToDebugMessage(worldPosition));
+    }
+
+    private void MouseDirection(Vector2 mouseScreenPosition)
+    {
+        //TODO: Refactor and figure out how to use matrix translations to do this
+        var renderLocation = new Vector2(Canvas.RenderRectangle.Location.X, Canvas.RenderRectangle.Location.Y);
+        var mouseRenderPosition = mouseScreenPosition - renderLocation;
+        // mouseRenderPosition.X = mouseRenderPosition.X / Canvas.RenderRectangle.Width * Canvas.Width;
+        // mouseRenderPosition.Y = mouseRenderPosition.Y / Canvas.RenderRectangle.Height * Canvas.Height;
+
+        var mouseWorldPosition = Vector2.Transform(mouseRenderPosition, Matrix.Invert(Camera.TransformMatrix));
+        var mouseDirection = Vector2.Normalize(ship.Transform.Position - mouseWorldPosition);
+        RotateShip(mouseDirection);
+        
+        //DEBUG 
+        //debug.AddDebugMessage("mouse screen pos", $"x {mouseScreenPosition.X}, y {mouseScreenPosition.Y}");
+        //debug.AddDebugMessage("mouse render pos", $"x {mouseRenderPosition.X}, y {mouseRenderPosition.Y}");
+        //debug.AddDebugMessage("mouse world pos", $"x {mouseWorldPosition.X}, y {mouseWorldPosition.Y}");
+        //debug.AddDebugMessage("ship position", $"x {ship.Transform.Position.X}, y {ship.Transform.Position.Y}");
+        //debug.AddDebugMessage("mouse direction", $"x {mouseDirection.X}, y {mouseDirection.Y}");
+    }
+
+    private void RotateShip(Vector2 dir)
+    {
+        if (dir != Vector2.Zero)
         {
-            smallFont = Load<SpriteFont>("fonts/MajorMonoDisplay_small");
-            largeFont = Load<SpriteFont>("fonts/MajorMonoDisplay_large");
-
-            // square = new ShapeRectangle(new Rectangle(0, 0, 1, 1), Color.CadetBlue);
-            // AddGameObject(square);
-
-            var meteorTypes = new Texture2D[]{
-                Load<Texture2D>("objects/meteor_a"),
-                Load<Texture2D>("objects/meteor_b"),
-                Load<Texture2D>("objects/meteor_c"),
-            };
-            Random rng = new ();
-            int numOfMeteors = 20;
-            for (int i = 0; i < numOfMeteors; i++)
-            {
-                int meteorType = rng.Next(0, 3);
-                var meteorPos = new Vector2(rng.Next(-2000, 2000), rng.Next(-2000, 2000));
-                Sprite meteor = new (meteorTypes[meteorType]);
-                meteor.Transform.Position = meteorPos;
-                AddGameObject(meteor);
-            }
-
-            ship = new Sprite(Load<Texture2D>("player/player")); // Need rotation to be (float)(Math.PI / 2)?
-            ship.Transform.Position = new Vector2(50f, 100f);
-            AddGameObject(ship);
-            Camera.Follow(ship, 0.15f);
-
-            alert = new Sprite(Load<Texture2D>("player/alert"), 0.4f);
-            ship.AddChildObject(alert); 
-            alert.Transform.Position = new Vector2(20f, 20f);
-            
-            debug = new Debugger(smallFont);
-            UI.AddChildObject(debug);
-
-            SubscribeToActions();
+            dir.Y *= -1;
+            ship.Transform.RotateToDirection(dir);
         }
+        
+        debug.AddDebugMessage("ship direction", debug.ConvertPositionToDebugMessage(ship.Transform.Direction));
+    }
 
-        public override void Update(GameTime gameTime)
+    private void MoveShip(Vector2 dir) => 
+        ship.Move(dir * deltaTime * speed);
+
+    private void MoveCamera(Vector2 input)
+    {
+        float moveSpeed = 6f;
+        Camera.Pan(input * moveSpeed);
+    }
+
+    private void ZoomCamera(float direction)
+    {
+        float zoomSpeed = 0.02f;
+        Camera.AdjustZoom(direction * zoomSpeed);
+    }
+
+    private void ResetCamera()
+    {
+        Camera.Reset();
+    }
+
+    private void CameraFollowShip()
+    {
+        Camera.Follow(ship);
+    }
+
+    private void ToggleDebug()
+    {
+        if(debug.IsActive)
         {
-            deltaTime = gameTime.ElapsedGameTime.Milliseconds;
-            debug.AddDebugConsoleMessage("ship", ship.ToString());
-            debug.AddDebugConsoleMessage("alert", alert.ToString());
-            debug.AddDebugConsoleMessage("camera", Camera.ToString());
-            debug.AddDebugConsoleMessage("canvas", Canvas.ToString());
+            debug.Disable();
         }
-
-        private void MousePosition(Vector2 position)
+        else
         {
-            debug.AddDebugMessage("mouse pos", debug.ConvertPositionToDebugMessage(position));
-            Vector2 worldPosition = Camera.GetWorldPosition(position);
-            debug.AddDebugMessage("mouse world pos", debug.ConvertPositionToDebugMessage(worldPosition));
+            debug.Enable();
         }
+    }
 
-        private void MouseDirection(Vector2 mouseScreenPosition)
-        {
-            //TODO: Refactor and figure out how to use matrix translations to do this
-            var renderLocation = new Vector2(Canvas.RenderRectangle.Location.X, Canvas.RenderRectangle.Location.Y);
-            var mouseRenderPosition = mouseScreenPosition - renderLocation;
-            // mouseRenderPosition.X = mouseRenderPosition.X / Canvas.RenderRectangle.Width * Canvas.Width;
-            // mouseRenderPosition.Y = mouseRenderPosition.Y / Canvas.RenderRectangle.Height * Canvas.Height;
+    private void PrintDebug() => 
+        debug.PrintDebugMessagesToConsole();
 
-            var mouseWorldPosition = Vector2.Transform(mouseRenderPosition, Matrix.Invert(Camera.TransformMatrix));
-            var mouseDirection = Vector2.Normalize(ship.Transform.Position - mouseWorldPosition);
-            RotateShip(mouseDirection);
-            
-            //DEBUG 
-            //debug.AddDebugMessage("mouse screen pos", $"x {mouseScreenPosition.X}, y {mouseScreenPosition.Y}");
-            //debug.AddDebugMessage("mouse render pos", $"x {mouseRenderPosition.X}, y {mouseRenderPosition.Y}");
-            //debug.AddDebugMessage("mouse world pos", $"x {mouseWorldPosition.X}, y {mouseWorldPosition.Y}");
-            //debug.AddDebugMessage("ship position", $"x {ship.Transform.Position.X}, y {ship.Transform.Position.Y}");
-            //debug.AddDebugMessage("mouse direction", $"x {mouseDirection.X}, y {mouseDirection.Y}");
-        }
+    private void DebugInputPresses(InputState state)
+    {
+        string stateType = state.Pressed ? "pressed" : "held";
+        debug.AddDebugMessage(stateType, state.Name.ToLower());
+    }
 
-        private void RotateShip(Vector2 dir)
-        {
-            if (dir != Vector2.Zero)
-            {
-                dir.Y *= -1;
-                ship.Transform.RotateToDirection(dir);
-            }
-            
-            debug.AddDebugMessage("ship direction", debug.ConvertPositionToDebugMessage(ship.Transform.Direction));
-        }
+    private void Quit() =>
+        System.Environment.Exit(0);
 
-        private void MoveShip(Vector2 dir) => 
-            ship.Move(dir * deltaTime * speed);
+    private void ChangeScreenResolution()
+    {
+        
+    }
 
-        private void MoveCamera(Vector2 input)
-        {
-            float moveSpeed = 6f;
-            Camera.Pan(input * moveSpeed);
-        }
+    private void SubscribeToActions()
+    {
+        input.OnQuitPressed += Quit;
+        input.OnDirectionInput += MoveShip;
+        input.OnCameraPan += MoveCamera;
+        input.OnCameraZoom += ZoomCamera;
+        input.OnMousePositionInput += MousePosition;
+        input.OnResetCameraPressed += ResetCamera;
+        input.OnCameraTarget += CameraFollowShip;
+        //Debug
+        input.OnToggleDebugPressed += ToggleDebug;
+        input.OnPrintDebugPressed += PrintDebug;
+        input.OnDebugInputPressed += DebugInputPresses;
+    }
 
-        private void ZoomCamera(float direction)
-        {
-            float zoomSpeed = 0.02f;
-            Camera.AdjustZoom(direction * zoomSpeed);
-        }
-
-        private void ResetCamera()
-        {
-            Camera.Reset();
-        }
-
-        private void CameraFollowShip()
-        {
-            Camera.Follow(ship);
-        }
-
-        private void ToggleDebug()
-        {
-            if(debug.IsActive)
-            {
-                debug.Disable();
-            }
-            else
-            {
-                debug.Enable();
-            }
-        }
-
-        private void PrintDebug() => 
-            debug.PrintDebugMessagesToConsole();
-
-        private void DebugInputPresses(InputState state)
-        {
-            string stateType = state.Pressed ? "pressed" : "held";
-            debug.AddDebugMessage(stateType, state.Name.ToLower());
-        }
-
-        private void Quit() =>
-            System.Environment.Exit(0);
-
-        private void ChangeScreenResolution()
-        {
-            
-        }
-
-        private void SubscribeToActions()
-        {
-            input.OnQuitPressed += Quit;
-            input.OnDirectionInput += MoveShip;
-            input.OnCameraPan += MoveCamera;
-            input.OnCameraZoom += ZoomCamera;
-            input.OnMousePositionInput += MousePosition;
-            input.OnResetCameraPressed += ResetCamera;
-            input.OnCameraTarget += CameraFollowShip;
-            //Debug
-            input.OnToggleDebugPressed += ToggleDebug;
-            input.OnPrintDebugPressed += PrintDebug;
-            input.OnDebugInputPressed += DebugInputPresses;
-        }
-
-        public override void Dispose()
-        {
-            //TODO: Unsub to all events hered
-            base.Dispose();
-        }
+    public override void Dispose()
+    {
+        //TODO: Unsub to all events hered
+        base.Dispose();
     }
 }

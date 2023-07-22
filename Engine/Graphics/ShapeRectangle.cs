@@ -1,36 +1,35 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace AtomicGames.Engine.Graphics
-{   
-    public class ShapeRectangle : GameObject
+namespace AtomicGames.Engine.Graphics;
+
+public class ShapeRectangle : GameObject
+{
+    public Rectangle Rectangle { get; set; }
+    public Color Color { get; set; }
+    public float LineThickness { get; set; }
+
+    public ShapeRectangle(Rectangle rect, Color color) 
+        : this(rect, 0f, color) { }
+
+    public ShapeRectangle(Rectangle rect, float outlineThickness, Color color)
     {
-        public Rectangle Rectangle { get; set; }
-        public Color Color { get; set; }
-        public float LineThickness { get; set; }
+        this.Rectangle = rect;
+        this.LineThickness = outlineThickness;
+        this.Color = color;
+    }
 
-        public ShapeRectangle(Rectangle rect, Color color) 
-            : this(rect, 0f, color) { }
-
-        public ShapeRectangle(Rectangle rect, float outlineThickness, Color color)
+    public override void DrawContent(GameTime gameTime, SpriteBatch spriteBatch, ShapeBatch shapeBatch)
+    {
+        if (LineThickness > 0)
         {
-            this.Rectangle = rect;
-            this.LineThickness = outlineThickness;
-            this.Color = color;
+            shapeBatch.Rectangle(Rectangle, LineThickness, Color);
+        }
+        else
+        {
+            shapeBatch.RectangleFill(Rectangle, Color);
         }
 
-        public override void DrawContent(GameTime gameTime, SpriteBatch spriteBatch, ShapeBatch shapeBatch)
-        {
-            if (LineThickness > 0)
-            {
-                shapeBatch.Rectangle(Rectangle, LineThickness, Color);
-            }
-            else
-            {
-                shapeBatch.RectangleFill(Rectangle, Color);
-            }
-
-            base.DrawContent(gameTime, spriteBatch, shapeBatch);
-        }
+        base.DrawContent(gameTime, spriteBatch, shapeBatch);
     }
 }

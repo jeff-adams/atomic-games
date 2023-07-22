@@ -3,86 +3,85 @@ using AtomicGames.Engine.Input;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 
-namespace AtomicGames.Engine
+namespace AtomicGames.Engine;
+
+public class InputManager : IDisposable
 {
-    public class InputManager : IDisposable
+    private readonly IKeyboardBroadcaster keyboardBroadcaster;
+    private readonly IMouseBroadcaster mouseBroadcaster;
+    private readonly IGamePadBroadcaster gamePadBroadcaster;
+
+    private IActionMap actionMap;
+
+    public InputManager(IBroadcaster[] broadcasters)
     {
-        private readonly IKeyboardBroadcaster keyboardBroadcaster;
-        private readonly IMouseBroadcaster mouseBroadcaster;
-        private readonly IGamePadBroadcaster gamePadBroadcaster;
-
-        private IActionMap actionMap;
-
-        public InputManager(IBroadcaster[] broadcasters)
+        foreach (var broadcaster in broadcasters)
         {
-            foreach (var broadcaster in broadcasters)
+            if(broadcaster is IKeyboardBroadcaster kb) 
             {
-                if(broadcaster is IKeyboardBroadcaster kb) 
-                {
-                    this.keyboardBroadcaster = kb;
-                    keyboardBroadcaster.OnKeyPressed += KeyboardPressedReciever;
-                }
-                if(broadcaster is IMouseBroadcaster mb) 
-                {
-                    this.mouseBroadcaster = mb;
-                    mouseBroadcaster.MousePosition += MousePositionReciever;
-                    mouseBroadcaster.OnMouseButtonPressed += MouseButtonReceiver;
-                }
-                if(broadcaster is IGamePadBroadcaster gpb) 
-                {
-                    this.gamePadBroadcaster = gpb;
-                    gamePadBroadcaster.OnButtonPressed += GamePadButtonReceiver;
-                    gamePadBroadcaster.LeftAnalogStickMovement += GamePadLeftStickReceiver;
-                    gamePadBroadcaster.RightAnalogStickMovement += GamePadRightStickReceiver;
-                }
+                this.keyboardBroadcaster = kb;
+                keyboardBroadcaster.OnKeyPressed += KeyboardPressedReciever;
             }
-
-        }
-
-        public void SetActionMap(IActionMap actionMap) =>
-            this.actionMap = actionMap;
-
-        private void KeyboardPressedReciever(Keys key, InputState state)
-        {
-            if (actionMap.KeyboardInputs.ContainsKey(key))
+            if(broadcaster is IMouseBroadcaster mb) 
             {
-                actionMap.KeyboardInputs[key](state);
+                this.mouseBroadcaster = mb;
+                mouseBroadcaster.MousePosition += MousePositionReciever;
+                mouseBroadcaster.OnMouseButtonPressed += MouseButtonReceiver;
+            }
+            if(broadcaster is IGamePadBroadcaster gpb) 
+            {
+                this.gamePadBroadcaster = gpb;
+                gamePadBroadcaster.OnButtonPressed += GamePadButtonReceiver;
+                gamePadBroadcaster.LeftAnalogStickMovement += GamePadLeftStickReceiver;
+                gamePadBroadcaster.RightAnalogStickMovement += GamePadRightStickReceiver;
             }
         }
 
-        private void MousePositionReciever(Vector2 mousePosition) =>
-            actionMap.MousePosition(mousePosition);
+    }
 
-        private void MouseButtonReceiver(MouseButtons mouseButton)
+    public void SetActionMap(IActionMap actionMap) =>
+        this.actionMap = actionMap;
+
+    private void KeyboardPressedReciever(Keys key, InputState state)
+    {
+        if (actionMap.KeyboardInputs.ContainsKey(key))
         {
-            if (actionMap.MouseButtonInputs.ContainsKey(mouseButton))
-            {
-                actionMap.MouseButtonInputs[mouseButton]();
-            }
+            actionMap.KeyboardInputs[key](state);
         }
+    }
 
-        private void GamePadButtonReceiver(Buttons button, InputState state)
+    private void MousePositionReciever(Vector2 mousePosition) =>
+        actionMap.MousePosition(mousePosition);
+
+    private void MouseButtonReceiver(MouseButtons mouseButton)
+    {
+        if (actionMap.MouseButtonInputs.ContainsKey(mouseButton))
         {
-            if (actionMap.GamepadButtonInputs.ContainsKey(button))
-            {
-                actionMap.GamepadButtonInputs[button](state);
-            }
+            actionMap.MouseButtonInputs[mouseButton]();
         }
+    }
 
-        private void GamePadLeftStickReceiver(Vector2 leftMovement) =>
-            actionMap.GamepadThumbstickLeftInput(leftMovement);
-
-        private void GamePadRightStickReceiver(Vector2 rightMovement) =>
-            actionMap.GamepadThumbstickRightInput(rightMovement);
-
-        public void Dispose()
+    private void GamePadButtonReceiver(Buttons button, InputState state)
+    {
+        if (actionMap.GamepadButtonInputs.ContainsKey(button))
         {
-            keyboardBroadcaster.OnKeyPressed -= KeyboardPressedReciever;
-            mouseBroadcaster.MousePosition -= MousePositionReciever;
-            mouseBroadcaster.OnMouseButtonPressed -= MouseButtonReceiver;
-            gamePadBroadcaster.OnButtonPressed -= GamePadButtonReceiver;
-            gamePadBroadcaster.LeftAnalogStickMovement -= GamePadLeftStickReceiver;
-            gamePadBroadcaster.RightAnalogStickMovement -= GamePadRightStickReceiver;
+            actionMap.GamepadButtonInputs[button](state);
         }
+    }
+
+    private void GamePadLeftStickReceiver(Vector2 leftMovement) =>
+        actionMap.GamepadThumbstickLeftInput(leftMovement);
+
+    private void GamePadRightStickReceiver(Vector2 rightMovement) =>
+        actionMap.GamepadThumbstickRightInput(rightMovement);
+
+    public void Dispose()
+    {
+        keyboardBroadcaster.OnKeyPressed -= KeyboardPressedReciever;
+        mouseBroadcaster.MousePosition -= MousePositionReciever;
+        mouseBroadcaster.OnMouseButtonPressed -= MouseButtonReceiver;
+        gamePadBroadcaster.OnButtonPressed -= GamePadButtonReceiver;
+        gamePadBroadcaster.LeftAnalogStickMovement -= GamePadLeftStickReceiver;
+        gamePadBroadcaster.RightAnalogStickMovement -= GamePadRightStickReceiver;
     }
 }

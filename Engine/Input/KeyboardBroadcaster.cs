@@ -3,43 +3,42 @@ using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 
-namespace AtomicGames.Engine.Input
+namespace AtomicGames.Engine.Input;
+
+public class KeyboardBroadcaster : IKeyboardBroadcaster
 {
-    public class KeyboardBroadcaster : IKeyboardBroadcaster
+    public bool IsEnabled { get; private set; }
+    public void Enable() => IsEnabled = true;
+    public void Disable() => IsEnabled = false;
+
+    public event Action<Keys, InputState> OnKeyPressed;
+
+    private KeyboardState previousState;
+
+    public KeyboardBroadcaster()
     {
-        public bool IsEnabled { get; private set; }
-        public void Enable() => IsEnabled = true;
-        public void Disable() => IsEnabled = false;
+        IsEnabled = true;
+    }
 
-        public event Action<Keys, InputState> OnKeyPressed;
-
-        private KeyboardState previousState;
-
-        public KeyboardBroadcaster()
+    public void Update(GameTime gameTime)
+    {
+        if (previousState == null)
         {
-            IsEnabled = true;
+            foreach(Keys key in Keyboard.GetState().GetPressedKeys())
+            {
+                OnKeyPressed?.Invoke(key, new InputState(key.ToString(), pressed: true, held: false));
+            }
+        }
+         
+        KeyboardState currentState = Keyboard.GetState();
+        Keys[] previousKeys = previousState.GetPressedKeys();
+
+        foreach(Keys key in currentState.GetPressedKeys())
+        {
+            bool isKeyHeld = previousKeys.Contains(key);
+            OnKeyPressed?.Invoke(key, new InputState(key.ToString(), pressed: true, held: isKeyHeld));
         }
 
-        public void Update(GameTime gameTime)
-        {
-            if (previousState == null)
-            {
-                foreach(Keys key in Keyboard.GetState().GetPressedKeys())
-                {
-                    OnKeyPressed?.Invoke(key, new InputState(key.ToString(), pressed: true, held: false));
-                }
-            }
-             
-            KeyboardState currentState = Keyboard.GetState();
-            Keys[] previousKeys = previousState.GetPressedKeys();
-
-            foreach(Keys key in currentState.GetPressedKeys())
-            {
-                bool isKeyHeld = previousKeys.Contains(key);
-                OnKeyPressed?.Invoke(key, new InputState(key.ToString(), pressed: true, held: isKeyHeld));
-            }
-
-            previousState = currentState;
-        }
+        previousState = currentState;
     }
 }

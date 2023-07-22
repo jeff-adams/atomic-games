@@ -1,127 +1,126 @@
 using System;
 using Microsoft.Xna.Framework;
 
-namespace AtomicGames.Engine.Graphics
+namespace AtomicGames.Engine.Graphics;
+
+public class Camera : IDisposable
 {
-    public class Camera : IDisposable
+    public Vector2 Position { get; private set; }
+    public Vector2 Origin { get; private set; }
+    public float Zoom { get; private set; }
+    public float Rotation { get; private set; }
+    public Matrix TransformMatrix { get; private set; }
+
+    private readonly GameWindow window;
+    private readonly Canvas canvas;
+
+    private GameObject target;
+    private GameObject previousTarget;
+    private float cameraSmoothing = 0.05f; // smaller means a longer delay
+    
+    public Camera(GameWindow gameWindow, Canvas canvas)
     {
-        public Vector2 Position { get; private set; }
-        public Vector2 Origin { get; private set; }
-        public float Zoom { get; private set; }
-        public float Rotation { get; private set; }
-        public Matrix TransformMatrix { get; private set; }
+        Position = Vector2.Zero;
+        Zoom = 1.0f;
+        Rotation = 0f;
 
-        private readonly GameWindow window;
-        private readonly Canvas canvas;
-
-        private GameObject target;
-        private GameObject previousTarget;
-        private float cameraSmoothing = 0.05f; // smaller means a longer delay
+        this.window = gameWindow;
+        this.canvas = canvas;
+        gameWindow.ClientSizeChanged += WindowSizeHasChanged;
         
-        public Camera(GameWindow gameWindow, Canvas canvas)
-        {
-            Position = Vector2.Zero;
-            Zoom = 1.0f;
-            Rotation = 0f;
+        Origin = new Vector2(window.ClientBounds.Center.X, window.ClientBounds.Center.Y);
+        UpdateMatrices();
+    }
 
-            this.window = gameWindow;
-            this.canvas = canvas;
-            gameWindow.ClientSizeChanged += WindowSizeHasChanged;
-            
-            Origin = new Vector2(window.ClientBounds.Center.X, window.ClientBounds.Center.Y);
+    public void Update(GameTime gameTime)
+    {
+        if (target != null)
+        {
+            // Need to get the GameObject's center, not top left which *should* be Position
+            var targetCenter = new Vector2(target.Bounds.Center.X, target.Bounds.Center.Y);
+            Position = Vector2.Lerp(Position, targetCenter - Origin, cameraSmoothing);
             UpdateMatrices();
         }
+    }
 
-        public void Update(GameTime gameTime)
+    public void Follow(GameObject target) => 
+        Follow(target, this.cameraSmoothing);
+
+    public void Follow(GameObject target, float smoothing)
+    {
+        if (this.target != target) previousTarget = this.target;
+        this.target = target;
+        cameraSmoothing = smoothing;
+    } 
+
+    public void Unfollow()
+    {
+        this.previousTarget = target;
+        this.target = null;
+    }
+
+    public void ReFollow()
+    {
+        if (this.previousTarget != null) 
         {
-            if (target != null)
-            {
-                // Need to get the GameObject's center, not top left which *should* be Position
-                var targetCenter = new Vector2(target.Bounds.Center.X, target.Bounds.Center.Y);
-                Position = Vector2.Lerp(Position, targetCenter - Origin, cameraSmoothing);
-                UpdateMatrices();
-            }
+            GameObject temp = this.target;
+            this.target = this.previousTarget;
+            this.previousTarget = temp;
         }
+    }
 
-        public void Follow(GameObject target) => 
-            Follow(target, this.cameraSmoothing);
+    public void Reset()
+    {
+        Position = Vector2.Zero;
+        Zoom = 1.0f;
+        UpdateMatrices();
+    }
 
-        public void Follow(GameObject target, float smoothing)
-        {
-            if (this.target != target) previousTarget = this.target;
-            this.target = target;
-            cameraSmoothing = smoothing;
-        } 
+    public void Pan(Vector2 direction, float speed = 1f)
+    {
+        target = null;
+        Position += direction * speed;
+        UpdateMatrices();
+    }
 
-        public void Unfollow()
-        {
-            this.previousTarget = target;
-            this.target = null;
-        }
+    public void AdjustZoom(float zoom)
+    {
+        Zoom += zoom;
+        UpdateMatrices();
+    }
 
-        public void ReFollow()
-        {
-            if (this.previousTarget != null) 
-            {
-                GameObject temp = this.target;
-                this.target = this.previousTarget;
-                this.previousTarget = temp;
-            }
-        }
+    public Vector2 GetWorldPosition(Vector2 screenPosition) =>
+        Vector2.Transform(screenPosition + new Vector2(canvas.RenderRectangle.X, canvas.RenderRectangle.Y), Matrix.Invert(TransformMatrix));
 
-        public void Reset()
-        {
-            Position = Vector2.Zero;
-            Zoom = 1.0f;
-            UpdateMatrices();
-        }
+    public Vector2 GetScreenPosition(Vector2 worldPosition) =>
+        Vector2.Transform(worldPosition, TransformMatrix);
 
-        public void Pan(Vector2 direction, float speed = 1f)
-        {
-            target = null;
-            Position += direction * speed;
-            UpdateMatrices();
-        }
+    private void WindowSizeHasChanged(object sender, EventArgs e)
+    {
+        Origin = new Vector2(window.ClientBounds.Center.X, window.ClientBounds.Center.Y);
+        UpdateMatrices();
+    }
 
-        public void AdjustZoom(float zoom)
-        {
-            Zoom += zoom;
-            UpdateMatrices();
-        }
+    private void UpdateMatrices()
+    {
+        TransformMatrix = GetTransformMatrix();
+    }
 
-        public Vector2 GetWorldPosition(Vector2 screenPosition) =>
-            Vector2.Transform(screenPosition + new Vector2(canvas.RenderRectangle.X, canvas.RenderRectangle.Y), Matrix.Invert(TransformMatrix));
+    private Matrix GetTransformMatrix() => 
+        GetTransformMatrix(Vector2.One);
 
-        public Vector2 GetScreenPosition(Vector2 worldPosition) =>
-            Vector2.Transform(worldPosition, TransformMatrix);
+    private Matrix GetTransformMatrix(Vector2 parallax) => 
+        Matrix.CreateTranslation(new Vector3(-Position * parallax, 0.0f)) *
+        Matrix.CreateTranslation(new Vector3(-Origin, 0.0f)) *
+        Matrix.CreateRotationZ(Rotation) *
+        Matrix.CreateScale(Zoom, Zoom, 1) *
+        Matrix.CreateTranslation(new Vector3(Origin, 0.0f));
+    
+    public override string ToString() =>
+        $"Position: {Position}, Origin: {Origin}, Target: {target?.Transform.Position}";
 
-        private void WindowSizeHasChanged(object sender, EventArgs e)
-        {
-            Origin = new Vector2(window.ClientBounds.Center.X, window.ClientBounds.Center.Y);
-            UpdateMatrices();
-        }
-
-        private void UpdateMatrices()
-        {
-            TransformMatrix = GetTransformMatrix();
-        }
-
-        private Matrix GetTransformMatrix() => 
-            GetTransformMatrix(Vector2.One);
-
-        private Matrix GetTransformMatrix(Vector2 parallax) => 
-            Matrix.CreateTranslation(new Vector3(-Position * parallax, 0.0f)) *
-            Matrix.CreateTranslation(new Vector3(-Origin, 0.0f)) *
-            Matrix.CreateRotationZ(Rotation) *
-            Matrix.CreateScale(Zoom, Zoom, 1) *
-            Matrix.CreateTranslation(new Vector3(Origin, 0.0f));
-        
-        public override string ToString() =>
-            $"Position: {Position}, Origin: {Origin}, Target: {target?.Transform.Position}";
-
-        public void Dispose()
-        {
-            window.ClientSizeChanged -= WindowSizeHasChanged;
-        }
+    public void Dispose()
+    {
+        window.ClientSizeChanged -= WindowSizeHasChanged;
     }
 }
