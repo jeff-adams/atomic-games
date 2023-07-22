@@ -32,8 +32,8 @@ namespace AtomicGames.Engine.Graphics
         
         protected override void SetBounds()
         {
-            int x = (int)(Transform.Position.X - origin.X);
-            int y = (int)(Transform.Position.Y - origin.Y);
+            int x = (int)(Transform.Position.X + origin.X);
+            int y = (int)(Transform.Position.Y + origin.Y);
             Bounds = new Rectangle(x, y, texture.Width, texture.Height);
         }
 

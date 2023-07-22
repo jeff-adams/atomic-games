@@ -6,7 +6,7 @@ var gs = new PlayState();
 using var game = new AtomicGame(
         gs, 
         "AtomicGames", 
-        resolutionWidth: 1400, resolutionHeight: 900, 
+        resolutionWidth: 3840, resolutionHeight: 2160, 
         virtualWidth: 1024, virtualHeight: 768);
 game.Run();
 
