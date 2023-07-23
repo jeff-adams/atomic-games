@@ -15,12 +15,13 @@ public class Transform
 
     public Vector2 Origin { get; set; }
     
+    // Gives the world coordinates
     public Vector2 Position 
     { 
         get => 
             parentTransform is null 
             ? Vector2.Transform(position, LocalMatrix)
-            : Vector2.Transform(position, parentTransform.LocalMatrix);
+            : parentTransform.Position + Vector2.Transform(position, LocalMatrix);
     }
 
     public float Rotation 
