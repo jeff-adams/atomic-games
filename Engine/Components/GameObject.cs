@@ -11,11 +11,23 @@ public abstract class GameObject : IGameObject
     public GameObject Parent { get; private set; }
     public HashSet<GameObject> Children { get; private set; }
     public Rectangle Bounds { get; protected set; }
-    public Transform Transform { get; }
 
     public bool IsActive { get; set; } = true;
     public bool IsVisible { get; set; } = true;
     public bool IsBoundsVisible { get; set; } = false;
+
+    public Vector2 Position => transform.Position;
+    public float Rotation => transform.Rotation;
+    public float Scale => transform.Scale;
+    public Vector2 Direction => transform.Direction;
+    public Matrix Translation => transform.LocalMatrix;
+    public Vector2 Origin
+    {
+        get => transform.Origin;
+        set => transform.Origin = value;
+    }
+
+    protected Transform transform;
 
     public GameObject() : this(Vector2.Zero) 
     { }
@@ -23,7 +35,7 @@ public abstract class GameObject : IGameObject
     public GameObject(Vector2 position)
     {
         Bounds = new Rectangle();
-        Transform = new Transform().MoveTo(position);
+        transform = new Transform().MoveTo(position);
         Children = new HashSet<GameObject>();
     }
 
@@ -33,7 +45,7 @@ public abstract class GameObject : IGameObject
     {
         Parent = parentGameObject;
         Parent.AddChildObject(this);
-        Transform.AddParentTransform(parentGameObject.Transform);
+        transform.AddParentTransform(parentGameObject.transform);
     }
 
     public void AddChildObject(GameObject childGameObject)
@@ -57,13 +69,19 @@ public abstract class GameObject : IGameObject
 
     public void Move(Vector2 direction)
     {
-        Transform.Move(direction);
+        transform.Move(direction);
         SetBounds();
     }
 
     public void MoveTo(Vector2 position)
     {
-        Transform.MoveTo(position);
+        transform.MoveTo(position);
+        SetBounds();
+    }
+
+    public void RotateToDirection(Vector2 direction)
+    {
+        transform.RotateToDirection(direction);
         SetBounds();
     }
 
@@ -93,5 +111,5 @@ public abstract class GameObject : IGameObject
     }
 
     public override string ToString() =>
-        $"Position: {Transform.Position}, Bounds: {Bounds}, HasParent: {Parent != null}";
+        $"Position: {transform.Position}, Bounds: {Bounds}, HasParent: {Parent != null}";
 }

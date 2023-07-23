@@ -118,7 +118,7 @@ public class Camera : IDisposable
         Matrix.CreateTranslation(new Vector3(Origin, 0.0f));
     
     public override string ToString() =>
-        $"Position: {Position}, Origin: {Origin}, Target: {target?.Transform.Position}";
+        $"Position: {Position}, Origin: {Origin}, Target: {target?.Position}";
 
     public void Dispose()
     {

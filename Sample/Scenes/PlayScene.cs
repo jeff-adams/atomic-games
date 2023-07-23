@@ -48,7 +48,7 @@ public class PlayScene : Scene
             int meteorType = rng.Next(0, 3);
             var meteorPos = new Vector2(rng.Next(-2000, 2000), rng.Next(-2000, 2000));
             SpriteObject meteor = new (meteorTypes[meteorType]);
-            meteor.Transform.MoveTo(meteorPos);
+            meteor.MoveTo(meteorPos);
             AddGameObject(meteor);
         }
 
@@ -93,7 +93,7 @@ public class PlayScene : Scene
         // mouseRenderPosition.Y = mouseRenderPosition.Y / Canvas.RenderRectangle.Height * Canvas.Height;
 
         var mouseWorldPosition = Vector2.Transform(mouseRenderPosition, Matrix.Invert(Camera.TransformMatrix));
-        var mouseDirection = Vector2.Normalize(ship.Transform.Position - mouseWorldPosition);
+        var mouseDirection = Vector2.Normalize(ship.Position - mouseWorldPosition);
         RotateShip(mouseDirection);
         
         //DEBUG 
@@ -109,10 +109,10 @@ public class PlayScene : Scene
         if (dir != Vector2.Zero)
         {
             dir.Y *= -1;
-            ship.Transform.RotateToDirection(dir);
+            ship.RotateToDirection(dir);
         }
         
-        debug.AddDebugMessage("ship direction", debug.ConvertPositionToDebugMessage(ship.Transform.Direction));
+        debug.AddDebugMessage("ship direction", debug.ConvertPositionToDebugMessage(ship.Direction));
     }
 
     private void MoveShip(Vector2 dir)

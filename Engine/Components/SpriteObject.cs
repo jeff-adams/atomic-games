@@ -20,7 +20,7 @@ public class SpriteObject : GameObject
             Scale = new Vector2(scale, scale)
         };
 
-        Transform.Origin = Sprite.Origin;
+        Origin = Sprite.Origin;
 
         SetBounds();
     }
@@ -28,7 +28,7 @@ public class SpriteObject : GameObject
     public override void DrawContent(GameTime gameTime, SpriteBatch spriteBatch, ShapeBatch shapeBatch)
     {
         //spriteBatch.Draw(texture, Transform.Position, null, Color.White, Transform.Rotation, origin, scale, flip, 0f);
-        Sprite.Draw(spriteBatch, Transform.Position);
+        Sprite.Draw(spriteBatch, Position);
         base.DrawContent(gameTime, spriteBatch, shapeBatch);
     }
     
@@ -41,7 +41,7 @@ public class SpriteObject : GameObject
 
     private Rectangle CalculateSelfBounds()
     {
-        Vector2 topLeft = Vector2.Transform(new Vector2(0, 0), Transform.LocalMatrix);
+        Vector2 topLeft = Vector2.Transform(new Vector2(0, 0), Translation);
         Vector2 topRight = new (Sprite.Width, 0);
         Vector2 bottomRight = new (Sprite.Width, Sprite.Height);
         Vector2 bottomLeft = new (0, Sprite.Height);

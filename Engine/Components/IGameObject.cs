@@ -8,7 +8,6 @@ public interface IGameObject
 {
     bool IsVisible { get; }
     bool IsActive { get; }
-    Transform Transform { get; }
 
     void UpdateContent(GameTime gameTime);
     void DrawContent(GameTime gameTime, SpriteBatch spriteBatch, ShapeBatch shapeBatch);

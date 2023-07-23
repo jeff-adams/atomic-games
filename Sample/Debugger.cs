@@ -22,7 +22,7 @@ public class Debugger : GameObject
         verticalSpacing = (int)System.Math.Ceiling((font.MeasureString("A")).Y * 1.2);
         IsActive = false;
         IsVisible = false;
-        Transform.MoveTo(new Vector2(20f, 20f));
+        MoveTo(new Vector2(20f, 20f));
         messages = new Dictionary<string, string>();
         consoleMessages = new Dictionary<string, string>();
     }
@@ -68,7 +68,7 @@ public class Debugger : GameObject
         foreach (var message in messages)
         {
             string textString = $"{message.Key}: {message.Value}";
-            spriteBatch.DrawString(font, textString, Transform.Position + new Vector2(0, i * verticalSpacing), Color.LimeGreen);
+            spriteBatch.DrawString(font, textString, Position + new Vector2(0, i * verticalSpacing), Color.LimeGreen);
             i++;
         }
     }
