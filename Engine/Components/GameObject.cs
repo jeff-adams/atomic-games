@@ -55,9 +55,15 @@ public abstract class GameObject : IGameObject
         }
     }
 
-    public void Move(Vector2 velocity)
+    public void Move(Vector2 direction)
     {
-        Transform.MoveTo(Transform.Position + velocity);
+        Transform.Move(direction);
+        SetBounds();
+    }
+
+    public void MoveTo(Vector2 position)
+    {
+        Transform.MoveTo(position);
         SetBounds();
     }
 

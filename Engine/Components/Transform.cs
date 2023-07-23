@@ -87,11 +87,27 @@ public class Transform
         return this;
     }
 
+    /// <summary>
+    /// Moves the <see cref=" Transform"/> position to a specific world space location
+    /// </summary>
+    /// <param name="position">The world space location</param>
+    /// <returns>This <see cref=" Transform"/> object for method chaining</returns>
     public Transform MoveTo(Vector2 position)
     {
         this.position = Vector2.Transform(position, Matrix.Invert(WorldMatrix));
         UpdateMatrices();
         return this;
+    }
+
+    /// <summary>
+    /// Moves the <see cref=" Transform"/> position in a given direction
+    /// </summary>
+    /// <param name="direction">The direction and velocity of movement</param>
+    /// <returns>This <see cref=" Transform"/> object for method chaining</returns>
+    public Transform Move(Vector2 direction)
+    {
+        Vector2 newWorldPosition = Vector2.Transform(this.position + direction, WorldMatrix);
+        return MoveTo(newWorldPosition);
     }
 
     public event Action OnUpdatedMatrices;
