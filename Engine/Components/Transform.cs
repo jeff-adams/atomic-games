@@ -19,8 +19,8 @@ public class Transform
     { 
         get => 
             parentTransform is null 
-            ? Vector2.Transform(position, WorldMatrix)
-            : Vector2.Transform(position, parentTransform.WorldMatrix);
+            ? Vector2.Transform(position, LocalMatrix)
+            : Vector2.Transform(position, parentTransform.LocalMatrix);
     }
 
     public float Rotation 

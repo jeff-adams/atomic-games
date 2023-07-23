@@ -58,8 +58,8 @@ public class PlayScene : Scene
         Camera.Follow(ship, 0.15f);
 
         alert = new SpriteObject(Load<Texture2D>("player/alert"), 0.4f);
-        ship.AddChildObject(alert); 
         alert.Transform.MoveTo(new Vector2(20f, 20f));
+        ship.AddChildObject(alert); 
         
         debug = new Debugger(smallFont);
         UI.AddChildObject(debug);
