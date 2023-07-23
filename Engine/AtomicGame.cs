@@ -30,7 +30,7 @@ public class AtomicGame : Game
         int virtualWidth, int virtualHeight)
     {
         graphics = new GraphicsDeviceManager(this);
-        graphics.IsFullScreen = true;
+        graphics.IsFullScreen = false;
 
         SetResolution(resolutionWidth, resolutionHeight);
 

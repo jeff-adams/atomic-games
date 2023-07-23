@@ -21,11 +21,6 @@ public class Transform
             parentTransform is null 
             ? Vector2.Transform(position, WorldMatrix)
             : Vector2.Transform(position, parentTransform.WorldMatrix);
-        set
-        {
-            position = value;
-            UpdateMatrices();
-        } 
     }
 
     public float Rotation 
@@ -57,23 +52,29 @@ public class Transform
 
     public Transform(Vector2 origin)
     {
-        Position = Vector2.Zero;
+        this.position = Vector2.Zero;
         this.origin = origin;
         scale = 1f;
+        UpdateMatrices();
     }
 
     public Transform AddParentTransform(Transform parentTransform)
     {
-        this.parentTransform = parentTransform
-            .AddChildTransform(this);
+        if(this.parentTransform == parentTransform) return this;
+
+        if(this.parentTransform is not null)    
+            this.parentTransform.OnUpdatedMatrices -= UpdateMatrices;
+
+        this.parentTransform = parentTransform.AddChildTransform(this);
+        parentTransform.OnUpdatedMatrices += UpdateMatrices;
+
         return this;
     }
 
-    public Transform AddChildTransform(Transform childTransform)
+    protected Transform AddChildTransform(Transform childTransform)
     {
         if (childrenTransforms is null) 
             childrenTransforms = new HashSet<Transform>();
-
         childrenTransforms.Add(childTransform);
         return this;
     }
@@ -85,17 +86,21 @@ public class Transform
         return this;
     }
 
-    public void UpdateMatrices()
+    public Transform MoveTo(Vector2 position)
+    {
+        this.position = Vector2.Transform(position, Matrix.Invert(WorldMatrix));
+        UpdateMatrices();
+        return this;
+    }
+
+    public event Action OnUpdatedMatrices;
+
+    private void UpdateMatrices()
     {
         LocalMatrix = GetLocalMatrix();
         WorldMatrix = GetWorldMatrix();
 
-        if (childrenTransforms is null) return;
-        
-        foreach(Transform child in childrenTransforms)
-        {
-            child.UpdateMatrices();
-        }
+        OnUpdatedMatrices?.Invoke();
     }
 
     private Matrix GetWorldMatrix()

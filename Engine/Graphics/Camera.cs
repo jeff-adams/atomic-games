@@ -37,8 +37,7 @@ public class Camera : IDisposable
     {
         if (target != null)
         {
-            // Need to get the GameObject's center, not top left which *should* be Position
-            var targetCenter = target.Bounds.Center.ToVector2() + target.Transform.Position;
+            var targetCenter = target.Bounds.Center.ToVector2();
             Position = Vector2.Lerp(Position, targetCenter - canvas.VirtualCenter, cameraSmoothing);
             UpdateMatrices();
         }

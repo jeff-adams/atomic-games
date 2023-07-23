@@ -12,7 +12,7 @@ public class PlayScene : Scene
 {
     private SpriteObject ship;
     private SpriteObject alert;
-    private ShapeRectangle square;
+    // private ShapeRectangle square;
     private Debugger debug;
     SpriteFont smallFont;
     SpriteFont largeFont;
@@ -48,18 +48,18 @@ public class PlayScene : Scene
             int meteorType = rng.Next(0, 3);
             var meteorPos = new Vector2(rng.Next(-2000, 2000), rng.Next(-2000, 2000));
             SpriteObject meteor = new (meteorTypes[meteorType]);
-            meteor.Transform.Position = meteorPos;
+            meteor.Transform.MoveTo(meteorPos);
             AddGameObject(meteor);
         }
 
         ship = new SpriteObject(Load<Texture2D>("player/player"));
-        ship.Transform.Position = new Vector2(50f, 100f);
+        ship.Transform.MoveTo(new Vector2(50f, 100f));
         AddGameObject(ship);
         Camera.Follow(ship, 0.15f);
 
         alert = new SpriteObject(Load<Texture2D>("player/alert"), 0.4f);
         ship.AddChildObject(alert); 
-        alert.Transform.Position = new Vector2(20f, 20f);
+        alert.Transform.MoveTo(new Vector2(20f, 20f));
         
         debug = new Debugger(smallFont);
         UI.AddChildObject(debug);

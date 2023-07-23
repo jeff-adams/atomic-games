@@ -22,13 +22,9 @@ public abstract class GameObject : IGameObject
 
     public GameObject(Vector2 position)
     {
-        Transform = new Transform()
-        {
-            Position = position
-        };
-        
+        Bounds = new Rectangle();
+        Transform = new Transform().MoveTo(position);
         Children = new HashSet<GameObject>();
-        Bounds = new Rectangle((int)Transform.Position.X, (int)Transform.Position.Y, 0, 0);
     }
 
     protected virtual void SetBounds() { }
@@ -61,7 +57,7 @@ public abstract class GameObject : IGameObject
 
     public void Move(Vector2 velocity)
     {
-        Transform.Position += velocity;
+        Transform.MoveTo(Transform.Position + velocity);
         SetBounds();
     }
 
