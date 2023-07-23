@@ -38,8 +38,8 @@ public class Camera : IDisposable
         if (target != null)
         {
             // Need to get the GameObject's center, not top left which *should* be Position
-            var targetCenter = new Vector2(target.Bounds.Center.X, target.Bounds.Center.Y);
-            Position = Vector2.Lerp(Position, targetCenter - Origin, cameraSmoothing);
+            var targetCenter = target.Bounds.Center.ToVector2() + target.Transform.Position;
+            Position = Vector2.Lerp(Position, targetCenter - canvas.VirtualCenter, cameraSmoothing);
             UpdateMatrices();
         }
     }
@@ -91,14 +91,14 @@ public class Camera : IDisposable
     }
 
     public Vector2 GetWorldPosition(Vector2 screenPosition) =>
-        Vector2.Transform(screenPosition + new Vector2(canvas.RenderRectangle.X, canvas.RenderRectangle.Y), Matrix.Invert(TransformMatrix));
+        Vector2.Transform(screenPosition + canvas.RenderRectangle.ToVector2(), Matrix.Invert(TransformMatrix));
 
     public Vector2 GetScreenPosition(Vector2 worldPosition) =>
         Vector2.Transform(worldPosition, TransformMatrix);
 
     private void WindowSizeHasChanged(object sender, EventArgs e)
     {
-        Origin = new Vector2(window.ClientBounds.Center.X, window.ClientBounds.Center.Y);
+        Origin = window.ClientBounds.Center.ToVector2();
         UpdateMatrices();
     }
 
@@ -107,7 +107,8 @@ public class Camera : IDisposable
         TransformMatrix = GetTransformMatrix();
     }
 
-    private Matrix GetTransformMatrix() => 
+    private Matrix GetTransformMatrix() =>
+        // Matrix.CreateOrthographicOffCenter(0, canvas.VirtualWidth, canvas.VirtualHeight, 0, 0, 1);
         GetTransformMatrix(Vector2.One);
 
     private Matrix GetTransformMatrix(Vector2 parallax) => 

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
@@ -27,4 +28,19 @@ public static class Extensions
             }
         }
     }
+
+    public static Vector2 ToVector2(this Point point) =>
+        new Vector2(point.X, point.Y);
+        
+    public static Vector2 ToVector2(this Rectangle rect) =>
+        new Vector2(rect.X, rect.Y);
+}
+
+public static class AtomicMath
+{
+    public static float Min(params float[] values) =>
+        values.Min();
+
+    public static float Max(params float[] values) =>
+        values.Max();
 }

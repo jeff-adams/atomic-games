@@ -17,14 +17,14 @@ public class AtomicGame : Game
     private SpriteBatch spriteBatch;
     private ShapeBatch shapeBatch;
     private InputManager inputManager;
-    private GameState currentGameState;
+    private Scene currentScene;
 
     public Canvas Canvas => canvas;
     public Camera Camera => camera;
     public UI UI => ui;
 
     public AtomicGame(
-        GameState firstGameState, 
+        Scene firstScene, 
         string gameTitle, 
         int resolutionWidth, int resolutionHeight,
         int virtualWidth, int virtualHeight)
@@ -47,14 +47,14 @@ public class AtomicGame : Game
         Window.Title = gameTitle;
         Window.ClientSizeChanged += UpdateCanvasRenderSize;
 
-        currentGameState = firstGameState;
+        currentScene = firstScene;
     }
 
     protected override void Initialize()
     {
         canvas.UpdateRenderRectangle();
 
-        currentGameState.Initialize(this);
+        currentScene.Initialize(this);
 
         var broadcasters = new IBroadcaster[]
         {
@@ -66,7 +66,7 @@ public class AtomicGame : Game
         Components.Add(new BroadcastComponent(this, broadcasters));
 
         inputManager = new InputManager(broadcasters);
-        inputManager.SetActionMap(currentGameState.ActionMap);
+        inputManager.SetActionMap(currentScene.ActionMap);
 
         base.Initialize();
     }
@@ -74,12 +74,12 @@ public class AtomicGame : Game
     protected override void LoadContent()
     {
         spriteBatch = new SpriteBatch(GraphicsDevice);
-        currentGameState.LoadContent();
+        currentScene.LoadContent();
     }
 
     protected override void Update(GameTime gameTime)
     {
-        currentGameState.Update(gameTime);
+        currentScene.Update(gameTime);
         camera.Update(gameTime);
         ui.UpdateContent(gameTime);
 
@@ -89,7 +89,7 @@ public class AtomicGame : Game
     protected override void Draw(GameTime gameTime)
     {
         canvas.Activate();
-        GraphicsDevice.Clear(currentGameState.BackgroundColor);
+        GraphicsDevice.Clear(currentScene.BackgroundColor);
 
         // var effect = new BasicEffect(GraphicsDevice);
         // effect.View = camera.ViewMatrix;
@@ -98,7 +98,7 @@ public class AtomicGame : Game
 
         spriteBatch.Begin(transformMatrix: camera.TransformMatrix, samplerState: SamplerState.PointClamp);
         shapeBatch.Begin(Vector2.Zero);
-        currentGameState.Draw(gameTime, spriteBatch, shapeBatch);
+        currentScene.Draw(gameTime, spriteBatch, shapeBatch);
         spriteBatch.End();
         shapeBatch.End();
 
@@ -123,24 +123,24 @@ public class AtomicGame : Game
     private void UpdateCanvasRenderSize(object sender, EventArgs e) =>
         canvas.UpdateRenderRectangle();
 
-    private void SwitchGameState(GameState nextGameState)
+    private void SwitchGameState(Scene nextGameState)
     {
-        if (currentGameState != null)
+        if (currentScene != null)
         {
-            currentGameState.OnGameStateSwitch -= SwitchGameState;
-            currentGameState.UnloadContent();
+            currentScene.OnGameStateSwitch -= SwitchGameState;
+            currentScene.UnloadContent();
         }
 
-        currentGameState = nextGameState;
-        currentGameState.Initialize(this);
-        currentGameState.LoadContent();
-        currentGameState.OnGameStateSwitch += SwitchGameState;
-        inputManager.SetActionMap(currentGameState.ActionMap);
+        currentScene = nextGameState;
+        currentScene.Initialize(this);
+        currentScene.LoadContent();
+        currentScene.OnGameStateSwitch += SwitchGameState;
+        inputManager.SetActionMap(currentScene.ActionMap);
     }
 
     protected override void UnloadContent()
     {
-        currentGameState?.UnloadContent();
+        currentScene?.UnloadContent();
         base.UnloadContent();
     }
 }

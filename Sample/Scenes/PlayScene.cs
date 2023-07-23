@@ -8,7 +8,7 @@ using AtomicGames.Engine.Components;
 
 namespace AtomicGames.Sample;
 
-public class PlayState : GameState
+public class PlayScene : Scene
 {
     private SpriteObject ship;
     private SpriteObject alert;
@@ -18,12 +18,11 @@ public class PlayState : GameState
     SpriteFont largeFont;
 
     private float deltaTime;
-    private float speed = 1.25f;
 
     public override IActionMap ActionMap => input;
     private ActionMapPlay input;
 
-    public PlayState()
+    public PlayScene()
     {
         input = new ActionMapPlay();
         BackgroundColor = Color.DimGray;
@@ -53,7 +52,7 @@ public class PlayState : GameState
             AddGameObject(meteor);
         }
 
-        ship = new SpriteObject(Load<Texture2D>("player/player")); // Need rotation to be (float)(Math.PI / 2)?
+        ship = new SpriteObject(Load<Texture2D>("player/player"));
         ship.Transform.Position = new Vector2(50f, 100f);
         AddGameObject(ship);
         Camera.Follow(ship, 0.15f);
@@ -115,8 +114,11 @@ public class PlayState : GameState
         debug.AddDebugMessage("ship direction", debug.ConvertPositionToDebugMessage(ship.Transform.Direction));
     }
 
-    private void MoveShip(Vector2 dir) => 
+    private void MoveShip(Vector2 dir)
+    {
+        float speed = 0.05f;
         ship.Move(dir * deltaTime * speed);
+    }
 
     private void MoveCamera(Vector2 input)
     {

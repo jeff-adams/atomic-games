@@ -9,7 +9,7 @@ using AtomicGames.Engine.Components;
 
 namespace AtomicGames.Engine;
 
-public abstract class GameState : IDisposable
+public abstract class Scene : IDisposable
 {
     public abstract IActionMap ActionMap { get; }
     public Camera Camera { get; private set; }
@@ -60,9 +60,9 @@ public abstract class GameState : IDisposable
         UnloadContent();
     }
 
-    public event Action<GameState> OnGameStateSwitch;
+    public event Action<Scene> OnGameStateSwitch;
 
-    protected void SwitchGameState(GameState newGameState)
+    protected void SwitchGameState(Scene newGameState)
     {
         OnGameStateSwitch?.Invoke(newGameState);
     }

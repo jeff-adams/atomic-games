@@ -17,12 +17,16 @@ public abstract class GameObject : IGameObject
     public bool IsVisible { get; set; } = true;
     public bool IsBoundsVisible { get; set; } = false;
 
-    public GameObject() : this(new Transform()) 
+    public GameObject() : this(Vector2.Zero) 
     { }
 
-    public GameObject(Transform transform)
+    public GameObject(Vector2 position)
     {
-        Transform = transform;
+        Transform = new Transform()
+        {
+            Position = position
+        };
+        
         Children = new HashSet<GameObject>();
         Bounds = new Rectangle((int)Transform.Position.X, (int)Transform.Position.Y, 0, 0);
     }

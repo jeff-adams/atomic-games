@@ -9,8 +9,11 @@ public class Transform
     private Transform parentTransform;
     private HashSet<Transform> childrenTransforms;
     private Vector2 position;
+    private Vector2 origin;
     private float rotation;
     private float scale;
+
+    public Vector2 Origin { get; set; }
     
     public Vector2 Position 
     { 
@@ -49,14 +52,14 @@ public class Transform
     public Matrix LocalMatrix { get; private set; }
     public Matrix WorldMatrix { get; private set; }
 
-    public Transform() : this(null) { }
+    public Transform() : this(Vector2.Zero) 
+    { }
 
-    public Transform(Transform parentTransform)
+    public Transform(Vector2 origin)
     {
-        if (parentTransform != null)
-            this.parentTransform = parentTransform;
-        
-        Position = new Vector2(0, 0);
+        Position = Vector2.Zero;
+        this.origin = origin;
+        scale = 1f;
     }
 
     public Transform AddParentTransform(Transform parentTransform)
@@ -84,8 +87,8 @@ public class Transform
 
     public void UpdateMatrices()
     {
-        LocalMatrix = UpdateLocalMatrix();
-        WorldMatrix = UpdateWorldMatrix();
+        LocalMatrix = GetLocalMatrix();
+        WorldMatrix = GetWorldMatrix();
 
         if (childrenTransforms is null) return;
         
@@ -95,14 +98,15 @@ public class Transform
         }
     }
 
-    private Matrix UpdateWorldMatrix()
+    private Matrix GetWorldMatrix()
     {
         if (parentTransform is null) return LocalMatrix;
 
         return parentTransform.WorldMatrix * LocalMatrix;
     }
 
-    private Matrix UpdateLocalMatrix() =>
+    private Matrix GetLocalMatrix() =>
+        Matrix.CreateTranslation(new Vector3(-Origin, 0)) *
         Matrix.CreateScale(scale) *
         Matrix.CreateRotationZ(rotation) *
         Matrix.CreateTranslation(new Vector3(position, 0));
