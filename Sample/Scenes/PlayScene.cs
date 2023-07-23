@@ -53,12 +53,12 @@ public class PlayScene : Scene
         }
 
         ship = new SpriteObject(Load<Texture2D>("player/player"));
-        ship.Transform.MoveTo(new Vector2(50f, 100f));
+        ship.Transform.MoveTo(new Vector2(100f, 100f));
         AddGameObject(ship);
         Camera.Follow(ship, 0.15f);
 
         alert = new SpriteObject(Load<Texture2D>("player/alert"), 0.4f);
-        alert.Transform.MoveTo(new Vector2(20f, 20f));
+        alert.Transform.MoveTo(new Vector2(0f, 0f));
         ship.AddChildObject(alert); 
         
         debug = new Debugger(smallFont);
