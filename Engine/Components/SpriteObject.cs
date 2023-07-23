@@ -1,3 +1,4 @@
+using System.Linq;
 using AtomicGames.Engine.Graphics;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -33,6 +34,13 @@ public class SpriteObject : GameObject
     
     protected override void SetBounds()
     {
+        Rectangle selfBounds = CalculateSelfBounds();
+        Bounds = selfBounds;
+        // Not working ??? -> Children.Aggregate(selfBounds, (growingRect, child) => Rectangle.Intersect(growingRect, child.Bounds));
+    }
+
+    private Rectangle CalculateSelfBounds()
+    {
         Vector2 topLeft = Vector2.Transform(new Vector2(0, 0), Transform.LocalMatrix);
         Vector2 topRight = new (Sprite.Width, 0);
         Vector2 bottomRight = new (Sprite.Width, Sprite.Height);
@@ -46,7 +54,7 @@ public class SpriteObject : GameObject
             AtomicMath.Max(topLeft.X, topRight.X, bottomRight.X, bottomLeft.X),
             AtomicMath.Max(topLeft.Y, topRight.Y, bottomRight.Y, bottomLeft.Y));
 
-        Bounds = new Rectangle((int)min.X, (int)min.Y, (int)(max.X - min.X), (int)(max.Y - min.Y));
+        return new Rectangle((int)min.X, (int)min.Y, (int)(max.X - min.X), (int)(max.Y - min.Y));
     }
 
     public override string ToString() =>

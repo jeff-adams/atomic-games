@@ -116,7 +116,7 @@ public class PlayScene : Scene
 
     private void MoveShip(Vector2 dir)
     {
-        float speed = 0.05f;
+        float speed = 1f;
         ship.Move(dir * deltaTime * speed);
     }
 

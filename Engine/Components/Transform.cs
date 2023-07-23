@@ -102,7 +102,7 @@ public class Transform
     {
         if (parentTransform is null) return LocalMatrix;
 
-        return parentTransform.WorldMatrix * LocalMatrix;
+        return LocalMatrix * Matrix.Invert(parentTransform.WorldMatrix);
     }
 
     private Matrix GetLocalMatrix() =>
