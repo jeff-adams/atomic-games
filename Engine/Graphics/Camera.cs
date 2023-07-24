@@ -90,7 +90,7 @@ public class Camera : IDisposable
     }
 
     public Vector2 GetWorldPosition(Vector2 screenPosition) =>
-        Vector2.Transform(screenPosition + canvas.RenderRectangle.ToVector2(), Matrix.Invert(TransformMatrix));
+        Vector2.Transform(screenPosition + canvas.RenderRectangle.PositionToVector2(), Matrix.Invert(TransformMatrix));
 
     public Vector2 GetScreenPosition(Vector2 worldPosition) =>
         Vector2.Transform(worldPosition, TransformMatrix);
