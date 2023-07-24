@@ -21,7 +21,10 @@ public class Canvas : IDisposable
         VirtualWidth = width;
         VirtualHeight = height;
         VirtualCenter = new Vector2(width * 0.5f, height * 0.5f);
-        VirtualScaleMatrix = Matrix.CreateScale(width / width, height / height, 1.0f);
+        VirtualScaleMatrix = Matrix.CreateScale(
+            graphics.Viewport.Width / width, 
+            graphics.Viewport.Height / height, 
+            1.0f);
 
         this.graphics = graphics;
 
@@ -45,7 +48,7 @@ public class Canvas : IDisposable
 
     internal Rectangle UpdateRenderRectangle()
     {
-        Rectangle screenSize = graphics.PresentationParameters.Bounds;
+        Rectangle screenSize = graphics.Viewport.Bounds;
         
         float scaleX = (float)screenSize.Width / renderTarget.Width;
         float scaleY = (float)screenSize.Height / renderTarget.Height;

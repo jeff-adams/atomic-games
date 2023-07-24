@@ -31,7 +31,9 @@ public class AtomicGame : Game
         : this(firstScene, gameTitle, virtualWidth, virtualHeight) 
     {
         graphics.IsFullScreen = false;
-        SetResolution(resolutionWidth, resolutionHeight);
+        graphics.PreferredBackBufferWidth = resolutionWidth;
+        graphics.PreferredBackBufferHeight = resolutionHeight;
+        graphics.ApplyChanges();
     }
 
     public AtomicGame(
@@ -40,7 +42,10 @@ public class AtomicGame : Game
         int virtualWidth, int virtualHeight)
     {
         graphics = new GraphicsDeviceManager(this);
-        graphics.IsFullScreen = true;
+        graphics.ApplyChanges();
+        graphics.PreferredBackBufferWidth = GraphicsDevice.DisplayMode.Width;
+        graphics.PreferredBackBufferHeight = GraphicsDevice.DisplayMode.Height;
+        graphics.ApplyChanges();
 
         canvas = new Canvas(GraphicsDevice, virtualWidth, virtualHeight);
         camera = new Camera(Window, canvas);
@@ -119,13 +124,6 @@ public class AtomicGame : Game
         canvas.Draw(spriteBatch);
 
         base.Draw(gameTime);
-    }
-
-    private void SetResolution(int width, int height)
-    {
-        graphics.PreferredBackBufferWidth = width;
-        graphics.PreferredBackBufferHeight = height;
-        graphics.ApplyChanges();
     }
 
     private void UpdateCanvasRenderSize(object sender, EventArgs e) =>
