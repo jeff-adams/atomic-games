@@ -30,7 +30,7 @@ public class AtomicGame : Game
         int virtualWidth, int virtualHeight)
     {
         graphics = new GraphicsDeviceManager(this);
-        graphics.IsFullScreen = false;
+        graphics.IsFullScreen = true;
 
         SetResolution(resolutionWidth, resolutionHeight);
 
@@ -42,7 +42,7 @@ public class AtomicGame : Game
         Content.RootDirectory = "Content";
         IsMouseVisible = true;
 
-        Window.AllowUserResizing = true;
+        Window.AllowUserResizing = false;
         Window.IsBorderless = true;
         Window.Title = gameTitle;
         Window.ClientSizeChanged += UpdateCanvasRenderSize;
@@ -96,7 +96,7 @@ public class AtomicGame : Game
         // effect.Projection = camera.ProjectionMatrix;
         // spriteBatch.Begin(samplerState: SamplerState.PointClamp, effect: effect);
 
-        spriteBatch.Begin(transformMatrix: camera.TransformMatrix, samplerState: SamplerState.PointClamp);
+        spriteBatch.Begin(transformMatrix: camera.ViewMatrix, samplerState: SamplerState.PointClamp);
         shapeBatch.Begin(Vector2.Zero);
         currentScene.Draw(gameTime, spriteBatch, shapeBatch);
         spriteBatch.End();

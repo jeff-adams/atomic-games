@@ -27,7 +27,7 @@ public class ShapeBatch : IDisposable
         effect.VertexColorEnabled = true;
         effect.World = Matrix.Identity;
         effect.View = Matrix.Identity;
-        effect.Projection = camera.TransformMatrix;
+        effect.Projection = camera.ViewMatrix;
 
         const int maxIndexCount = short.MaxValue;
         vertices = new VertexPositionColor[maxIndexCount / 3];

@@ -9,6 +9,7 @@ public class Canvas : IDisposable
     public int VirtualWidth { get; }
     public int VirtualHeight { get; }
     public Vector2 VirtualCenter { get; }
+    public Matrix VirtualScaleMatrix { get; }
     public Rectangle RenderRectangle => renderRect;
 
     private readonly GraphicsDevice graphics;
@@ -20,6 +21,7 @@ public class Canvas : IDisposable
         VirtualWidth = width;
         VirtualHeight = height;
         VirtualCenter = new Vector2(width * 0.5f, height * 0.5f);
+        VirtualScaleMatrix = Matrix.CreateScale(width / width, height / height, 1.0f);
 
         this.graphics = graphics;
 

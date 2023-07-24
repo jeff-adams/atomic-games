@@ -10,7 +10,7 @@ public class Camera : IDisposable
     public Vector2 Origin { get; private set; }
     public float Zoom { get; private set; }
     public float Rotation { get; private set; }
-    public Matrix TransformMatrix { get; private set; }
+    public Matrix ViewMatrix { get; private set; }
 
     private readonly GameWindow window;
     private readonly Canvas canvas;
@@ -29,8 +29,8 @@ public class Camera : IDisposable
         this.canvas = canvas;
         gameWindow.ClientSizeChanged += WindowSizeHasChanged;
 
-        // Origin = new Vector2(window.ClientBounds.Center.X, window.ClientBounds.Center.Y);
-        Origin = Vector2.Zero;
+        Origin = new Vector2(window.ClientBounds.Center.X, window.ClientBounds.Center.Y);
+        //Origin = Vector2.Zero;
         UpdateMatrices();
     }
 
@@ -90,10 +90,10 @@ public class Camera : IDisposable
     }
 
     public Vector2 GetWorldPosition(Vector2 screenPosition) =>
-        Vector2.Transform(screenPosition + canvas.RenderRectangle.PositionToVector2(), Matrix.Invert(TransformMatrix));
+        Vector2.Transform(screenPosition - canvas.RenderRectangle.PositionToVector2(), Matrix.Invert(ViewMatrix));
 
-    public Vector2 GetScreenPosition(Vector2 worldPosition) =>
-        Vector2.Transform(worldPosition, TransformMatrix);
+    public Vector2 WorldToScreenPostition(Vector2 worldPosition) =>
+        Vector2.Transform(worldPosition + canvas.RenderRectangle.PositionToVector2(), ViewMatrix);
 
     private void WindowSizeHasChanged(object sender, EventArgs e)
     {
@@ -103,19 +103,19 @@ public class Camera : IDisposable
 
     private void UpdateMatrices()
     {
-        TransformMatrix = GetTransformMatrix();
+        ViewMatrix = GetTransformMatrix();
     }
 
     private Matrix GetTransformMatrix() =>
-        // Matrix.CreateOrthographicOffCenter(0, canvas.VirtualWidth, canvas.VirtualHeight, 0, 0, 1);
-        GetTransformMatrix(Vector2.One);
+        CalculateViewMatrix(Vector2.One);
 
-    private Matrix GetTransformMatrix(Vector2 parallax) => 
+    private Matrix CalculateViewMatrix(Vector2 parallax) => 
         Matrix.CreateTranslation(new Vector3(-Position * parallax, 0.0f)) *
         Matrix.CreateTranslation(new Vector3(-Origin, 0.0f)) *
         Matrix.CreateRotationZ(Rotation) *
         Matrix.CreateScale(Zoom, Zoom, 1) *
-        Matrix.CreateTranslation(new Vector3(Origin, 0.0f));
+        Matrix.CreateTranslation(new Vector3(Origin, 0.0f)) *
+        canvas.VirtualScaleMatrix;
     
     public override string ToString() =>
         $"Position: {Position}, Origin: {Origin}, Target: {target?.Position}";

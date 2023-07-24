@@ -78,9 +78,9 @@ public class PlayScene : Scene
 
     private void MousePosition(Vector2 position)
     {
+        Vector2 mouseWorldPosition = Camera.GetWorldPosition(position);
         debug.AddDebugMessage("mouse pos", debug.ConvertPositionToDebugMessage(position));
-        Vector2 worldPosition = Camera.GetWorldPosition(position);
-        debug.AddDebugMessage("mouse world pos", debug.ConvertPositionToDebugMessage(worldPosition));
+        debug.AddDebugMessage("mouse world pos", debug.ConvertPositionToDebugMessage(mouseWorldPosition));
     }
 
     private void MouseDirection(Vector2 mouseScreenPosition)
@@ -91,7 +91,7 @@ public class PlayScene : Scene
         // mouseRenderPosition.X = mouseRenderPosition.X / Canvas.RenderRectangle.Width * Canvas.Width;
         // mouseRenderPosition.Y = mouseRenderPosition.Y / Canvas.RenderRectangle.Height * Canvas.Height;
 
-        var mouseWorldPosition = Vector2.Transform(mouseRenderPosition, Matrix.Invert(Camera.TransformMatrix));
+        var mouseWorldPosition = Vector2.Transform(mouseRenderPosition, Matrix.Invert(Camera.ViewMatrix));
         var mouseDirection = Vector2.Normalize(ship.Position - mouseWorldPosition);
         RotateShip(mouseDirection);
         
