@@ -66,6 +66,7 @@ public class Transform
         if(this.parentTransform is not null)    
             this.parentTransform.OnUpdatedMatrices -= UpdateMatrices;
 
+        // translate current pos to position from parent???
         this.parentTransform = parentTransform.AddChildTransform(this);
         parentTransform.OnUpdatedMatrices += UpdateMatrices;
 

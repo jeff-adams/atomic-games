@@ -28,8 +28,9 @@ public class Camera : IDisposable
         this.window = gameWindow;
         this.canvas = canvas;
         gameWindow.ClientSizeChanged += WindowSizeHasChanged;
-        
-        Origin = new Vector2(window.ClientBounds.Center.X, window.ClientBounds.Center.Y);
+
+        // Origin = new Vector2(window.ClientBounds.Center.X, window.ClientBounds.Center.Y);
+        Origin = Vector2.Zero;
         UpdateMatrices();
     }
 
@@ -37,8 +38,7 @@ public class Camera : IDisposable
     {
         if (target != null)
         {
-            var targetCenter = target.Bounds.Center.ToVector2();
-            Position = Vector2.Lerp(Position, targetCenter - canvas.VirtualCenter, cameraSmoothing);
+            Position = Vector2.Lerp(Position, target.Position + target.Origin - canvas.VirtualCenter, cameraSmoothing);
             UpdateMatrices();
         }
     }

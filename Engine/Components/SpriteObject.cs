@@ -20,7 +20,7 @@ public class SpriteObject : GameObject
             Scale = new Vector2(scale, scale)
         };
 
-        Origin = Sprite.Origin;
+        Origin = new Vector2(Sprite.Width * 0.5f, Sprite.Height * 0.5f);
 
         SetBounds();
     }

@@ -12,7 +12,7 @@ public class PlayScene : Scene
 {
     private SpriteObject ship;
     private SpriteObject alert;
-    // private ShapeRectangle square;
+    private ShapeRectangle square;
     private Debugger debug;
     SpriteFont smallFont;
     SpriteFont largeFont;
@@ -33,8 +33,8 @@ public class PlayScene : Scene
         smallFont = Load<SpriteFont>("fonts/MajorMonoDisplay_small");
         largeFont = Load<SpriteFont>("fonts/MajorMonoDisplay_large");
 
-        // square = new ShapeRectangle(new Rectangle(0, 0, 1, 1), Color.CadetBlue);
-        // AddGameObject(square);
+        square = new ShapeRectangle(1.0f, 1.0f, 0.25f, 0.25f, Color.CadetBlue);
+        AddGameObject(square);
 
         var meteorTypes = new Texture2D[]{
             Load<Texture2D>("objects/meteor_a"),
@@ -58,8 +58,7 @@ public class PlayScene : Scene
         Camera.Follow(ship, 0.15f);
 
         alert = new SpriteObject(Load<Texture2D>("player/alert"), 0.4f);
-        // TODO: how do i position the object before attaching to parent?
-        alert.Move(new Vector2(80f, 0f));
+        alert.MoveTo(new Vector2(80f, 40f));
         ship.AddChildObject(alert); 
         
         debug = new Debugger(smallFont);

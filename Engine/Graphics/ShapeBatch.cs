@@ -22,11 +22,12 @@ public class ShapeBatch : IDisposable
     {
         this.graphics = graphics ?? throw new ArgumentNullException(nameof(graphics));
         this.camera = camera ?? throw new ArgumentException(nameof(camera));
+        
         effect = new BasicEffect(graphics);
         effect.VertexColorEnabled = true;
-        //effect.View = camera.TransformMatrix;
-        //effect.Projection = camera.ProjectionMatrix;
-        effect.World = camera.TransformMatrix;
+        effect.World = Matrix.Identity;
+        effect.View = Matrix.Identity;
+        effect.Projection = camera.TransformMatrix;
 
         const int maxIndexCount = short.MaxValue;
         vertices = new VertexPositionColor[maxIndexCount / 3];
@@ -142,7 +143,7 @@ public class ShapeBatch : IDisposable
 
     public void Rectangle(Rectangle rect, float thickness, Color color) =>
         Rectangle(
-            rect.X, rect.Y, 
+            rect.Left, rect.Top, 
             rect.Right, rect.Top, 
             rect.Right, rect.Bottom, 
             rect.Left, rect.Bottom,

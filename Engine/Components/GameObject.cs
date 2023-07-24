@@ -111,5 +111,5 @@ public abstract class GameObject : IGameObject
     }
 
     public override string ToString() =>
-        $"Position: {transform.Position}, Bounds: {Bounds}, HasParent: {Parent != null}";
+        $"Position: {transform.Position}, Origin: {transform.Origin} Bounds: {Bounds}, HasParent: {Parent != null}";
 }
