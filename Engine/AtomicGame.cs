@@ -25,14 +25,22 @@ public class AtomicGame : Game
 
     public AtomicGame(
         Scene firstScene, 
-        string gameTitle, 
-        int resolutionWidth, int resolutionHeight,
+        string gameTitle,
+        int resolutionWidth, int resolutionHeight, 
+        int virtualWidth, int virtualHeight)
+        : this(firstScene, gameTitle, virtualWidth, virtualHeight) 
+    {
+        graphics.IsFullScreen = false;
+        SetResolution(resolutionWidth, resolutionHeight);
+    }
+
+    public AtomicGame(
+        Scene firstScene, 
+        string gameTitle,
         int virtualWidth, int virtualHeight)
     {
         graphics = new GraphicsDeviceManager(this);
         graphics.IsFullScreen = true;
-
-        SetResolution(resolutionWidth, resolutionHeight);
 
         canvas = new Canvas(GraphicsDevice, virtualWidth, virtualHeight);
         camera = new Camera(Window, canvas);
