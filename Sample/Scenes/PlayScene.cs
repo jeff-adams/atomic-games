@@ -33,7 +33,7 @@ public class PlayScene : Scene
         smallFont = Load<SpriteFont>("fonts/MajorMonoDisplay_small");
         largeFont = Load<SpriteFont>("fonts/MajorMonoDisplay_large");
 
-        square = new ShapeRectangle(10f, 10f, Color.CadetBlue);
+        square = new ShapeRectangle(1f, 1f, Color.CadetBlue);
         AddGameObject(square);
 
         var meteorTypes = new Texture2D[]{

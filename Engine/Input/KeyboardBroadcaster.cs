@@ -22,14 +22,6 @@ public class KeyboardBroadcaster : IKeyboardBroadcaster
 
     public void Update(GameTime gameTime)
     {
-        if (previousState == null)
-        {
-            foreach(Keys key in Keyboard.GetState().GetPressedKeys())
-            {
-                OnKeyPressed?.Invoke(key, new InputState(key.ToString(), pressed: true, held: false));
-            }
-        }
-         
         KeyboardState currentState = Keyboard.GetState();
         Keys[] previousKeys = previousState.GetPressedKeys();
 
