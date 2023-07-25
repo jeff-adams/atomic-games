@@ -104,11 +104,6 @@ public class AtomicGame : Game
         canvas.Activate();
         GraphicsDevice.Clear(currentScene.BackgroundColor);
 
-        // var effect = new BasicEffect(GraphicsDevice);
-        // effect.View = camera.ViewMatrix;
-        // effect.Projection = camera.ProjectionMatrix;
-        // spriteBatch.Begin(samplerState: SamplerState.PointClamp, effect: effect);
-
         spriteBatch.Begin(transformMatrix: camera.ViewMatrix, samplerState: SamplerState.PointClamp);
         shapeBatch.Begin(Vector2.Zero);
         currentScene.Draw(gameTime, spriteBatch, shapeBatch);
