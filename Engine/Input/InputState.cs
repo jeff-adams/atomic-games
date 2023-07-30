@@ -2,14 +2,16 @@ namespace AtomicGames.Engine.Input;
 
 public struct InputState
 {
-    public string Name { get; }
-    public bool Pressed { get; }
-    public bool Held { get; }
+    public string Name { get; init; }
+    public bool Pressed { get; init; }
+    public bool Held { get; init; }
+    public bool Released { get; init; }
 
-    public InputState(string inputName, bool pressed, bool held)
+    public InputState(string inputName, bool pressed, bool held, bool released)
     {
         Name = inputName;
         Pressed = pressed;
         Held = held;
+        Released = released;
     }
 }

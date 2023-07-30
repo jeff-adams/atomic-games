@@ -28,7 +28,8 @@ public class KeyboardBroadcaster : IKeyboardBroadcaster
         foreach(Keys key in currentState.GetPressedKeys())
         {
             bool isKeyHeld = previousKeys.Contains(key);
-            OnKeyPressed?.Invoke(key, new InputState(key.ToString(), pressed: true, held: isKeyHeld));
+            bool isKeyReleased = !previousKeys.Contains(key);
+            OnKeyPressed?.Invoke(key, new InputState(key.ToString(), pressed: true, held: isKeyHeld, released: isKeyReleased));
         }
 
         previousState = currentState;

@@ -33,7 +33,7 @@ public class PlayScene : Scene
         smallFont = Load<SpriteFont>("fonts/MajorMonoDisplay_small");
         largeFont = Load<SpriteFont>("fonts/MajorMonoDisplay_large");
 
-        square = new ShapeRectangle(1f, 1f, Color.CadetBlue);
+        square = new ShapeRectangle(100f, 100f, Color.CadetBlue);
         AddGameObject(square);
 
         var meteorTypes = new Texture2D[]{
@@ -55,7 +55,7 @@ public class PlayScene : Scene
         ship = new SpriteObject(Load<Texture2D>("player/player"));
         ship.MoveTo(new Vector2(0f, 0f));
         AddGameObject(ship);
-        Camera.Follow(ship, 0.15f);
+        //Camera.Follow(ship, 0.15f);
 
         alert = new SpriteObject(Load<Texture2D>("player/alert"), 0.4f);
         alert.MoveTo(new Vector2(75f, 35f));
@@ -71,6 +71,7 @@ public class PlayScene : Scene
     {
         deltaTime = gameTime.ElapsedGameTime.Milliseconds;
         debug.AddDebugConsoleMessage("ship", ship.ToString());
+        debug.AddDebugMessage("ship", debug.ConvertPositionToDebugMessage(ship.Position));
         debug.AddDebugConsoleMessage("alert", alert.ToString());
         debug.AddDebugConsoleMessage("square", square.ToString());
         debug.AddDebugConsoleMessage("camera", Camera.ToString());

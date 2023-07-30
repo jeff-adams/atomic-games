@@ -26,8 +26,9 @@ public class ShapeBatch : IDisposable
         effect = new BasicEffect(graphics);
         effect.VertexColorEnabled = true;
         effect.World = Matrix.Identity;
-        effect.View = camera.ViewMatrix;
-        //effect.Projection = Matrix.CreateOrthographicOffCenter(0f, graphics.Viewport.Width, graphics.Viewport.Height, 0f, 0f, 1f); 
+        //effect.View = camera.ViewMatrix;
+        //effect.Projection = Matrix.CreateOrthographicOffCenter(0f, graphics.Viewport.Width, graphics.Viewport.Height, 0f, 0f, 1000f); 
+        effect.Projection = Matrix.CreatePerspectiveOffCenter(0f, graphics.Viewport.Width, graphics.Viewport.Height, 0f, 0.1f, 1000f);
 
         const int maxIndexCount = short.MaxValue;
         vertices = new VertexPositionColor[maxIndexCount / 3];
@@ -178,7 +179,7 @@ public class ShapeBatch : IDisposable
         float minThickness = 1f;
         float maxThickness = 10f;
         thickness = MathHelper.Clamp(thickness, minThickness, maxThickness);
-        float lineCenter = thickness / 2f;
+        float lineCenter = thickness * 0.5f;
 
         float e1x = bx - ax;
         float e1y = by - ay;

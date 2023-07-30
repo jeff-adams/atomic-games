@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 
@@ -11,32 +12,45 @@ public class MouseBroadcaster : IMouseBroadcaster
     public void Disable() => IsEnabled = false;
 
     public event Action<Vector2> MousePosition;
-    public event Action<MouseButtons> OnMouseButtonPressed;
+    public event Action<MouseButtons, InputState> OnMouseButtonPressed;
+
+    private MouseState previousMouseState;
 
     public MouseBroadcaster()
     {
         IsEnabled = true;
+        previousMouseState = new MouseState();
     }
 
     public void Update(GameTime gameTime)
     {
-        var mouseState = Mouse.GetState();
+        MouseState mouseState = Mouse.GetState();
         
         MousePosition?.Invoke(new Vector2(mouseState.X, mouseState.Y));
-        
-        if (mouseState.RightButton == ButtonState.Pressed)
+
+        foreach (var button in mouseMappings)
         {
-            OnMouseButtonPressed?.Invoke(MouseButtons.RightButton);
+            var currentButtonState = button.Value.Invoke(mouseState);
+            var pastButtonState = button.Value.Invoke(previousMouseState);
+            
+            bool buttonPressed = currentButtonState == ButtonState.Pressed && pastButtonState == ButtonState.Released;
+            bool buttonHeld = currentButtonState == ButtonState.Pressed && pastButtonState == ButtonState.Pressed;
+            bool buttonReleased = currentButtonState == ButtonState.Released && pastButtonState == ButtonState.Pressed;
+            var inputState = new InputState(button.Key.ToString(), buttonPressed, buttonHeld, buttonReleased);
+            
+            if (inputState.Pressed || inputState.Held || inputState.Released)
+            {
+                OnMouseButtonPressed?.Invoke(button.Key, inputState);
+            }
         }
 
-        if (mouseState.LeftButton == ButtonState.Pressed)
-        {
-            OnMouseButtonPressed?.Invoke(MouseButtons.LeftButton);
-        }
-
-        if (mouseState.MiddleButton == ButtonState.Pressed)
-        {
-            OnMouseButtonPressed?.Invoke(MouseButtons.RightButton);
-        }
+        previousMouseState = mouseState;
     }
+
+    private Dictionary<MouseButtons, Func<MouseState, ButtonState>> mouseMappings = new Dictionary<MouseButtons, Func<MouseState, ButtonState>>
+    {
+        {MouseButtons.LeftButton, s => s.LeftButton},
+        {MouseButtons.RightButton, s => s.RightButton},
+        {MouseButtons.MiddleButton, s => s.MiddleButton},
+    };
 }

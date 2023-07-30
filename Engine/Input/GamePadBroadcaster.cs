@@ -36,9 +36,10 @@ public class GamePadBroadcaster : IGamePadBroadcaster
             
             bool buttonPressed = currentButtonState == ButtonState.Pressed && pastButtonState == ButtonState.Released;
             bool buttonHeld = currentButtonState == ButtonState.Pressed && pastButtonState == ButtonState.Pressed;
-            var inputState = new InputState(button.Key.ToString(), buttonPressed, buttonHeld);
+            bool buttonReleased = currentButtonState == ButtonState.Released && pastButtonState == ButtonState.Pressed;
+            var inputState = new InputState(button.Key.ToString(), buttonPressed, buttonHeld, buttonReleased);
             
-            if (inputState.Pressed || inputState.Held)
+            if (inputState.Pressed || inputState.Held || inputState.Released)
             {
                 OnButtonPressed?.Invoke(button.Key, inputState);
             }
