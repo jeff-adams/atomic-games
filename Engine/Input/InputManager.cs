@@ -53,11 +53,11 @@ public class InputManager : IDisposable
     private void MousePositionReciever(Vector2 mousePosition) =>
         actionMap.MousePosition(mousePosition);
 
-    private void MouseButtonReceiver(MouseButtons mouseButton)
+    private void MouseButtonReceiver(MouseButtons mouseButton, InputState state)
     {
         if (actionMap.MouseButtonInputs.ContainsKey(mouseButton))
         {
-            actionMap.MouseButtonInputs[mouseButton]();
+            actionMap.MouseButtonInputs[mouseButton](state);
         }
     }
 

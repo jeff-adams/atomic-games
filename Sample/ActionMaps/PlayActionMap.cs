@@ -12,7 +12,7 @@ public class ActionMapPlay : IActionMap
     public Dictionary<Buttons, Action<InputState>> GamepadButtonInputs { get; private set;}
     public Action<Vector2> GamepadThumbstickLeftInput => GetGamePadLeftThumbstickPosition;
     public Action<Vector2> GamepadThumbstickRightInput => GetGamePadRightThumbstickPosition;
-    public Dictionary<MouseButtons, Action> MouseButtonInputs { get; private set; }
+    public Dictionary<MouseButtons, Action<InputState>> MouseButtonInputs { get; private set; }
     public Action<Vector2> MousePosition => GetMousePosition;
 
     public ActionMapPlay()
@@ -53,7 +53,7 @@ public class ActionMapPlay : IActionMap
             {Buttons.Y,  DebugInputPress},
         };
 
-        MouseButtonInputs = new Dictionary<MouseButtons, Action> {
+        MouseButtonInputs = new Dictionary<MouseButtons, Action<InputState>> {
             //{MouseButtons.LeftButton, ThrustInput},
         };
     }
