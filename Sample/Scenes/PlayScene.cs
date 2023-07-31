@@ -4,14 +4,12 @@ using AtomicGames.Engine;
 using AtomicGames.Engine.Input;
 using AtomicGames.Engine.Graphics;
 using AtomicGames.Engine.Components;
-using MonoGame.Aseprite;
-using MonoGame.Aseprite.Content.Processors;
 
 namespace AtomicGames.Sample;
 
 public class PlayScene : Scene
 {
-    private SpriteObject player;
+    private Player player;
     private Debugger debug;
     private SpriteFont font;
 
@@ -24,16 +22,13 @@ public class PlayScene : Scene
     {
         input = new ActionMapPlay();
         BackgroundColor = Color.DimGray;
+        player = new Player(this);
     }
 
     public override void LoadContent()
     {
-        AsepriteFile asePlayer = Load<AsepriteFile>("player/combined");
-        player = new SpriteObject(SpriteProcessor.Process(GraphicsDevice, asePlayer, aseFrameIndex: 0));
-        player.MoveTo(new Vector2(0f, 0f));
-        AddGameObject(player);
-        Camera.Follow(player, 0.15f);
-        
+        player.Initialize(input);
+
         font = Load<SpriteFont>("fonts/tiny");
         debug = new Debugger(font);
         UI.AddChildObject(debug);
@@ -44,8 +39,10 @@ public class PlayScene : Scene
     public override void Update(GameTime gameTime)
     {
         deltaTime = gameTime.ElapsedGameTime.Milliseconds;
-        debug.AddDebugConsoleMessage("player", player.ToString());
-        debug.AddDebugMessage("player", debug.ConvertPositionToDebugMessage(player.Position));
+        player.Update(gameTime);
+        
+        debug.AddDebugConsoleMessage("player", player.Object.ToString());
+        debug.AddDebugMessage("player", debug.ConvertPositionToDebugMessage(player.Object.Position));
         debug.AddDebugConsoleMessage("camera", Camera.ToString());
         debug.AddDebugConsoleMessage("canvas", Canvas.ToString());
     }
@@ -60,13 +57,13 @@ public class PlayScene : Scene
     private void MouseDirection(Vector2 mouseScreenPosition)
     {
         //TODO: Refactor and figure out how to use matrix translations to do this
-        var renderLocation = new Vector2(Canvas.RenderRectangle.Location.X, Canvas.RenderRectangle.Location.Y);
-        var mouseRenderPosition = mouseScreenPosition - renderLocation;
+        // var renderLocation = new Vector2(Canvas.RenderRectangle.Location.X, Canvas.RenderRectangle.Location.Y);
+        // var mouseRenderPosition = mouseScreenPosition - renderLocation;
         // mouseRenderPosition.X = mouseRenderPosition.X / Canvas.RenderRectangle.Width * Canvas.Width;
         // mouseRenderPosition.Y = mouseRenderPosition.Y / Canvas.RenderRectangle.Height * Canvas.Height;
 
-        var mouseWorldPosition = Vector2.Transform(mouseRenderPosition, Matrix.Invert(Camera.ViewMatrix));
-        var mouseDirection = Vector2.Normalize(player.Position - mouseWorldPosition);
+        // var mouseWorldPosition = Vector2.Transform(mouseRenderPosition, Matrix.Invert(Camera.ViewMatrix));
+        // var mouseDirection = Vector2.Normalize(player.Position - mouseWorldPosition);
         
         //DEBUG 
         //debug.AddDebugMessage("mouse screen pos", $"x {mouseScreenPosition.X}, y {mouseScreenPosition.Y}");
@@ -76,11 +73,7 @@ public class PlayScene : Scene
         //debug.AddDebugMessage("mouse direction", $"x {mouseDirection.X}, y {mouseDirection.Y}");
     }
 
-    private void MovePlayer(Vector2 dir)
-    {
-        float speed = 1f;
-        player.Move(dir * speed);
-    }
+    
 
     private void MoveCamera(Vector2 input)
     {
@@ -99,9 +92,9 @@ public class PlayScene : Scene
         Camera.Reset();
     }
 
-    private void CameraFollowShip()
+    private void CameraFollowPlayer()
     {
-        Camera.Follow(player);
+        Camera.Follow(player.Object);
     }
 
     private void ToggleDebug()
@@ -128,16 +121,14 @@ public class PlayScene : Scene
     private void Quit() =>
         System.Environment.Exit(0);
 
-
     private void SubscribeToActions()
     {
         input.OnQuitPressed += Quit;
-        input.OnDirectionInput += MovePlayer;
         input.OnCameraPan += MoveCamera;
         input.OnCameraZoom += ZoomCamera;
         input.OnMousePositionInput += MousePosition;
         input.OnResetCameraPressed += ResetCamera;
-        input.OnCameraTarget += CameraFollowShip;
+        input.OnCameraTarget += CameraFollowPlayer;
         //Debug
         input.OnToggleDebugPressed += ToggleDebug;
         input.OnPrintDebugPressed += PrintDebug;

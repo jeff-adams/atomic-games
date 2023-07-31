@@ -35,7 +35,7 @@ public abstract class Scene : IDisposable
     public void AddGameObject(GameObject gameObject) => 
         gameObjects.Add(gameObject);
 
-    protected T Load<T>(string name) =>
+    public T Load<T>(string name) =>
         contentManager.Load<T>(name);
 
     public void UnloadContent()
