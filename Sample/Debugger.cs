@@ -22,7 +22,7 @@ public class Debugger : GameObject
         verticalSpacing = (int)System.Math.Ceiling((font.MeasureString("A")).Y * 1.2);
         IsActive = false;
         IsVisible = false;
-        MoveTo(new Vector2(20f, 20f));
+        MoveTo(new Vector2(1f, 1f));
         messages = new Dictionary<string, string>();
         consoleMessages = new Dictionary<string, string>();
     }

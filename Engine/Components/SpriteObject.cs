@@ -10,20 +10,18 @@ public class SpriteObject : GameObject
 {
     public Sprite Sprite { get; init; }
 
+    public SpriteObject(Sprite sprite)  : base()
+    {
+        this.Sprite = sprite;
+        Origin = new Vector2(Sprite.Width * 0.5f, Sprite.Height * 0.5f);
+        SetBounds();
+    }
+
     public SpriteObject(Texture2D texture) 
         : this(texture, 1.0f) { }
 
-    public SpriteObject(Texture2D texture, float scale) : base()
-    {
-        Sprite = new Sprite(texture.Name, texture)
-        {
-            Scale = new Vector2(scale, scale)
-        };
-
-        Origin = new Vector2(Sprite.Width * 0.5f, Sprite.Height * 0.5f);
-
-        SetBounds();
-    }
+    public SpriteObject(Texture2D texture, float scale) 
+        : this(new Sprite(texture.Name, texture) { Scale = new Vector2(scale, scale)}) { }
 
     public override void DrawContent(GameTime gameTime, SpriteBatch spriteBatch, ShapeBatch shapeBatch)
     {
