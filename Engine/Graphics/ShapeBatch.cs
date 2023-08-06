@@ -1,4 +1,5 @@
 using System;
+using AtomicGames.Engine.Graphics;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
@@ -6,13 +7,14 @@ namespace AtomicGames.Engine.Graphics;
 
 public class ShapeBatch : IDisposable
 {
-    private GraphicsDevice graphics;
-    private Camera camera;
-    private BasicEffect effect;
+    private readonly GraphicsDevice graphics;
+    private readonly Camera camera;
+    private readonly BasicEffect effect;
 
-    private VertexPositionColor[] vertices;
+    private readonly VertexPositionColor[] vertices;
+    private readonly short[] indices;
+
     private short vertexCount;
-    private short[] indices;
     private short indexCount;
     private int shapeCount;
 
@@ -22,30 +24,30 @@ public class ShapeBatch : IDisposable
     {
         this.graphics = graphics ?? throw new ArgumentNullException(nameof(graphics));
         this.camera = camera ?? throw new ArgumentException(nameof(camera));
-        
-        effect = new BasicEffect(graphics);
-        effect.VertexColorEnabled = true;
-        effect.World = Matrix.Identity;
-        //effect.View = camera.ViewMatrix;
-        //effect.Projection = Matrix.CreateOrthographicOffCenter(0f, graphics.Viewport.Width, graphics.Viewport.Height, 0f, 0f, 1000f); 
-        effect.Projection = Matrix.CreatePerspectiveOffCenter(0f, graphics.Viewport.Width, graphics.Viewport.Height, 0f, 0.1f, 1000f);
+        // Vector3 origin = new Vector3(graphics.Viewport.Width * 0.5f, graphics.Viewport.Height * 0.5f, 0);
+
+        effect = new BasicEffect(graphics)
+        {
+            VertexColorEnabled = true,
+            // View = camera.ViewMatrix,
+            Projection = Matrix.CreateOrthographicOffCenter(0f, graphics.Viewport.Width, graphics.Viewport.Height, 0f, 0f, 1f)
+        };
 
         const int maxIndexCount = short.MaxValue;
         vertices = new VertexPositionColor[maxIndexCount / 3];
         indices = new short[maxIndexCount];
-        
+
         Initialize();
     }
 
     private void Initialize()
     {
-        isStarted = false;
         vertexCount = 0;
         indexCount = 0;
         shapeCount = 0;
     }
 
-    public void Begin(Vector2 pos)
+    public void Begin()
     {
         if (isStarted)
             throw new Exception("Batching is already been started.");
@@ -58,6 +60,7 @@ public class ShapeBatch : IDisposable
         EnsureBatchingIsStarted();
         Flush();
         Initialize();
+        isStarted = false;
     }
 
     private void Flush()
@@ -69,7 +72,7 @@ public class ShapeBatch : IDisposable
         foreach (var pass in effect.CurrentTechnique.Passes)
         {
             pass.Apply();
-            graphics.DrawUserIndexedPrimitives<VertexPositionColor>(
+            graphics.DrawUserIndexedPrimitives(
                 PrimitiveType.TriangleList,
                 vertices,
                 0,
@@ -104,7 +107,7 @@ public class ShapeBatch : IDisposable
 
     public void RectangleFill(Rectangle rect, Color color) =>
         RectangleFill(
-            rect.X, rect.Y, 
+            rect.X, rect.Y,
             rect.Width, rect.Height,
             color);
 
@@ -120,42 +123,42 @@ public class ShapeBatch : IDisposable
         float left = x;
         float right = x + width;
         float top = y;
-        float bottom = y - height;
+        float bottom = y + height;
 
-        var a = new Vector3(left, top, 0f);
-        var b = new Vector3(right, top, 0f);
-        var c = new Vector3(right, bottom, 0f);
-        var d = new Vector3(left, bottom, 0f);
+        var topLeft = new Vector3(left, top, 0f);
+        var topRight = new Vector3(right, top, 0f);
+        var bottomRight = new Vector3(right, bottom, 0f);
+        var bottomLeft = new Vector3(left, bottom, 0f);
 
-        indices[indexCount++] = (short) (0 + vertexCount);
-        indices[indexCount++] = (short) (1 + vertexCount);
-        indices[indexCount++] = (short) (2 + vertexCount);
-        indices[indexCount++] = (short) (0 + vertexCount);
-        indices[indexCount++] = (short) (2 + vertexCount);
-        indices[indexCount++] = (short) (3 + vertexCount);
+        indices[indexCount++] = (short)(0 + vertexCount);
+        indices[indexCount++] = (short)(1 + vertexCount);
+        indices[indexCount++] = (short)(2 + vertexCount);
+        indices[indexCount++] = (short)(0 + vertexCount);
+        indices[indexCount++] = (short)(2 + vertexCount);
+        indices[indexCount++] = (short)(3 + vertexCount);
 
-        vertices[vertexCount++] = new VertexPositionColor(a, color);
-        vertices[vertexCount++] = new VertexPositionColor(b, color);
-        vertices[vertexCount++] = new VertexPositionColor(c, color);
-        vertices[vertexCount++] = new VertexPositionColor(d, color);
+        vertices[vertexCount++] = new VertexPositionColor(topLeft, color);
+        vertices[vertexCount++] = new VertexPositionColor(bottomLeft, color);
+        vertices[vertexCount++] = new VertexPositionColor(bottomRight, color);
+        vertices[vertexCount++] = new VertexPositionColor(topRight, color);
 
         shapeCount++;
     }
 
     public void Rectangle(Rectangle rect, float thickness, Color color) =>
         Rectangle(
-            rect.Left, rect.Top, 
-            rect.Right, rect.Top, 
-            rect.Right, rect.Bottom, 
+            rect.Left, rect.Top,
             rect.Left, rect.Bottom,
+            rect.Right, rect.Bottom,
+            rect.Right, rect.Top,
             thickness, color);
 
     public void Rectangle(
-        float ax, float ay, 
-        float bx, float by, 
-        float cx, float cy, 
-        float dx, float dy, 
-        float thickness, 
+        float ax, float ay,
+        float bx, float by,
+        float cx, float cy,
+        float dx, float dy,
+        float thickness,
         Color color)
     {
         Line(ax, ay, bx, by, thickness, color);
@@ -181,39 +184,37 @@ public class ShapeBatch : IDisposable
         thickness = MathHelper.Clamp(thickness, minThickness, maxThickness);
         float lineCenter = thickness * 0.5f;
 
+        //Calculate the edges with half thickness
         float e1x = bx - ax;
         float e1y = by - ay;
         (e1x, e1y) = Normalize(e1x, e1y);
         e1x *= lineCenter;
         e1y *= lineCenter;
-
         float e2x = -e1x;
         float e2y = -e1y;
+
         float n1x = -e1y;
-        float n1y = -e1x;
+        float n1y = e1x;
         float n2x = -n1x;
         float n2y = -n1y;
 
-        float q1x = ax + n1x + e2x;
-        float q1y = ay + n1y + e2y;
-        float q2x = bx + n1x + e1x;
-        float q2y = by + n1y + e1y;
-        float q3x = ax + n2x + e1x;
-        float q3y = ay + n2y + e1y;
-        float q4x = bx + n2x + e2x;
-        float q4y = by + n2y + e2y;
+        //Calculate corners of the "line"
+        Vector3 topLeft = new(ax + n1x + e2x, ay + n1y + e2y, 0f);
+        Vector3 topRight = new(bx + n1x + e1x, by + n1y + e1y, 0f);
+        Vector3 bottomLeft = new(ax + n2x + e2x, ay + n2y + e2y, 0f);
+        Vector3 bottomRight = new(bx + n2x + e1x, by + n2y + e1y, 0f);
 
-        indices[indexCount++] = (short) (0 + vertexCount);
-        indices[indexCount++] = (short) (1 + vertexCount);
-        indices[indexCount++] = (short) (2 + vertexCount);
-        indices[indexCount++] = (short) (0 + vertexCount);
-        indices[indexCount++] = (short) (2 + vertexCount);
-        indices[indexCount++] = (short) (3 + vertexCount);
+        indices[indexCount++] = (short)(0 + vertexCount);
+        indices[indexCount++] = (short)(1 + vertexCount);
+        indices[indexCount++] = (short)(2 + vertexCount);
+        indices[indexCount++] = (short)(0 + vertexCount);
+        indices[indexCount++] = (short)(2 + vertexCount);
+        indices[indexCount++] = (short)(3 + vertexCount);
 
-        vertices[vertexCount++] = new VertexPositionColor(new Vector3(q1x, q1y, 0), color);
-        vertices[vertexCount++] = new VertexPositionColor(new Vector3(q2x, q2y, 0), color);
-        vertices[vertexCount++] = new VertexPositionColor(new Vector3(q3x, q3y, 0), color);
-        vertices[vertexCount++] = new VertexPositionColor(new Vector3(q4x, q4y, 0), color);
+        vertices[vertexCount++] = new VertexPositionColor(topLeft, color);
+        vertices[vertexCount++] = new VertexPositionColor(bottomLeft, color);
+        vertices[vertexCount++] = new VertexPositionColor(bottomRight, color);
+        vertices[vertexCount++] = new VertexPositionColor(topRight, color);
 
         shapeCount++;
     }
@@ -223,13 +224,10 @@ public class ShapeBatch : IDisposable
         float inverseLength = 1f / (float)Math.Sqrt(x * x + y * y);
 
         x *= inverseLength;
-        y += inverseLength;
+        y *= inverseLength;
 
         return (x, y);
     }
 
-    public void Dispose()
-    {
-        effect?.Dispose();
-    }
+    public void Dispose() => effect?.Dispose();
 }
