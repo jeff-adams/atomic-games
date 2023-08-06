@@ -102,10 +102,12 @@ public class PlayScene : Scene
         if(debug.IsActive)
         {
             debug.Disable();
+            player.IsBoundsVisible = false;
         }
         else
         {
             debug.Enable();
+            player.IsBoundsVisible = true;
         }
     }
 
