@@ -40,15 +40,15 @@ public class SpriteObject : GameObject
     private Rectangle CalculateSelfBounds()
     {
         Vector2 topLeft = Vector2.Transform(new Vector2(0, 0), Translation);
-        Vector2 topRight = new (Sprite.Width, 0);
-        Vector2 bottomRight = new (Sprite.Width, Sprite.Height);
-        Vector2 bottomLeft = new (0, Sprite.Height);
+        Vector2 topRight = new (topLeft.X + Sprite.Width, topLeft.Y);
+        Vector2 bottomRight = new (topLeft.X + Sprite.Width, topLeft.Y + Sprite.Height);
+        Vector2 bottomLeft = new (topLeft.X, topLeft.Y + Sprite.Height);
 
-        Vector2 min = new Vector2(
+        Vector2 min = new (
             AtomicMath.Min(topLeft.X, topRight.X, bottomRight.X, bottomLeft.X),
             AtomicMath.Min(topLeft.Y, topRight.Y, bottomRight.Y, bottomLeft.Y));
 
-        Vector2 max = new Vector2(
+        Vector2 max = new (
             AtomicMath.Max(topLeft.X, topRight.X, bottomRight.X, bottomLeft.X),
             AtomicMath.Max(topLeft.Y, topRight.Y, bottomRight.Y, bottomLeft.Y));
 

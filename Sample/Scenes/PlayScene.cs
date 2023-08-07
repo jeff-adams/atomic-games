@@ -45,6 +45,8 @@ public class PlayScene : Scene
         debug.AddDebugMessage("player", debug.ConvertPositionToDebugMessage(player.Object.Position));
         debug.AddDebugConsoleMessage("camera", Camera.ToString());
         debug.AddDebugConsoleMessage("canvas", Canvas.ToString());
+        debug.AddDebugConsoleMessage("playerBoundsVisible", player.Object.IsBoundsVisible.ToString());
+        debug.AddDebugConsoleMessage("playerBounds", player.Object.Bounds.ToString());
     }
 
     private void MousePosition(Vector2 position)
@@ -74,7 +76,6 @@ public class PlayScene : Scene
     }
 
     
-
     private void MoveCamera(Vector2 input)
     {
         float moveSpeed = 6f;
@@ -102,12 +103,12 @@ public class PlayScene : Scene
         if(debug.IsActive)
         {
             debug.Disable();
-            player.IsBoundsVisible = false;
+            player.Object.IsBoundsVisible = false;
         }
         else
         {
             debug.Enable();
-            player.IsBoundsVisible = true;
+            player.Object.IsBoundsVisible = true;
         }
     }
 

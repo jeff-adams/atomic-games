@@ -105,7 +105,7 @@ public class AtomicGame : Game
         GraphicsDevice.Clear(currentScene.BackgroundColor);
 
         spriteBatch.Begin(transformMatrix: camera.ViewMatrix, samplerState: SamplerState.PointClamp);
-        shapeBatch.Begin(Vector2.Zero);
+        shapeBatch.Begin();
         currentScene.Draw(gameTime, spriteBatch, shapeBatch);
         spriteBatch.End();
         shapeBatch.End();

@@ -29,7 +29,7 @@ public class ShapeBatch : IDisposable
         effect = new BasicEffect(graphics)
         {
             VertexColorEnabled = true,
-            View = camera.ViewMatrix,
+            //View = camera.ViewMatrix,
             Projection = Matrix.CreateOrthographicOffCenter(0f, graphics.Viewport.Width, graphics.Viewport.Height, 0f, 0f, 1f)
         };
 
