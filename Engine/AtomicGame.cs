@@ -50,7 +50,7 @@ public class AtomicGame : Game
         canvas = new Canvas(GraphicsDevice, virtualWidth, virtualHeight);
         camera = new Camera(Window, canvas);
         ui = new UI(virtualWidth, virtualHeight);
-        shapeBatch = new ShapeBatch(GraphicsDevice, camera);
+        shapeBatch = new ShapeBatch(GraphicsDevice);
 
         Content.RootDirectory = "Content";
         IsMouseVisible = true;
@@ -105,13 +105,13 @@ public class AtomicGame : Game
         GraphicsDevice.Clear(currentScene.BackgroundColor);
 
         spriteBatch.Begin(transformMatrix: camera.ViewMatrix, samplerState: SamplerState.PointClamp);
-        shapeBatch.Begin();
+        shapeBatch.Begin(viewMatrix: camera.ViewMatrix, projectionMatrix: camera.ProjectionMatrix);
         currentScene.Draw(gameTime, spriteBatch, shapeBatch);
         spriteBatch.End();
         shapeBatch.End();
 
         spriteBatch.Begin(samplerState: SamplerState.PointClamp);
-        shapeBatch.Begin();
+        shapeBatch.Begin(projectionMatrix: camera.ProjectionMatrix);
         ui.DrawContent(gameTime, spriteBatch, shapeBatch);
         spriteBatch.End();
         shapeBatch.End();

@@ -8,9 +8,6 @@ namespace AtomicGames.Engine.Graphics;
 public sealed class ShapeBatch : IDisposable
 {
     private readonly GraphicsDevice graphics;
-    private readonly Camera camera;
-    private readonly BasicEffect effect;
-
     private readonly VertexPositionColor[] vertices;
     private readonly short[] indices;
 
@@ -19,20 +16,13 @@ public sealed class ShapeBatch : IDisposable
     private int shapeCount;
 
     private bool isStarted;
+    private BasicEffect effect;
 
-    public ShapeBatch(GraphicsDevice graphics, Camera camera)
+    public ShapeBatch(GraphicsDevice graphics)
     {
         this.graphics = graphics ?? throw new ArgumentNullException(nameof(graphics));
-        this.camera = camera ?? throw new ArgumentException(nameof(camera));
-        // Vector3 origin = new Vector3(graphics.Viewport.Width * 0.5f, graphics.Viewport.Height * 0.5f, 0);
 
-        effect = new BasicEffect(graphics)
-        {
-            VertexColorEnabled = true,
-            //View = camera.ViewMatrix,
-            Projection = Matrix.CreateOrthographicOffCenter(0f, graphics.Viewport.Width, graphics.Viewport.Height, 0f, 0f, 1f)
-        };
-
+        
         const int maxIndexCount = short.MaxValue;
         vertices = new VertexPositionColor[maxIndexCount / 3];
         indices = new short[maxIndexCount];
@@ -47,12 +37,21 @@ public sealed class ShapeBatch : IDisposable
         shapeCount = 0;
     }
 
-    public void Begin()
+    public void Begin(Matrix? worldMatrix = null, Matrix? viewMatrix = null, Matrix? projectionMatrix = null)
     {
         if (isStarted)
             throw new Exception("Batching is already been started.");
 
         isStarted = true;
+
+        effect = new BasicEffect(graphics)
+        {
+            VertexColorEnabled = true,
+            World = worldMatrix ?? Matrix.Identity,
+            View = viewMatrix ?? Matrix.Identity,
+            Projection = projectionMatrix ?? Matrix.Identity,
+        };
+
     }
 
     public void End()

@@ -12,6 +12,7 @@ public class Camera : IDisposable
     public float Rotation { get; private set; }
     public Matrix ViewMatrix { get; private set; }
     public Matrix VirtualViewMatrix { get; private set; }
+    public Matrix ProjectionMatrix { get; private set; }
 
     private readonly GameWindow window;
     private readonly Canvas canvas;
@@ -105,6 +106,7 @@ public class Camera : IDisposable
     {
         ViewMatrix = GetTransformMatrix();
         VirtualViewMatrix = ViewMatrix * canvas.VirtualScaleMatrix;
+        ProjectionMatrix = Matrix.CreateOrthographicOffCenter(0f, window.ClientBounds.Width, window.ClientBounds.Height, 0f, 0f, 1f);
     }
 
     private Matrix GetTransformMatrix() =>
