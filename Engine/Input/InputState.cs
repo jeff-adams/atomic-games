@@ -1,6 +1,6 @@
 namespace AtomicGames.Engine.Input;
 
-public struct InputState
+public readonly struct InputState
 {
     public string Name { get; init; }
     public bool Pressed { get; init; }

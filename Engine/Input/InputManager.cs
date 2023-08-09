@@ -1,11 +1,10 @@
 using System;
-using AtomicGames.Engine.Input;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 
-namespace AtomicGames.Engine;
+namespace AtomicGames.Engine.Input;
 
-public class InputManager : IDisposable
+public sealed class InputManager : IDisposable
 {
     private readonly IKeyboardBroadcaster keyboardBroadcaster;
     private readonly IMouseBroadcaster mouseBroadcaster;

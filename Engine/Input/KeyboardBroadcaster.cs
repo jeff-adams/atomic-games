@@ -5,7 +5,7 @@ using Microsoft.Xna.Framework.Input;
 
 namespace AtomicGames.Engine.Input;
 
-public class KeyboardBroadcaster : IKeyboardBroadcaster
+public sealed class KeyboardBroadcaster : IKeyboardBroadcaster
 {
     public bool IsEnabled { get; private set; }
     public void Enable() => IsEnabled = true;

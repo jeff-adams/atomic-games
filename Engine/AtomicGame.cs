@@ -76,7 +76,7 @@ public class AtomicGame : Game
             new GamePadBroadcaster(),
         };
         
-        Components.Add(new BroadcastComponent(this, broadcasters));
+        Components.Add(new BroadcastComponent(broadcasters));
 
         inputManager = new InputManager(broadcasters);
         inputManager.SetActionMap(currentScene.ActionMap);

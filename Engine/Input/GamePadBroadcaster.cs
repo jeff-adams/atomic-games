@@ -5,7 +5,7 @@ using Microsoft.Xna.Framework.Input;
 
 namespace AtomicGames.Engine.Input;
 
-public class GamePadBroadcaster : IGamePadBroadcaster
+public sealed class GamePadBroadcaster : IGamePadBroadcaster
 {
     public bool IsEnabled { get; private set; }
     public void Enable() => IsEnabled = true;
@@ -48,7 +48,7 @@ public class GamePadBroadcaster : IGamePadBroadcaster
         previousState = gamePadState;
     }
 
-    private Dictionary<Buttons, Func<GamePadState, ButtonState>> gamePadMappings = new Dictionary<Buttons, Func<GamePadState, ButtonState>>
+    private Dictionary<Buttons, Func<GamePadState, ButtonState>> gamePadMappings = new ()
     {
         {Buttons.A, s => s.Buttons.A},
         {Buttons.B, s => s.Buttons.B},

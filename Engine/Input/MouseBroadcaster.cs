@@ -5,7 +5,7 @@ using Microsoft.Xna.Framework.Input;
 
 namespace AtomicGames.Engine.Input;
 
-public class MouseBroadcaster : IMouseBroadcaster
+public sealed class MouseBroadcaster : IMouseBroadcaster
 {
     public bool IsEnabled { get; private set; }
     public void Enable() => IsEnabled = true;
@@ -47,7 +47,7 @@ public class MouseBroadcaster : IMouseBroadcaster
         previousMouseState = mouseState;
     }
 
-    private Dictionary<MouseButtons, Func<MouseState, ButtonState>> mouseMappings = new Dictionary<MouseButtons, Func<MouseState, ButtonState>>
+    private Dictionary<MouseButtons, Func<MouseState, ButtonState>> mouseMappings = new ()
     {
         {MouseButtons.LeftButton, s => s.LeftButton},
         {MouseButtons.RightButton, s => s.RightButton},
