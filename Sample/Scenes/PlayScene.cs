@@ -33,6 +33,9 @@ public class PlayScene : Scene
         debug = new Debugger(font);
         UI.AddChildObject(debug);
 
+        ShapeRectangle rect = new (new Rectangle(10, 10, 64, 1), Color.Chartreuse);
+        UI.AddChildObject(rect);
+
         SubscribeToActions();
     }
 

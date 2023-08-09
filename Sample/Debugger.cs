@@ -19,7 +19,7 @@ public class Debugger : GameObject
     public Debugger(SpriteFont font) : base()
     {
         this.font = font;
-        verticalSpacing = (int)System.Math.Ceiling((font.MeasureString("A")).Y * 1.2);
+        verticalSpacing = (int)System.Math.Ceiling(font.MeasureString("A").Y * 1.2);
         IsActive = false;
         IsVisible = false;
         MoveTo(new Vector2(1f, 1f));

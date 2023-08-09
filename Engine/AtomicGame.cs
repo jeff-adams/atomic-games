@@ -111,8 +111,10 @@ public class AtomicGame : Game
         shapeBatch.End();
 
         spriteBatch.Begin(samplerState: SamplerState.PointClamp);
+        shapeBatch.Begin();
         ui.DrawContent(gameTime, spriteBatch, shapeBatch);
         spriteBatch.End();
+        shapeBatch.End();
 
         canvas.Draw(spriteBatch);
 

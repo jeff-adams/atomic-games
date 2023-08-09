@@ -5,7 +5,7 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace AtomicGames.Engine.Graphics;
 
-public class ShapeBatch : IDisposable
+public sealed class ShapeBatch : IDisposable
 {
     private readonly GraphicsDevice graphics;
     private readonly Camera camera;
