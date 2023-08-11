@@ -4,10 +4,9 @@ using Microsoft.Xna.Framework;
 
 namespace AtomicGames.Engine;
 
-public class Transform
+public sealed class Transform
 {
     private Transform parentTransform;
-    private HashSet<Transform> childrenTransforms;
     private Vector2 position;
     private Vector2 origin;
     private float rotation;
@@ -59,6 +58,11 @@ public class Transform
         UpdateMatrices();
     }
 
+    /// <summary>
+    /// Adds a parent <see cref=" Transform"/> to this <see cref=" Transform"/> and will update it's World Matrix according to the parent
+    /// </summary>
+    /// <param name="parentTransform">The parent <see cref=" Transform"/> to attach this <see cref=" Transform"/> to</param>
+    /// <returns>This <see cref=" Transform"/> object for method chaining</returns>
     public Transform AddParentTransform(Transform parentTransform)
     {
         if(this.parentTransform == parentTransform) return this;
@@ -66,24 +70,34 @@ public class Transform
         if(this.parentTransform is not null)    
             this.parentTransform.OnUpdatedMatrices -= UpdateMatrices;
 
-        // translate current pos to position from parent???
-        this.parentTransform = parentTransform.AddChildTransform(this);
         parentTransform.OnUpdatedMatrices += UpdateMatrices;
 
         return this;
     }
 
-    protected Transform AddChildTransform(Transform childTransform)
+    /// <summary>
+    /// Removes the parent <see cref=" Transform"/> from this <see cref=" Transform"/>
+    /// </summary>
+    /// <returns>This <see cref=" Transform"/> object for method chaining</returns>
+    public Transform RemoveParentTransform()
     {
-        if (childrenTransforms is null) 
-            childrenTransforms = new HashSet<Transform>();
-        childrenTransforms.Add(childTransform);
+        if(parentTransform == null) return this;
+        
+        parentTransform.OnUpdatedMatrices -= UpdateMatrices;
+        parentTransform = null;
+        UpdateMatrices();
+
         return this;
     }
 
+    /// <summary>
+    /// Rotates the <see cref=" Transform"/> in a direction
+    /// </summary>
+    /// <param name="direction">The direction to rotate towards</param>
+    /// <returns>This <see cref=" Transform"/> object for method chaining</returns>
     public Transform RotateToDirection(Vector2 direction)
     {
-        Rotation = (float)(Math.Atan2(direction.Y, direction.X));
+        Rotation = (float)Math.Atan2(direction.Y, direction.X);
         Direction = direction;
         return this;
     }
@@ -111,6 +125,9 @@ public class Transform
         return MoveTo(newWorldPosition);
     }
 
+    /// <summary>
+    /// Triggered when the Local or World Matrix of this <see cref=" Transform"/> are updated
+    /// </summary>
     public event Action OnUpdatedMatrices;
 
     private void UpdateMatrices()
