@@ -37,7 +37,7 @@ public class ShapeRectangle : GameObject
         this.Color = color;
     }
 
-    public override void DrawContent(GameTime gameTime, SpriteBatch spriteBatch, ShapeBatch shapeBatch)
+    public override void Draw(GameTime gameTime, SpriteBatch spriteBatch, ShapeBatch shapeBatch)
     {
         if (LineThickness > 0)
         {
@@ -67,7 +67,7 @@ public class ShapeRectangle : GameObject
             }
         }
 
-        base.DrawContent(gameTime, spriteBatch, shapeBatch);
+        base.Draw(gameTime, spriteBatch, shapeBatch);
     }
 
     protected override void SetBounds()

@@ -62,7 +62,7 @@ public class Debugger : GameObject
         }
     }
 
-    public override void DrawContent(GameTime gameTime, SpriteBatch spriteBatch, ShapeBatch shapeBatch)
+    public override void Draw(GameTime gameTime, SpriteBatch spriteBatch, ShapeBatch shapeBatch)
     {
         int i = 0;
         foreach (var message in messages)

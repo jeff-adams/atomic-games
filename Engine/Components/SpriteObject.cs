@@ -23,11 +23,11 @@ public class SpriteObject : GameObject
     public SpriteObject(Texture2D texture, float scale) 
         : this(new Sprite(texture.Name, texture) { Scale = new Vector2(scale, scale)}) { }
 
-    public override void DrawContent(GameTime gameTime, SpriteBatch spriteBatch, ShapeBatch shapeBatch)
+    public override void Draw(GameTime gameTime, SpriteBatch spriteBatch, ShapeBatch shapeBatch)
     {
         //spriteBatch.Draw(texture, Transform.Position, null, Color.White, Transform.Rotation, origin, scale, flip, 0f);
         Sprite.Draw(spriteBatch, Position);
-        base.DrawContent(gameTime, spriteBatch, shapeBatch);
+        base.Draw(gameTime, spriteBatch, shapeBatch);
     }
     
     protected override void SetBounds()

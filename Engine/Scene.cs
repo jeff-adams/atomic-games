@@ -49,7 +49,7 @@ public abstract class Scene : IDisposable
         {
             if (gameObject.IsVisible)
             {
-                gameObject.DrawContent(gameTime, spriteBatch, shapeBatch);
+                gameObject.Draw(gameTime, spriteBatch, shapeBatch);
                 gameObject.DrawChildren(gameTime, spriteBatch, shapeBatch);
             }
         }

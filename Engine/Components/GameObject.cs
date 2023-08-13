@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using AtomicGames.Engine.Graphics;
 using Microsoft.Xna.Framework;
@@ -5,111 +6,72 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace AtomicGames.Engine.Components;
 
-public abstract class GameObject : IGameObject
+public abstract class GameObject : IGameObject, IDrawable
 {
+    public Transform Transform { get; }
+    public IGameObject Parent { get; private set; }
 
-    public GameObject Parent { get; private set; }
-    public HashSet<GameObject> Children { get; private set; }
-    public Rectangle Bounds { get; protected set; }
-
-    public bool IsActive { get; set; } = true;
-    public bool IsVisible { get; set; } = true;
-    public bool IsBoundsVisible { get; set; } = false;
-
-    public Vector2 Position => transform.Position;
-    public float Rotation => transform.Rotation;
-    public float Scale => transform.Scale;
-    public Vector2 Direction => transform.Direction;
-    public Matrix Translation => transform.LocalMatrix;
-    public Vector2 Origin
+    private int drawOrder;
+    public int DrawOrder 
     {
-        get => transform.Origin;
-        set => transform.Origin = value;
+        get => drawOrder;
+        set 
+        {
+            drawOrder = value;
+            DrawOrderChanged?.Invoke(this, EventArgs.Empty);
+        }
     }
+    public event EventHandler<EventArgs> DrawOrderChanged;
 
-    protected Transform transform;
+    private bool isVisible;
+    public bool Visible {
+        get => isVisible;
+        set 
+        {
+            isVisible = value;
+            VisibleChanged?.Invoke(this, EventArgs.Empty);
+        }
+    }
+    public event EventHandler<EventArgs> VisibleChanged;
+
+    private HashSet<IGameObject> children;
 
     public GameObject() : this(Vector2.Zero) 
     { }
 
     public GameObject(Vector2 position)
     {
-        Bounds = new Rectangle();
-        transform = new Transform().MoveTo(position);
-        Children = new HashSet<GameObject>();
+        Transform = new Transform().MoveTo(position);
+        children = new HashSet<IGameObject>();
     }
 
-    protected virtual void SetBounds() { }
-
-    public void AddParentObject(GameObject parentGameObject)
+    public IGameObject AttachTo(IGameObject parent)
     {
-        Parent = parentGameObject;
-        Parent.AddChildObject(this);
-        transform.AddParentTransform(parentGameObject.transform);
+        Parent = parent;
+        parent.Attach(this);
+        Transform.AddParentTransform(parent.Transform);
+        return this;
     }
 
-    public void AddChildObject(GameObject childGameObject)
+    public IGameObject Detach()
     {
-        if (Children.Add(childGameObject))
-            childGameObject.AddParentObject(this);
-        SetBounds();
+        Parent = null;
+        Transform.RemoveParentTransform();
+        return this;
     }
 
-    public void DrawChildren(GameTime gameTime, SpriteBatch spriteBatch, ShapeBatch shapeBatch)
+    public IGameObject Attach(params IGameObject[] children)
     {
-        foreach (GameObject child in Children)
+        foreach (IGameObject child in children)
         {
-            if (child.IsVisible)
-            {
-                child.DrawContent(gameTime, spriteBatch, shapeBatch);
-                child.DrawChildren(gameTime, spriteBatch, shapeBatch);
-            }
+            this.children.Add(child);
         }
+        return this;
     }
 
-    public void Move(Vector2 direction)
-    {
-        transform.Move(direction);
-        SetBounds();
-    }
-
-    public void MoveTo(Vector2 position)
-    {
-        transform.MoveTo(position);
-        SetBounds();
-    }
-
-    public void RotateToDirection(Vector2 direction)
-    {
-        transform.RotateToDirection(direction);
-        SetBounds();
-    }
-
-    public virtual void UpdateContent(GameTime gameTime) { }
-
-    public virtual void DrawContent(GameTime gameTime, SpriteBatch spriteBatch, ShapeBatch shapeBatch) 
-    { 
-        if (IsBoundsVisible)
-        {
-            float thickness = 1f;
-            Color color = Color.Fuchsia;
-
-            shapeBatch.Rectangle(Bounds, thickness, color);
-        }
-    }
-
-    public virtual void Enable()
-    {
-        IsActive = true;
-        IsVisible = true;
-    }
-
-    public virtual void Disable()
-    {
-        IsActive = false;
-        IsVisible = false;
-    }
+    public void Draw(GameTime gameTime)
+    { }
 
     public override string ToString() =>
-        $"Position: {transform.Position}, Origin: {transform.Origin} Bounds: {Bounds}, HasParent: {Parent != null}";
+        $"Position: {Transform.Position}, Origin: {Transform.Origin} HasParent: {Parent != null}";
 }

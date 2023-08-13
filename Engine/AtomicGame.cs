@@ -94,7 +94,7 @@ public class AtomicGame : Game
     {
         currentScene.Update(gameTime);
         camera.Update(gameTime);
-        ui.UpdateContent(gameTime);
+        ui.Update(gameTime);
 
         base.Update(gameTime);
     }
@@ -112,7 +112,7 @@ public class AtomicGame : Game
 
         spriteBatch.Begin(samplerState: SamplerState.PointClamp);
         shapeBatch.Begin(projectionMatrix: camera.ProjectionMatrix);
-        ui.DrawContent(gameTime, spriteBatch, shapeBatch);
+        ui.Draw(gameTime, spriteBatch, shapeBatch);
         spriteBatch.End();
         shapeBatch.End();
 

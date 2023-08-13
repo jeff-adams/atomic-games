@@ -11,19 +11,19 @@ public class UI : GameObject
         Bounds = new Rectangle(0, 0, width, height);
     }
 
-    public override void UpdateContent(GameTime gameTime)
+    public override void Update(GameTime gameTime)
     {
-        foreach (GameObject element in Children)
+        foreach (GameObject element in children)
         {
-            if (element.IsActive) element.UpdateContent(gameTime);
+            if (element.IsActive) element.Update(gameTime);
         }
     }
 
-    public override void DrawContent(GameTime gameTime, SpriteBatch spriteBatch, ShapeBatch shapeBatch)
+    public override void Draw(GameTime gameTime, SpriteBatch spriteBatch, ShapeBatch shapeBatch)
     {
-        foreach (GameObject element in Children)
+        foreach (GameObject element in children)
         {
-            if (element.IsVisible) element.DrawContent(gameTime, spriteBatch, shapeBatch);
+            if (element.IsVisible) element.Draw(gameTime, spriteBatch, shapeBatch);
         }
     }
 }
