@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 
 namespace AtomicGames.Engine;
@@ -54,7 +53,7 @@ public sealed class Transform
     {
         this.position = Vector2.Zero;
         this.origin = origin;
-        scale = 1f;
+        this.scale = 1f;
         UpdateMatrices();
     }
 
@@ -121,7 +120,7 @@ public sealed class Transform
     /// <returns>This <see cref=" Transform"/> object for method chaining</returns>
     public Transform Move(Vector2 direction)
     {
-        Vector2 newWorldPosition = Vector2.Transform(this.position + direction, WorldMatrix);
+        Vector2 newWorldPosition = Vector2.Transform(position + direction, WorldMatrix);
         return MoveTo(newWorldPosition);
     }
 

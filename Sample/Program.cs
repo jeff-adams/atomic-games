@@ -6,6 +6,6 @@ PlayScene startingScene = new ();
 using var game = new AtomicGame(
         startingScene, 
         "AtomicGames",
-        virtualWidth: 64, virtualHeight: 64);
+        virtualWidth: 512, virtualHeight: 512);
 game.Run();
 
