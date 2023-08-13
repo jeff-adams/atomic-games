@@ -18,12 +18,12 @@ public abstract class Scene : IDisposable
     public Canvas Canvas { get; private set; }
     public Color BackgroundColor { get; protected set; } = Color.Black;
     
-    private List<GameObject> gameObjects;
+    private List<Entity> gameObjects;
     private ContentManager contentManager;
 
     public void Initialize(AtomicGame game)
     {
-        gameObjects = new List<GameObject>();
+        gameObjects = new List<Entity>();
 
         this.contentManager = game.Content;
         Camera = game.Camera;
@@ -32,7 +32,7 @@ public abstract class Scene : IDisposable
         Canvas = game.Canvas;
     }
 
-    public void AddGameObject(GameObject gameObject) => 
+    public void AddGameObject(Entity gameObject) => 
         gameObjects.Add(gameObject);
 
     public T Load<T>(string name) =>
@@ -45,7 +45,7 @@ public abstract class Scene : IDisposable
 
     public void Draw(GameTime gameTime, SpriteBatch spriteBatch, ShapeBatch shapeBatch)
     {
-        foreach (GameObject gameObject in gameObjects)
+        foreach (Entity gameObject in gameObjects)
         {
             if (gameObject.IsVisible)
             {

@@ -9,9 +9,9 @@ namespace AtomicGames.Sample;
 
 public class Player
 {
-    public GameObject Object => go;
+    public Entity Object => go;
 
-    private GameObject go;
+    private Entity go;
     private PlayScene scene;
 
     public Player(PlayScene scene)

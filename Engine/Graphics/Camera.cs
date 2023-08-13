@@ -17,8 +17,8 @@ public class Camera : IDisposable
     private readonly GameWindow window;
     private readonly Canvas canvas;
 
-    private GameObject target;
-    private GameObject previousTarget;
+    private Entity target;
+    private Entity previousTarget;
     private float cameraSmoothing = 0.05f; // smaller means a longer delay
     
     public Camera(GameWindow gameWindow, Canvas canvas)
@@ -44,10 +44,10 @@ public class Camera : IDisposable
         }
     }
 
-    public void Follow(GameObject target) => 
+    public void Follow(Entity target) => 
         Follow(target, this.cameraSmoothing);
 
-    public void Follow(GameObject target, float smoothing)
+    public void Follow(Entity target, float smoothing)
     {
         if (this.target != target) previousTarget = this.target;
         this.target = target;
@@ -64,7 +64,7 @@ public class Camera : IDisposable
     {
         if (this.previousTarget != null) 
         {
-            GameObject temp = this.target;
+            Entity temp = this.target;
             this.target = this.previousTarget;
             this.previousTarget = temp;
         }

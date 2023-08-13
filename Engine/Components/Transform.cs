@@ -62,7 +62,7 @@ public sealed class Transform
     /// </summary>
     /// <param name="parentTransform">The parent <see cref=" Transform"/> to attach this <see cref=" Transform"/> to</param>
     /// <returns>This <see cref=" Transform"/> object for method chaining</returns>
-    public Transform AddParentTransform(Transform parentTransform)
+    public Transform AttachTo(Transform parentTransform)
     {
         if(this.parentTransform == parentTransform) return this;
 
@@ -78,7 +78,7 @@ public sealed class Transform
     /// Removes the parent <see cref=" Transform"/> from this <see cref=" Transform"/>
     /// </summary>
     /// <returns>This <see cref=" Transform"/> object for method chaining</returns>
-    public Transform RemoveParentTransform()
+    public Transform Detach()
     {
         if(parentTransform == null) return this;
         

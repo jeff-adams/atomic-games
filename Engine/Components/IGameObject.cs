@@ -1,10 +1,10 @@
 namespace AtomicGames.Engine;
 
-public interface IGameObject
+public interface IEntity
 {
     Transform Transform { get; }
-    IGameObject Parent { get; }
-    IGameObject AttachTo(IGameObject parent);
-    IGameObject Detach();
-    IGameObject Attach(params IGameObject[] children);
+    IEntity Parent { get; }
+    IEntity AttachTo(IEntity parent);
+    IEntity Detach();
+    IEntity Attach(params IEntity[] children);
 }

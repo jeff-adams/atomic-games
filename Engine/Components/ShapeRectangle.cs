@@ -4,7 +4,7 @@ using AtomicGames.Engine.Graphics;
 
 namespace AtomicGames.Engine.Components;
 
-public class ShapeRectangle : GameObject
+public class ShapeRectangle : Entity
 {
     public Rectangle Rectangle { get; set; }
     public Color Color { get; set; }

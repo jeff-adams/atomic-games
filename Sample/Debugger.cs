@@ -9,7 +9,7 @@ using AtomicGames.Engine.Components;
 
 namespace AtomicGames.Sample;
 
-public class Debugger : GameObject
+public class Debugger : Entity
 {
     private readonly SpriteFont font;
     private readonly int verticalSpacing;

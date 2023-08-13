@@ -6,7 +6,7 @@ using MonoGame.Aseprite.Sprites;
 
 namespace AtomicGames.Engine.Components;
 
-public class SpriteObject : GameObject
+public class SpriteObject : Entity
 {
     public Sprite Sprite { get; init; }
 

@@ -6,10 +6,10 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace AtomicGames.Engine.Components;
 
-public abstract class GameObject : IGameObject, IDrawable
+public abstract class Entity : IEntity, IDrawable
 {
     public Transform Transform { get; }
-    public IGameObject Parent { get; private set; }
+    public IEntity Parent { get; private set; }
 
     private int drawOrder;
     public int DrawOrder 
@@ -34,35 +34,35 @@ public abstract class GameObject : IGameObject, IDrawable
     }
     public event EventHandler<EventArgs> VisibleChanged;
 
-    private HashSet<IGameObject> children;
+    private HashSet<IEntity> children;
 
-    public GameObject() : this(Vector2.Zero) 
+    public Entity() : this(Vector2.Zero) 
     { }
 
-    public GameObject(Vector2 position)
+    public Entity(Vector2 position)
     {
         Transform = new Transform().MoveTo(position);
-        children = new HashSet<IGameObject>();
+        children = new HashSet<IEntity>();
     }
 
-    public IGameObject AttachTo(IGameObject parent)
+    public IEntity AttachTo(IEntity parent)
     {
         Parent = parent;
         parent.Attach(this);
-        Transform.AddParentTransform(parent.Transform);
+        Transform.AttachTo(parent.Transform);
         return this;
     }
 
-    public IGameObject Detach()
+    public IEntity Detach()
     {
         Parent = null;
-        Transform.RemoveParentTransform();
+        Transform.Detach();
         return this;
     }
 
-    public IGameObject Attach(params IGameObject[] children)
+    public IEntity Attach(params IEntity[] children)
     {
-        foreach (IGameObject child in children)
+        foreach (IEntity child in children)
         {
             this.children.Add(child);
         }

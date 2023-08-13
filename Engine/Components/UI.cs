@@ -4,7 +4,7 @@ using AtomicGames.Engine.Graphics;
 
 namespace AtomicGames.Engine.Components;
 
-public class UI : GameObject
+public class UI : Entity
 {
     public UI(int width, int height)
     {
@@ -13,7 +13,7 @@ public class UI : GameObject
 
     public override void Update(GameTime gameTime)
     {
-        foreach (GameObject element in children)
+        foreach (Entity element in children)
         {
             if (element.IsActive) element.Update(gameTime);
         }
@@ -21,7 +21,7 @@ public class UI : GameObject
 
     public override void Draw(GameTime gameTime, SpriteBatch spriteBatch, ShapeBatch shapeBatch)
     {
-        foreach (GameObject element in children)
+        foreach (Entity element in children)
         {
             if (element.IsVisible) element.Draw(gameTime, spriteBatch, shapeBatch);
         }
