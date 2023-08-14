@@ -1,14 +1,11 @@
 using System;
-using System.Collections.Generic;
-using AtomicGames.Engine.Graphics;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 
 namespace AtomicGames.Engine.Components;
 
 public abstract class Entity : IEntity, IDrawable
 {
-    public Transform Transform { get; }
+    public ITransform Transform { get; }
     public IEntity Parent { get; private set; }
 
     private int drawOrder;
@@ -34,7 +31,6 @@ public abstract class Entity : IEntity, IDrawable
     }
     public event EventHandler<EventArgs> VisibleChanged;
 
-    private HashSet<IEntity> children;
 
     public Entity() : this(Vector2.Zero) 
     { }
@@ -42,13 +38,11 @@ public abstract class Entity : IEntity, IDrawable
     public Entity(Vector2 position)
     {
         Transform = new Transform().MoveTo(position);
-        children = new HashSet<IEntity>();
     }
 
     public IEntity AttachTo(IEntity parent)
     {
         Parent = parent;
-        parent.Attach(this);
         Transform.AttachTo(parent.Transform);
         return this;
     }
@@ -57,15 +51,6 @@ public abstract class Entity : IEntity, IDrawable
     {
         Parent = null;
         Transform.Detach();
-        return this;
-    }
-
-    public IEntity Attach(params IEntity[] children)
-    {
-        foreach (IEntity child in children)
-        {
-            this.children.Add(child);
-        }
         return this;
     }
 

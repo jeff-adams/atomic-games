@@ -13,7 +13,7 @@ public class UI : Entity
 
     public override void Update(GameTime gameTime)
     {
-        foreach (Entity element in children)
+        foreach (Entity element in Children)
         {
             if (element.IsActive) element.Update(gameTime);
         }
@@ -21,7 +21,7 @@ public class UI : Entity
 
     public override void Draw(GameTime gameTime, SpriteBatch spriteBatch, ShapeBatch shapeBatch)
     {
-        foreach (Entity element in children)
+        foreach (Entity element in Children)
         {
             if (element.IsVisible) element.Draw(gameTime, spriteBatch, shapeBatch);
         }

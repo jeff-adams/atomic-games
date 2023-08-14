@@ -1,25 +1,20 @@
 using System;
 using Microsoft.Xna.Framework;
 
-namespace AtomicGames.Engine;
+namespace AtomicGames.Engine.Components;
 
-public sealed class Transform
+public sealed class Transform : ITransform
 {
-    private Transform parentTransform;
-    private Vector2 position;
-    private Vector2 origin;
-    private float rotation;
-    private float scale;
-
+    public ITransform Parent { get; private set; }
     public Vector2 Origin { get; set; }
     
     // Gives the world coordinates
     public Vector2 Position 
     { 
         get => 
-            parentTransform is null 
+            Parent is null 
             ? Vector2.Transform(position, LocalMatrix)
-            : parentTransform.Position + Vector2.Transform(position, LocalMatrix);
+            : Parent.Position + Vector2.Transform(position, LocalMatrix);
     }
 
     public float Rotation 
@@ -46,6 +41,11 @@ public sealed class Transform
     public Matrix LocalMatrix { get; private set; }
     public Matrix WorldMatrix { get; private set; }
 
+    private Vector2 position;
+    private Vector2 origin;
+    private float rotation;
+    private float scale;
+
     public Transform() : this(Vector2.Zero) 
     { }
 
@@ -62,12 +62,12 @@ public sealed class Transform
     /// </summary>
     /// <param name="parentTransform">The parent <see cref=" Transform"/> to attach this <see cref=" Transform"/> to</param>
     /// <returns>This <see cref=" Transform"/> object for method chaining</returns>
-    public Transform AttachTo(Transform parentTransform)
+    public ITransform AttachTo(ITransform parentTransform)
     {
-        if(this.parentTransform == parentTransform) return this;
+        if(Parent == parentTransform) return this;
 
-        if(this.parentTransform is not null)    
-            this.parentTransform.OnUpdatedMatrices -= UpdateMatrices;
+        if(Parent is not null)    
+            Parent.OnUpdatedMatrices -= UpdateMatrices;
 
         parentTransform.OnUpdatedMatrices += UpdateMatrices;
 
@@ -78,12 +78,12 @@ public sealed class Transform
     /// Removes the parent <see cref=" Transform"/> from this <see cref=" Transform"/>
     /// </summary>
     /// <returns>This <see cref=" Transform"/> object for method chaining</returns>
-    public Transform Detach()
+    public ITransform Detach()
     {
-        if(parentTransform == null) return this;
+        if(Parent == null) return this;
         
-        parentTransform.OnUpdatedMatrices -= UpdateMatrices;
-        parentTransform = null;
+        Parent.OnUpdatedMatrices -= UpdateMatrices;
+        Parent = null;
         UpdateMatrices();
 
         return this;
@@ -94,7 +94,7 @@ public sealed class Transform
     /// </summary>
     /// <param name="direction">The direction to rotate towards</param>
     /// <returns>This <see cref=" Transform"/> object for method chaining</returns>
-    public Transform RotateToDirection(Vector2 direction)
+    public ITransform RotateToDirection(Vector2 direction)
     {
         Rotation = (float)Math.Atan2(direction.Y, direction.X);
         Direction = direction;
@@ -106,7 +106,7 @@ public sealed class Transform
     /// </summary>
     /// <param name="position">The world space location</param>
     /// <returns>This <see cref=" Transform"/> object for method chaining</returns>
-    public Transform MoveTo(Vector2 position)
+    public ITransform MoveTo(Vector2 position)
     {
         this.position = Vector2.Transform(position, Matrix.Invert(WorldMatrix));
         UpdateMatrices();
@@ -118,7 +118,7 @@ public sealed class Transform
     /// </summary>
     /// <param name="direction">The direction and velocity of movement</param>
     /// <returns>This <see cref=" Transform"/> object for method chaining</returns>
-    public Transform Move(Vector2 direction)
+    public ITransform Move(Vector2 direction)
     {
         Vector2 newWorldPosition = Vector2.Transform(position + direction, WorldMatrix);
         return MoveTo(newWorldPosition);
@@ -139,9 +139,9 @@ public sealed class Transform
 
     private Matrix GetWorldMatrix()
     {
-        if (parentTransform is null) return LocalMatrix;
+        if (Parent is null) return LocalMatrix;
 
-        return LocalMatrix * Matrix.Invert(parentTransform.WorldMatrix);
+        return LocalMatrix * Matrix.Invert(Parent.WorldMatrix);
     }
 
     private Matrix GetLocalMatrix() =>
@@ -151,5 +151,6 @@ public sealed class Transform
         Matrix.CreateTranslation(new Vector3(position, 0));
 
     public override string ToString() =>
-        $"Position: {Position}, Rotation: {Rotation}, Scale: {Scale}, HasParent: {parentTransform != null}";
+        $"Position: {Position}, Rotation: {Rotation}, Scale: {Scale}, HasParent: {Parent != null}";
+
 }
