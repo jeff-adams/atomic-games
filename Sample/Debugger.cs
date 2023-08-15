@@ -19,10 +19,8 @@ public class Debugger : Entity
     public Debugger(SpriteFont font) : base()
     {
         this.font = font;
-        verticalSpacing = (int)System.Math.Ceiling(font.MeasureString("A").Y * 1.2);
-        IsActive = false;
-        IsVisible = false;
-        MoveTo(new Vector2(1f, 1f));
+        verticalSpacing = (int)Math.Ceiling(font.MeasureString("A").Y * 1.2);
+        Transform.MoveTo(new Vector2(1f, 1f));
         messages = new Dictionary<string, string>();
         consoleMessages = new Dictionary<string, string>();
     }
@@ -62,13 +60,13 @@ public class Debugger : Entity
         }
     }
 
-    public override void Draw(GameTime gameTime, SpriteBatch spriteBatch, ShapeBatch shapeBatch)
+    public void Draw(GameTime gameTime)
     {
         int i = 0;
         foreach (var message in messages)
         {
             string textString = $"{message.Key}: {message.Value}";
-            spriteBatch.DrawString(font, textString, Position + new Vector2(0, i * verticalSpacing), Color.LimeGreen);
+            // spriteBatch.DrawString(font, textString, Transform.Position + new Vector2(0, i * verticalSpacing), Color.LimeGreen);
             i++;
         }
     }

@@ -1,36 +1,11 @@
-using System;
 using Microsoft.Xna.Framework;
 
 namespace AtomicGames.Engine.Components;
 
-public abstract class Entity : IEntity, IDrawable
+public abstract class Entity : IEntity
 {
     public ITransform Transform { get; }
     public IEntity Parent { get; private set; }
-
-    private int drawOrder;
-    public int DrawOrder 
-    {
-        get => drawOrder;
-        set 
-        {
-            drawOrder = value;
-            DrawOrderChanged?.Invoke(this, EventArgs.Empty);
-        }
-    }
-    public event EventHandler<EventArgs> DrawOrderChanged;
-
-    private bool isVisible;
-    public bool Visible {
-        get => isVisible;
-        set 
-        {
-            isVisible = value;
-            VisibleChanged?.Invoke(this, EventArgs.Empty);
-        }
-    }
-    public event EventHandler<EventArgs> VisibleChanged;
-
 
     public Entity() : this(Vector2.Zero) 
     { }
@@ -53,9 +28,6 @@ public abstract class Entity : IEntity, IDrawable
         Transform.Detach();
         return this;
     }
-
-    public void Draw(GameTime gameTime)
-    { }
 
     public override string ToString() =>
         $"Position: {Transform.Position}, Origin: {Transform.Origin} HasParent: {Parent != null}";

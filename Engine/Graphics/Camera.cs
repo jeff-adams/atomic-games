@@ -17,8 +17,8 @@ public class Camera : IDisposable
     private readonly GameWindow window;
     private readonly Canvas canvas;
 
-    private Entity target;
-    private Entity previousTarget;
+    private IEntity target;
+    private IEntity previousTarget;
     private float cameraSmoothing = 0.05f; // smaller means a longer delay
     
     public Camera(GameWindow gameWindow, Canvas canvas)
@@ -39,15 +39,15 @@ public class Camera : IDisposable
     {
         if (target != null)
         {
-            Position = Vector2.Lerp(Position, target.Position + target.Origin - canvas.VirtualCenter, cameraSmoothing);
+            Position = Vector2.Lerp(Position, target.Transform.Position + target.Transform.Origin - canvas.VirtualCenter, cameraSmoothing);
             UpdateMatrices();
         }
     }
 
-    public void Follow(Entity target) => 
+    public void Follow(IEntity target) => 
         Follow(target, this.cameraSmoothing);
 
-    public void Follow(Entity target, float smoothing)
+    public void Follow(IEntity target, float smoothing)
     {
         if (this.target != target) previousTarget = this.target;
         this.target = target;
@@ -64,7 +64,7 @@ public class Camera : IDisposable
     {
         if (this.previousTarget != null) 
         {
-            Entity temp = this.target;
+            IEntity temp = this.target;
             this.target = this.previousTarget;
             this.previousTarget = temp;
         }
@@ -120,7 +120,7 @@ public class Camera : IDisposable
         Matrix.CreateTranslation(new Vector3(Origin, 0.0f));
     
     public override string ToString() =>
-        $"Position: {Position}, Origin: {Origin}, Target: {target?.Position}";
+        $"Position: {Position}, Origin: {Origin}, Target: {target?.Transform.Position}";
 
     public void Dispose()
     {

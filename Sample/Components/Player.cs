@@ -1,18 +1,18 @@
-using AtomicGames.Engine;
-using AtomicGames.Engine.Components;
 using Microsoft.Xna.Framework;
 using MonoGame.Aseprite;
 using MonoGame.Aseprite.Content.Processors;
 using MonoGame.Aseprite.Sprites;
+using AtomicGames.Engine.Components;
 
 namespace AtomicGames.Sample;
 
 public class Player
 {
-    public Entity Object => go;
+    public Entity Entity => entity;
 
-    private Entity go;
+    private SpriteEntity entity;
     private PlayScene scene;
+    private Vector2 direction;
 
     public Player(PlayScene scene)
     {
@@ -23,22 +23,23 @@ public class Player
     {
         AsepriteFile asePlayer = scene.Load<AsepriteFile>("player/combined");
         Sprite sprite = SpriteProcessor.Process(scene.GraphicsDevice, asePlayer, aseFrameIndex: 0);
-        go = new SpriteObject(sprite);
-        scene.AddGameObject(go);
-        scene.Camera.Follow(go, 0.15f);
+        entity = new SpriteEntity(sprite, scene.SpriteBatch, scene.ShapeBatch);
+        scene.AddEntity(entity);
+        scene.Camera.Follow(entity, 0.15f);
 
         SubscribeToActions(input);
     }
 
     public void Update(GameTime gameTime)
     {
-        
+        var deltaTime = gameTime.ElapsedGameTime.Ticks;
+        entity.Transform.Move(direction * deltaTime);
     }
 
     private void Move(Vector2 dir)
     {
         float speed = 1f;
-        go.Move(dir * speed);
+        direction *= speed;
     }
 
     public void SubscribeToActions(ActionMapPlay input)

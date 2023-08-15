@@ -28,13 +28,10 @@ public class PlayScene : Scene
     public override void LoadContent()
     {
         player.Initialize(input);
+        AddEntity(player.Entity);
 
         font = Load<SpriteFont>("fonts/tiny");
         debug = new Debugger(font);
-        UI.AddChildObject(debug);
-
-        ShapeRectangle rect = new (new Rectangle(10, 10, 64, 1), Color.Chartreuse);
-        UI.AddChildObject(rect);
 
         SubscribeToActions();
     }
@@ -44,12 +41,10 @@ public class PlayScene : Scene
         deltaTime = gameTime.ElapsedGameTime.Milliseconds;
         player.Update(gameTime);
         
-        debug.AddDebugConsoleMessage("player", player.Object.ToString());
-        debug.AddDebugMessage("player", debug.ConvertPositionToDebugMessage(player.Object.Position));
+        debug.AddDebugConsoleMessage("player", player.Entity.ToString());
+        debug.AddDebugMessage("player", debug.ConvertPositionToDebugMessage(player.Entity.Transform.Position));
         debug.AddDebugConsoleMessage("camera", Camera.ToString());
         debug.AddDebugConsoleMessage("canvas", Canvas.ToString());
-        debug.AddDebugConsoleMessage("playerBoundsVisible", player.Object.IsBoundsVisible.ToString());
-        debug.AddDebugConsoleMessage("playerBounds", player.Object.Bounds.ToString());
     }
 
     private void MousePosition(Vector2 position)
@@ -98,22 +93,11 @@ public class PlayScene : Scene
 
     private void CameraFollowPlayer()
     {
-        Camera.Follow(player.Object);
+        Camera.Follow(player.Entity);
     }
 
     private void ToggleDebug()
-    {
-        if(debug.IsActive)
-        {
-            debug.Disable();
-            player.Object.IsBoundsVisible = false;
-        }
-        else
-        {
-            debug.Enable();
-            player.Object.IsBoundsVisible = true;
-        }
-    }
+    { }
 
     private void PrintDebug() => 
         debug.PrintDebugMessagesToConsole();

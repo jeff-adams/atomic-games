@@ -6,40 +6,36 @@ using MonoGame.Aseprite.Sprites;
 
 namespace AtomicGames.Engine.Components;
 
-public class SpriteObject : Entity
+public class SpriteEntity : Entity
 {
     public Sprite Sprite { get; init; }
 
-    public SpriteObject(Sprite sprite)  : base()
+    private readonly SpriteBatch spriteBatch;
+    private readonly ShapeBatch shapeBatch;
+
+    public SpriteEntity(Sprite sprite, SpriteBatch spriteBatch, ShapeBatch shapeBatch)  : base()
     {
-        this.Sprite = sprite;
-        Origin = new Vector2(Sprite.Width * 0.5f, Sprite.Height * 0.5f);
-        SetBounds();
+        Sprite = sprite;
+        this.spriteBatch = spriteBatch;
+        this.shapeBatch = shapeBatch;
+        Transform.Origin = new Vector2(Sprite.Width * 0.5f, Sprite.Height * 0.5f);
     }
 
-    public SpriteObject(Texture2D texture) 
-        : this(texture, 1.0f) { }
+    public SpriteEntity(Texture2D texture, SpriteBatch spriteBatch, ShapeBatch shapeBatch) 
+        : this(texture, 1.0f, spriteBatch, shapeBatch) { }
 
-    public SpriteObject(Texture2D texture, float scale) 
-        : this(new Sprite(texture.Name, texture) { Scale = new Vector2(scale, scale)}) { }
+    public SpriteEntity(Texture2D texture, float scale, SpriteBatch spriteBatch, ShapeBatch shapeBatch) 
+        : this(new Sprite(texture.Name, texture) { Scale = new Vector2(scale, scale)}, spriteBatch, shapeBatch) { }
 
-    public override void Draw(GameTime gameTime, SpriteBatch spriteBatch, ShapeBatch shapeBatch)
+    public void Draw(GameTime gameTime)
     {
         //spriteBatch.Draw(texture, Transform.Position, null, Color.White, Transform.Rotation, origin, scale, flip, 0f);
-        Sprite.Draw(spriteBatch, Position);
-        base.Draw(gameTime, spriteBatch, shapeBatch);
-    }
-    
-    protected override void SetBounds()
-    {
-        Rectangle selfBounds = CalculateSelfBounds();
-        Bounds = selfBounds;
-        // Not working ??? -> Children.Aggregate(selfBounds, (growingRect, child) => Rectangle.Intersect(growingRect, child.Bounds));
+        Sprite.Draw(spriteBatch, Transform.Position);
     }
 
     private Rectangle CalculateSelfBounds()
     {
-        Vector2 topLeft = Vector2.Transform(new Vector2(0, 0), Translation);
+        Vector2 topLeft = Vector2.Transform(new Vector2(0, 0), Transform.WorldMatrix);
         Vector2 topRight = new (topLeft.X + Sprite.Width, topLeft.Y);
         Vector2 bottomRight = new (topLeft.X + Sprite.Width, topLeft.Y + Sprite.Height);
         Vector2 bottomLeft = new (topLeft.X, topLeft.Y + Sprite.Height);

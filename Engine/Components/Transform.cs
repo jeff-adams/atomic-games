@@ -58,18 +58,19 @@ public sealed class Transform : ITransform
     }
 
     /// <summary>
-    /// Adds a parent <see cref=" Transform"/> to this <see cref=" Transform"/> and will update it's World Matrix according to the parent
+    /// Adds a parent <see cref="ITransform"/> to this <see cref="ITransform"/> and will update it's World Matrix according to the parent
     /// </summary>
-    /// <param name="parentTransform">The parent <see cref=" Transform"/> to attach this <see cref=" Transform"/> to</param>
-    /// <returns>This <see cref=" Transform"/> object for method chaining</returns>
-    public ITransform AttachTo(ITransform parentTransform)
+    /// <typeparam name="parent">The parent <see cref="ITransform"/> to attach this <see cref="ITransform"/> to</param>
+    /// <returns>This <see cref="ITransform"/> object for method chaining</returns>
+    public ITransform AttachTo(ITransform parent)
     {
-        if(Parent == parentTransform) return this;
+        if(Parent == parent) return this;
 
         if(Parent is not null)    
             Parent.OnUpdatedMatrices -= UpdateMatrices;
 
-        parentTransform.OnUpdatedMatrices += UpdateMatrices;
+        Parent = parent;
+        Parent.OnUpdatedMatrices += UpdateMatrices;
 
         return this;
     }
@@ -80,7 +81,7 @@ public sealed class Transform : ITransform
     /// <returns>This <see cref=" Transform"/> object for method chaining</returns>
     public ITransform Detach()
     {
-        if(Parent == null) return this;
+        if(Parent is null) return this;
         
         Parent.OnUpdatedMatrices -= UpdateMatrices;
         Parent = null;

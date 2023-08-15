@@ -3,7 +3,6 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using AtomicGames.Engine.Input;
 using AtomicGames.Engine.Graphics;
-using AtomicGames.Engine.Components;
 
 namespace AtomicGames.Engine;
 
@@ -12,7 +11,6 @@ public class AtomicGame : Game
     private readonly GraphicsDeviceManager graphics;
     private readonly Canvas canvas;
     private readonly Camera camera;
-    private readonly UI ui;
 
     private SpriteBatch spriteBatch;
     private ShapeBatch shapeBatch;
@@ -21,7 +19,8 @@ public class AtomicGame : Game
 
     public Canvas Canvas => canvas;
     public Camera Camera => camera;
-    public UI UI => ui;
+    public SpriteBatch SpriteBatch => spriteBatch;
+    public ShapeBatch ShapeBatch => shapeBatch;
 
     public AtomicGame(
         Scene firstScene, 
@@ -49,7 +48,6 @@ public class AtomicGame : Game
 
         canvas = new Canvas(GraphicsDevice, virtualWidth, virtualHeight);
         camera = new Camera(Window, canvas);
-        ui = new UI(virtualWidth, virtualHeight);
         shapeBatch = new ShapeBatch(GraphicsDevice);
 
         Content.RootDirectory = "Content";
@@ -94,7 +92,6 @@ public class AtomicGame : Game
     {
         currentScene.Update(gameTime);
         camera.Update(gameTime);
-        ui.Update(gameTime);
 
         base.Update(gameTime);
     }
@@ -106,13 +103,13 @@ public class AtomicGame : Game
 
         spriteBatch.Begin(transformMatrix: camera.ViewMatrix, samplerState: SamplerState.PointClamp);
         shapeBatch.Begin(viewMatrix: camera.ViewMatrix, projectionMatrix: camera.ProjectionMatrix);
-        currentScene.Draw(gameTime, spriteBatch, shapeBatch);
+        currentScene.Draw(gameTime);
         spriteBatch.End();
         shapeBatch.End();
 
         spriteBatch.Begin(samplerState: SamplerState.PointClamp);
         shapeBatch.Begin(projectionMatrix: camera.ProjectionMatrix);
-        ui.Draw(gameTime, spriteBatch, shapeBatch);
+        // This is where the UI would get drawn
         spriteBatch.End();
         shapeBatch.End();
 

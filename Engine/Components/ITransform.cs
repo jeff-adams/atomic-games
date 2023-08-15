@@ -5,7 +5,7 @@ namespace AtomicGames.Engine.Components;
 
 public interface ITransform : IAttachable<ITransform>
 {
-    Vector2 Origin { get; }
+    Vector2 Origin { get; set; }
     Vector2 Position { get; }
     float Rotation { get; }
     float Scale { get; }
