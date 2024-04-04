@@ -1,9 +1,8 @@
 using System;
-using AtomicGames.Engine.Graphics;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace AtomicGames.Engine.Graphics;
+namespace AtomicGame.Engine.Graphics;
 
 public sealed class ShapeBatch : IDisposable
 {
@@ -22,7 +21,6 @@ public sealed class ShapeBatch : IDisposable
     {
         this.graphics = graphics ?? throw new ArgumentNullException(nameof(graphics));
 
-        
         const int maxIndexCount = short.MaxValue;
         vertices = new VertexPositionColor[maxIndexCount / 3];
         indices = new short[maxIndexCount];
@@ -40,7 +38,7 @@ public sealed class ShapeBatch : IDisposable
     public void Begin(Matrix? worldMatrix = null, Matrix? viewMatrix = null, Matrix? projectionMatrix = null)
     {
         if (isStarted)
-            throw new Exception("Batching is already been started.");
+            throw new Exception("Batching has already been started.");
 
         isStarted = true;
 
@@ -51,7 +49,6 @@ public sealed class ShapeBatch : IDisposable
             View = viewMatrix ?? Matrix.Identity,
             Projection = projectionMatrix ?? Matrix.Identity,
         };
-
     }
 
     public void End()
@@ -124,10 +121,10 @@ public sealed class ShapeBatch : IDisposable
         float top = y;
         float bottom = y + height;
 
-        var topLeft = new Vector3(left, top, 0f);
-        var topRight = new Vector3(right, top, 0f);
-        var bottomRight = new Vector3(right, bottom, 0f);
-        var bottomLeft = new Vector3(left, bottom, 0f);
+        Vector3 topLeft = new (left, top, 0f);
+        Vector3 topRight = new (right, top, 0f);
+        Vector3 bottomRight = new (right, bottom, 0f);
+        Vector3 bottomLeft = new (left, bottom, 0f);
 
         indices[indexCount++] = (short)(0 + vertexCount);
         indices[indexCount++] = (short)(1 + vertexCount);
@@ -137,9 +134,9 @@ public sealed class ShapeBatch : IDisposable
         indices[indexCount++] = (short)(3 + vertexCount);
 
         vertices[vertexCount++] = new VertexPositionColor(topLeft, color);
-        vertices[vertexCount++] = new VertexPositionColor(bottomLeft, color);
-        vertices[vertexCount++] = new VertexPositionColor(bottomRight, color);
         vertices[vertexCount++] = new VertexPositionColor(topRight, color);
+        vertices[vertexCount++] = new VertexPositionColor(bottomRight, color);
+        vertices[vertexCount++] = new VertexPositionColor(bottomLeft, color);
 
         shapeCount++;
     }
