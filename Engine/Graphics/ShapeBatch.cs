@@ -2,7 +2,7 @@ using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace AtomicGame.Engine.Graphics;
+namespace AtomicGames.Engine.Graphics;
 
 public sealed class ShapeBatch : IDisposable
 {
