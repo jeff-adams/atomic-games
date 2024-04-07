@@ -1,37 +1,18 @@
-using System;
 using Microsoft.Xna.Framework;
 
 namespace AtomicGames.Engine.Input;
 
-public sealed class BroadcastComponent : IGameComponent, IUpdateable
+public sealed class BroadcastComponent : GameComponent
 {
-    public event EventHandler<EventArgs> EnabledChanged;
-    public event EventHandler<EventArgs> UpdateOrderChanged;
-    public bool Enabled 
-    {
-        get => enabled;
-        set { enabled = value; EnabledChanged?.Invoke(this, EventArgs.Empty); }
-    }
-    public int UpdateOrder
-    {
-        get => updateOrder;
-        set { updateOrder = value; UpdateOrderChanged?.Invoke(this, EventArgs.Empty); }
-    }
-
-    private bool enabled;
-    private int updateOrder;
     private readonly IBroadcaster[] broadcasters;
 
-    public BroadcastComponent(IBroadcaster[] broadcasters) 
+    public BroadcastComponent(Game game, IBroadcaster[] broadcasters) : base(game)
     {
         this.broadcasters = broadcasters;
-        this.enabled = true;
-        this.updateOrder = 1;
+        Enabled = true;
     }
 
-    public void Initialize() { }    
-
-    public void Update(GameTime gameTime)
+    public override void Update(GameTime gameTime)
     {
         foreach (var broadcaster in broadcasters)
         {
