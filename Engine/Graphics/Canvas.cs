@@ -2,14 +2,15 @@ using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace AtomicGames.Engine.Graphics;
+namespace ShapeTest2;
 
 public class Canvas : IDisposable
 {
     public int VirtualWidth { get; }
     public int VirtualHeight { get; }
     public Vector2 VirtualCenter { get; }
-    public Matrix VirtualScaleMatrix { get; }
+    public Matrix VirtualScaleMatrix { get; private set;}
+    public Matrix ProjectionMatrix { get; }
     public Rectangle RenderRectangle => renderRect;
 
     private readonly GraphicsDevice graphics;
@@ -20,11 +21,10 @@ public class Canvas : IDisposable
     {
         VirtualWidth = width;
         VirtualHeight = height;
+        ProjectionMatrix = Matrix.CreateOrthographicOffCenter(0f, width, height, 0f, 0f, 1f);
         VirtualCenter = new Vector2(width * 0.5f, height * 0.5f);
         VirtualScaleMatrix = Matrix.CreateScale(
-            graphics.Viewport.Width / width, 
-            graphics.Viewport.Height / height, 
-            1.0f);
+            Math.Min((float)graphics.Viewport.Width / width, (float)graphics.Viewport.Height / height));
 
         this.graphics = graphics;
 
@@ -60,9 +60,13 @@ public class Canvas : IDisposable
         int x = (screenSize.Width - width) / 2;
         int y = (screenSize.Height - height) / 2;
 
+        VirtualScaleMatrix = Matrix.CreateScale(scale);
         renderRect = new Rectangle(x, y, width, height);
         return renderRect;
     }
+
+    public Vector2 ConvertToWorldPosition(Point position) =>
+        Vector2.Floor(Vector2.Transform((position - RenderRectangle.Location).ToVector2(), Matrix.Invert(VirtualScaleMatrix)));
 
     public override string ToString() =>
         $"RenderRect: {renderRect}, RenderTarget: {renderTarget.Bounds}";
